@@ -443,7 +443,7 @@ function LaboratoryManageComponent({
       unselectedLabTests.map((test) => ({
         pathogens_id: test.id,
         result: "Not detected",
-        remark: "Not detected",
+        remark: "-",
       }))
     );
     labData.inspection_type_id = Number(labData.inspection_type_id);

@@ -39,13 +39,18 @@ const Sidebar: FC<SidebarProps> = ({
   const [currentPage, setCurrentPage] = useState(page);
 
   const UserMenus = [
+    // {
+    //   title: "Dashboard",
+    //   path: "/dashboard",
+    //   submenu: [
+    //     { title: "Main", path: "/dashboard" },
+    //     { title: "Pathogens", path: "/dashboard/pathogens" },
+    //   ],
+    //   hasPermission: true,
+    // },
     {
       title: "Dashboard",
       path: "/dashboard",
-      submenu: [
-        { title: "Main", path: "/dashboard" },
-        { title: "Pathogens", path: "/dashboard/pathogens" },
-      ],
       hasPermission: true,
     },
     {
