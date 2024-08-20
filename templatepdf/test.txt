@@ -1,0 +1,240 @@
+// // playground requires you to assign document definition to a variable called dd
+
+// var dd = {
+//     background: function(currentPage, pageSize) {
+//     return {image: 'sampleImage.jpg', width: 200,
+// 			        height: 200, absolutePosition: {x: 200, y: 300},opacity: 0.4}
+//   }, 
+// 	content: [
+// 	    {
+// 	        alignment: '',
+// 	        columns: [
+// 				{
+// 					image: 'sampleImage.jpg',
+// 			        width: 100,
+// 			        height: 100,
+
+// 				},
+// 				{
+// 					text: [
+// 				{text: 'xxxxxxxxxxxxxxxxx \n\n ', style: 'header'},
+// 			{text: 'xxxxxxxxxxxxxxxxx'},
+// 			],
+// 				    margin: [10, 0, 0, 0]
+// 				},
+
+// 			]
+// 	    },
+// 		{
+// 		    text: "xxxxdasdsfsdfsdfsd",
+// 		    margin: [110, 0, 0, 0],
+// 		    alignment: 'center',
+// 		    style: 'subheader'
+		    
+// 		},
+// 			{
+// 		    text: "xxxxdasdsfsdfsdfsdxxxxdasdsfsdfsdfsdxxxxdasdsfsdfsdfsdxxxxd",
+// 		    margin: [110, 0, 0, 0],
+// 		    alignment: 'center',
+// 		    style: 'subheader'
+// 		},
+// 		{
+// 			style: 'tableExample',
+// 			margin: [0, 15, 0, 0],
+// 			table: {
+                
+// 				widths: [160, 160, 170],
+				
+// 				body: [
+// 					[
+// 					    {
+// 					       border: [false,true,false,true],
+// 					       text:[
+// 					         {text: 'Name : ', style: "tableKey"},
+// 					         {text: 'asd', style: "tableValue"},
+// 					         '\n',
+// 					          {text: 'Lab No : ', style: "tableKey"},
+// 					         {text: 'asd', style: "tableValue"},
+// 					         '\n',
+// 					          {text: 'ID Card / PASSPORT : ', style: "tableKey"},
+// 					         {text: 'asd', style: "tableValue"},
+// 					         '\n',
+// 					         {text: 'Organization : ', style: "tableKey"},
+// 					         {text: 'asd', style: "tableValue"},
+// 					         '\n',
+// 					          {text: 'Specimens : ', style: "tableKey"},
+// 					         {text: 'asd', style: "tableValue"},
+// 					         '\n',
+// 					        ],
+// 					         margin: [0,5,0,10]
+					       
+					        
+// 					    },
+// 					    {
+// 					        border: [false,true,false,true],
+// 					         text:[
+// 					        {text: 'AGE : ', style: "tableKey"},
+// 					         {text: 'asd', style: "tableValue"},
+// 					         '\n',
+// 					         {text: 'SAT ID : ', style: "tableKey"},
+// 					         {text: 'asd', style: "tableValue"},
+// 					         '\n',
+// 					        ],
+// 					        alignment: 'right',
+// 					         margin: [0,5,30,10]
+					        
+// 					    },
+// 					    {
+// 					        border: [false,true,false,true],
+// 					        text:[
+// 					          {text: 'Sex : ', style: "tableKey"},
+// 					         {text: 'asd', style: "tableValue"},
+// 					         '\n',
+// 					         {text: 'HN : ', style: "tableKey"},
+// 					         {text: 'asd', style: "tableValue"},
+// 					         '\n',
+// 					         {text: 'Collect Date : ', style: "tableKey"},
+// 					         {text: 'asd', style: "tableValue"},
+// 					         '\n',
+// 					         {text: 'Received Date : ', style: "tableKey"},
+// 					         {text: 'asd', style: "tableValue"},
+// 					         '\n',
+// 					         {text: 'Report Date : ', style: "tableKey"},
+// 					         {text: 'asd', style: "tableValue"},
+// 					         '\n',
+// 					        ],
+// 					        margin: [10,5,0,10]
+// 					    },
+// 					]
+// 				]
+// 			}
+// 		},
+// 			{
+// 			style: 'tableExample',
+// 			margin: [0, 15, 0, 0],
+// 			table: {
+// 			    widths: [160, 160, 170],
+// 				body: [
+// 					[
+// 					    {text: "column 1", alignment: 'center' , style: "tableSecVal"}, 
+// 					    {text: "column 1", alignment: 'center', style: "tableSecVal"},
+// 					    {text: "column 1", alignment: 'center', style: "tableSecVal"},
+// 					],
+// 				    [
+// 					    {text: "column 1" , style: "tableSecVal"}, 
+// 					    {text: "column 1", style: "tableSecVal"},
+// 					    {text: "column 1", style: "tableSecVal"},
+// 					],
+// 					[
+// 					    {text: "column 1", style: "tableSecVal"}, 
+// 					    {text: "column 1", style: "tableSecVal"},
+// 					    {text: "column 1", style: "tableSecVal"},
+// 					],
+// 					[
+// 					    {text: "column 1", style: "tableSecVal"}, 
+// 					    {text: "column 1", style: "tableSecVal"},
+// 					    {text: "column 1", style: "tableSecVal"},
+// 					],
+// 				    [
+// 				         {text: "column 1", style: "tableSecVal"}, 
+// 					    {text: "column 1", style: "tableSecVal"},
+// 					    {text: "column 1", style: "tableSecVal"},
+// 					],
+// 				],
+				
+// 			},
+// 			layout: {
+// 				fillColor: function (rowIndex, node, columnIndex) {
+// 					return (rowIndex === 0) ? '#CCCCCC' : null;
+// 				},
+				
+// 				hLineStyle: function (i, node) {
+// 					if (i === 0 ||i === 1 || i === node.table.body.length) {
+// 						return null;
+// 					}
+// 					return {dash: {length: 10, space: 4}};
+// 				},
+// 			}
+// 		},
+// 		{
+// 		    text:[
+// 		         {text: 'Detection Method : ', style: "tableKey"},
+//             {text: 'LATER FLOWDADA ASEFCSDWECA ASD DDADWW', style: "tableValue"},
+//             '\n\n',
+//             {text: 'COMMENT :  ', style: "tableValue"},
+//              {text: 'xxxxx', style: "tableValue"},
+// 		        ]
+// 		},
+// 		{
+// 			style: 'tableExample',
+// 			margin: [0, 70, 0, 0],
+// 			table: {
+                
+// 				widths: [500],
+				
+// 				body: [
+// 					[
+// 					    {
+// 					       border: [false,true,false,false],
+// 					       text:[]
+// 					    },
+					    
+// 					]
+// 				]
+// 			}
+// 		},
+// 			{
+// 		    text:[
+// 		         {text: 'Reported by : ', style: "tableKey"},
+//             {text: 'xxxxxxxxxxxx', style: "tableValue"},
+//             '\n\n',
+//            {text: 'Approved by : ', style: "tableKey"},
+//              {text: 'xxxxx', style: "tableValue"},
+// 		        ]
+// 		},
+// 		{
+// 		    text:[
+// 		        	{text: 'remark',style: "tableValue"},
+// 		        	'\n',
+// 		        	{text: '1. sdadasdasdasdadadadadadadadadsdecscsf',style: "tableValue"},
+// 		        	'\n',
+// 		        	{text: '2. sdadasdasdasdadadadadadadadadsdecscsf',style: "tableValue"},
+// 		        	'\n',
+// 		        	{text: '3. ccadfdsfwefewrtwegwvcvfhfhbfdbvdfgfdg',style: "tableValue"},
+// 		        	'\n',
+// 		        ],
+// 		    margin:[70,30,0,0]
+// 		},
+	
+		
+// 	],
+	
+// 	styles: {
+// 		header: {
+// 			fontSize: 14,
+// 			bold: true,
+
+// 		},
+// 		subheader: {
+// 			fontSize: 12,
+// 			bold: true,
+
+// 		},
+// 		tableKey: {
+// 		    fontSize: 10,
+// 			bold: true,
+// 		},
+// 		tableValue: {
+// 		    fontSize: 10,
+			
+// 		},
+// 		tableSecVal: {
+// 		     fontSize: 11,
+// 		     bold: true,
+// 		     margin:[0,2,0,2],
+
+// 		}
+// 	}
+	
+// }
+

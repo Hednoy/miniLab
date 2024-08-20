@@ -1,0 +1,16 @@
+{
+	"RECORDS": [
+		{
+			"role_id": 1,
+			"name": "ผู้ดูแลระบบ",
+			"is_admin": true,
+			"is_active": true
+		},
+		{
+			"role_id": 2,
+			"name": "เจ้าหน้าที่",
+			"is_admin": false,
+			"is_active": true
+		}
+	]
+}

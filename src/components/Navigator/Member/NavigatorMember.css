@@ -1,0 +1,14 @@
+.navigator_member {
+  @apply w-screen bg-primary;
+  @apply ml-auto mr-auto px-2 py-2.5;
+  @apply flex justify-center;
+  @apply text-white;
+}
+
+.navigator_member_container {
+  @apply flex-row flex;
+  @apply max-w-screen-lg w-full;
+  @apply items-center justify-between;
+  /* @apply p-3 px-6 text-white; */
+  /* @apply gap-4 */
+}

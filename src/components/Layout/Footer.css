@@ -1,0 +1,11 @@
+.footer-text {
+  @apply text-sm flex flex-row items-center justify-center gap-2;
+}
+
+.footer > .container {
+  @apply border-t-2 border-[#94b37f] py-6 px-2 mx-auto;
+}
+
+.footer {
+  @apply bg-[rgba(220,226,213,0.8)]
+}

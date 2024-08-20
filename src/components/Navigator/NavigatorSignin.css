@@ -1,0 +1,22 @@
+.bt-box {
+  background: linear-gradient(to bottom, #ffc324 0%, #238c00 100%);
+  transform: skew(-30deg, 0deg);
+}
+
+.bt-signin-ag {
+  transform: skew(30deg, 0deg);
+  display: inline-block;
+  float: left;
+  padding: 10px 34px;
+  color: #000;
+  font-size: 24px;
+}
+
+.bt-signin-member {
+  transform: skew(30deg, 0deg);
+  display: inline-block;
+  float: left;
+  padding: 10px 34px;
+  color: #000;
+  font-size: 24px;
+}

@@ -1,0 +1,527 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// tb คือ table
+// tbm คือ table master
+// tbl คือ table log
+
+model Category {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String?      @db.Text
+  opm_code    String?
+  is_active   Boolean      @default(true)
+  created_by  Int?
+  created_at  DateTime     @default(now())
+  updated_by  Int?
+  updated_at  DateTime?
+  deleted_by  Int?
+  deleted_at  DateTime?
+  Attachment  Attachment[]
+
+  @@map("tbm_category")
+}
+
+// attachment
+model Attachment {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?   @db.Text
+  file_name   String?
+  file_path   String?
+  file_type   String?
+  file_size   Int?
+  category_id Int?
+  is_active   Boolean   @default(true)
+  created_by  Int?
+  created_at  DateTime  @default(now())
+  updated_by  Int?
+  updated_at  DateTime?
+  deleted_by  Int?
+  deleted_at  DateTime?
+
+  category      Category?       @relation(fields: [category_id], references: [id])
+  officer       Officer?        @relation(fields: [created_by], references: [id])
+  AttachmentLog AttachmentLog[]
+
+  @@map("tb_attachment")
+}
+
+model AttachmentLog {
+  id            Int      @id @default(autoincrement())
+  attachment_id Int?
+  action        String
+  action_by     Int?
+  action_at     DateTime @default(now())
+
+  attachment Attachment? @relation(fields: [attachment_id], references: [id])
+
+  @@map("tbl_attachment_log")
+}
+
+// ข้อมูลผู้ป่วย
+// เลขประจำตัวผู้ป่วยนอก(HN):
+// เลขประจำตัวผู้ป่วยนใน(AN):
+// โรงพยาบาล/ที่มา:
+// เลข Case/LAB No.: *
+// ชื่อ: *
+// นามสกุล: *
+// รหัสประจำตัวประชาชน/Passport:
+// วัน/เดือน/ปีเกิด:
+// วันที่ส่งข้อมูล
+model Patient {
+  id             Int       @id @default(autoincrement())
+  hn             String
+  an             String
+  hospital_id    Int
+  hospital       Hospital  @relation(fields: [hospital_id], references: [id])
+  case_no        String
+  first_name     String
+  last_name      String
+  gender         String
+  age            Int
+  id_card        String
+  passport       String
+  phone_no       String
+  visit_type     String
+  sat_id         String
+  test_type_id   Int
+  is_anonymous   Boolean   @default(false)
+  date_of_birth  DateTime
+  date_of_send   DateTime?
+  collected_date DateTime?
+  received_date  DateTime?
+
+  updated_by Int?
+  updated_at DateTime?
+  deleted_by Int?
+  deleted_at DateTime?
+  Lab        Lab[]
+
+  @@map("tb_patient")
+}
+
+// โรงพยาบาล
+// ชื่อโรงพยาบาล:
+// ที่อยู่:
+// โทรศัพท์ติดต่อ:
+model Hospital {
+  id       Int    @id @default(autoincrement())
+  name     String
+  address  String
+  phone_no String
+
+  updated_by Int?
+  updated_at DateTime?
+  deleted_by Int?
+  deleted_at DateTime?
+  Lab        Lab[]
+  Patient    Patient[]
+
+  @@map("tb_hospital")
+}
+
+// ประเภทการตรวจ
+// ชื่อ
+model TestType {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+  prefix_name String?
+  subfix_name String?
+
+  updated_by Int?
+  updated_at DateTime?
+  deleted_by Int?
+  deleted_at DateTime?
+  machine    Machine[]
+
+  @@map("tb_test_type")
+}
+
+// ประเภทไวรัส
+// ชื่อ
+// รหัส
+model VirusType {
+  id          Int     @id @default(autoincrement())
+  name        String
+  code        String
+  description String?
+
+  updated_by Int?
+  updated_at DateTime?
+  deleted_by Int?
+  deleted_at DateTime?
+
+  machine_id  Int?
+  machine_lab MachineLab[]
+
+  @@map("tb_virus_type")
+}
+
+// เครื่องตรวจ
+// ชื่อ เครื่องตรวจ:
+// ประเภทการตรวจ
+// รายละเอียด:
+// ไวรัส:[ ]
+// รหัสเครื่องตรวจ:
+model Machine {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  code        String
+
+  updated_by Int?
+  updated_at DateTime?
+  deleted_by Int?
+  deleted_at DateTime?
+
+  test_type    TestType     @relation(fields: [test_type_id], references: [id])
+  test_type_id Int
+  machine_lab  MachineLab[]
+  lab          Lab[]
+  machine_log  MachineLog[]
+
+  @@map("tb_machine")
+}
+
+model MachineLog {
+  id         Int       @id @default(autoincrement())
+  machine_id Int
+  machine    Machine   @relation(fields: [machine_id], references: [id])
+  status     String
+  remark     String
+  updated_by Int?
+  updated_at DateTime?
+  deleted_by Int?
+  deleted_at DateTime?
+
+  @@map("tbl_machine_log")
+}
+
+model MachineLab {
+  id              Int             @id @default(autoincrement())
+  machine         Machine         @relation(fields: [machine_id], references: [id])
+  machine_id      Int
+  virus_type      VirusType       @relation(fields: [virus_type_id], references: [id])
+  virus_type_id   Int
+  labTest         LabTest[]
+  machine_lab_log MachineLabLog[]
+
+  @@map("tb_machine_lab")
+}
+
+model MachineLabLog {
+  id             Int        @id @default(autoincrement())
+  machine_lab_id Int
+  machine_lab    MachineLab @relation(fields: [machine_lab_id], references: [id])
+  status         String
+  remark         String
+  updated_by     Int?
+  updated_at     DateTime?
+  deleted_by     Int?
+  deleted_at     DateTime?
+
+  @@map("tbl_machine_lab_log")
+}
+
+// ห้องปฏิบัติการ
+model Lab {
+  id               Int       @id @default(autoincrement())
+  case_no          String
+  machine_id       Int
+  machine          Machine?  @relation(fields: [machine_id], references: [id])
+  hospital_id      Int
+  hospital         Hospital? @relation(fields: [hospital_id], references: [id])
+  patient_id       Int
+  patient          Patient?  @relation(fields: [patient_id], references: [id])
+  paper_code       String
+  comment          String
+  detection_method String
+  status           String
+
+  updated_by Int?
+  updated_at DateTime?
+  deleted_by Int?
+  deleted_at DateTime?
+
+  lab_test LabTest[]
+  lab_log  LabLog[]
+
+  @@map("tb_lab")
+}
+
+model LabLog {
+  id         Int       @id @default(autoincrement())
+  lab_id     Int
+  lab        Lab       @relation(fields: [lab_id], references: [id])
+  status     String
+  remark     String
+  updated_by Int?
+  updated_at DateTime?
+  deleted_by Int?
+  deleted_at DateTime?
+
+  @@map("tbl_lab_log")
+}
+
+model LabTest {
+  id     Int    @id @default(autoincrement())
+  lab_id Int
+  lab    Lab?   @relation(fields: [lab_id], references: [id])
+  result String
+  remark String
+
+  machineLab_id Int
+  machineLab    MachineLab? @relation(fields: [machineLab_id], references: [id])
+
+  created_at   DateTime     @default(now())
+  updated_at   DateTime?
+  deleted_at   DateTime?
+  lab_test_log LabTestLog[]
+
+  @@map("tb_lab_test")
+}
+
+model LabTestLog {
+  id          Int       @id @default(autoincrement())
+  lab_test_id Int
+  lab_test    LabTest   @relation(fields: [lab_test_id], references: [id])
+  remark      String
+  updated_by  Int?
+  updated_at  DateTime?
+  deleted_by  Int?
+  deleted_at  DateTime?
+
+  @@map("tbl_lab_test_log")
+}
+
+model Geographic {
+  id        Int         @id @default(autoincrement())
+  name      String
+  provinces Provinces[]
+
+  @@map("tbm_geographic")
+}
+
+model Provinces {
+  id           Int        @id @default(autoincrement())
+  name_th      String
+  name_en      String
+  geography_id Int
+  geography    Geographic @relation(fields: [geography_id], references: [id])
+  created_at   DateTime   @default(now())
+  updated_at   DateTime?
+  deleted_at   DateTime?
+  amphures     Amphures[]
+
+  @@map("tbm_provinces")
+}
+
+model Amphures {
+  id          Int       @id @default(autoincrement())
+  name_th     String
+  name_en     String
+  province_id Int
+  province    Provinces @relation(fields: [province_id], references: [id])
+  created_at  DateTime  @default(now())
+  updated_at  DateTime?
+  deleted_at  DateTime?
+  tambons     Tambons[]
+
+  @@map("tbm_amphures")
+}
+
+model Tambons {
+  id         Int       @id @default(autoincrement())
+  zip_code   Int
+  name_th    String
+  name_en    String
+  amphure_id Int
+  amphure    Amphures  @relation(fields: [amphure_id], references: [id])
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+  deleted_at DateTime?
+
+  @@map("tbm_tambons")
+}
+
+model Role {
+  role_id               Int       @id @default(autoincrement())
+  name                  String
+  position              String?
+  department            String?
+  permission_patient    Boolean   @default(false)
+  permission_lab        Boolean   @default(false)
+  permission_news       Boolean   @default(false)
+  permission_management Boolean   @default(false)
+  permission_data       Boolean   @default(false)
+  permission_history    Boolean   @default(false)
+  is_admin              Boolean   @default(false)
+  is_active             Boolean   @default(true)
+  member                Member[]
+  Officer               Officer[]
+  created_at            DateTime  @default(now())
+  updated_at            DateTime?
+  deleted_at            DateTime?
+
+  @@map("tbm_role")
+}
+
+model Member {
+  id         Int       @id @default(autoincrement())
+  username   String    @unique @db.VarChar(100)
+  password   String
+  role_id    Int
+  role       Role      @relation(fields: [role_id], references: [role_id])
+  is_active  Boolean   @default(true)
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  officer   Officer[]
+  person    Person[]
+  memberLog MemberLog[]
+
+  @@map("tb_member")
+}
+
+// บันทึกการเข้าใช้งาน action ต่างๆภายในเว็บ
+model MemberLog {
+  id        Int      @id @default(autoincrement())
+  member_id Int?
+  action    String
+  action_by Int?
+  action_at DateTime @default(now())
+
+  member Member? @relation(fields: [member_id], references: [id])
+
+  @@map("tbl_member_log")
+}
+
+model Officer {
+  id           Int          @id @default(autoincrement())
+  citizen_id   String
+  title_name   String?
+  first_name   String
+  last_name    String
+  mobile_phone String?
+  email        String?
+  telephone    String?
+  position     String?
+  department   String?
+  role_id      Int
+  role         Role         @relation(fields: [role_id], references: [role_id])
+  is_active    Boolean      @default(true)
+  created_at   DateTime     @default(now())
+  updated_at   DateTime?
+  member_id    Int
+  member       Member?      @relation(fields: [member_id], references: [id])
+  Attachment   Attachment[]
+
+  @@map("tb_officer")
+}
+
+model Person {
+  id           Int       @id @default(autoincrement())
+  id_card      String
+  title_name   String?
+  first_name   String
+  last_name    String
+  gender       String?
+  email        String?
+  age          Int?
+  address      String?
+  province_id  Int?
+  amphure_id   Int?
+  tombon_id    Int?
+  postcode     String?
+  telephone    String?
+  mobile_phone String
+  fax          String?
+  occupation   String?
+  organization String?
+  is_active    Boolean   @default(true)
+  created_at   DateTime  @default(now())
+  updated_at   DateTime?
+  member_id    Int
+  member       Member?   @relation(fields: [member_id], references: [id])
+
+  @@map("tb_person")
+}
+
+model Notification {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?   @db.Text
+  is_active   Boolean   @default(true)
+  sender_type String?
+  sender_id   String?
+  receiver_id String?
+  is_read     Boolean   @default(false)
+  created_by  Int?
+  created_at  DateTime  @default(now())
+  updated_by  Int?
+  updated_at  DateTime?
+  deleted_by  Int?
+  deleted_at  DateTime?
+
+  @@map("tb_notification")
+}
+
+model News {
+  id          Int       @id @default(autoincrement())
+  type_id     Int
+  title       String
+  description String?   @db.Text
+  file_name   String?
+  file_path   String?
+  view_count  Int       @default(0)
+  date_start  DateTime?
+  date_end    DateTime?
+  is_active   Boolean   @default(true)
+  created_by  Int?
+  created_at  DateTime  @default(now())
+  updated_by  Int?
+  updated_at  DateTime?
+  deleted_by  Int?
+  deleted_at  DateTime?
+
+  @@map("tb_news")
+}
+
+model NewsType {
+  id          Int       @id @default(autoincrement())
+  code        String
+  name        String
+  description String?   @db.Text
+  is_active   Boolean   @default(true)
+  created_by  Int?
+  created_at  DateTime  @default(now())
+  updated_by  Int?
+  updated_at  DateTime?
+  deleted_by  Int?
+  deleted_at  DateTime?
+
+  @@map("tbm_news_type")
+}
+
+model InspectionType {
+  id          Int       @id @default(autoincrement())
+  code        String
+  name        String
+  description String?   @db.Text
+  created_by  Int?
+  created_at  DateTime  @default(now())
+  updated_by  Int?
+  updated_at  DateTime?
+  deleted_by  Int?
+  deleted_at  DateTime?
+
+  @@map("tb_inspection_type")
+}

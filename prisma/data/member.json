@@ -1,0 +1,10 @@
+{
+    "RECORDS": [
+        {
+            "id": 1,
+            "username": "admin",
+            "password": "admin_MMF@123",
+            "role_id": 1
+        }
+    ]
+}

@@ -1,0 +1,7 @@
+.auth-layout {
+  @apply min-h-screen;
+
+  &__content {
+    @apply container mx-auto min-h-screen min-w-fit max-w-4xl;
+  }
+}

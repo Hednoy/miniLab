@@ -1,0 +1,18 @@
+{
+    "RECORDS": [
+        {
+            "id": 1,
+            "code": "activity",
+            "name": "กิจกรรม",
+            "description": "กิจกรรม",
+            "is_active": true
+        },
+        {
+            "id": 2,
+            "code": "news",
+            "name": "ข่าวประชาสัมพันธ์",
+            "description": "ข่าวประชาสัมพันธ์",
+            "is_active": true
+        }
+    ]
+}

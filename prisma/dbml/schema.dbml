@@ -1,0 +1,638 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table tbm_category {
+  id Int [pk, increment]
+  name String [not null]
+  description String
+  opm_code String
+  is_active Boolean [not null, default: true]
+  created_by Int
+  created_at DateTime [default: `now()`, not null]
+  updated_by Int
+  updated_at DateTime
+  deleted_by Int
+  deleted_at DateTime
+  Attachment tb_attachment [not null]
+}
+
+Table tb_attachment {
+  id Int [pk, increment]
+  name String [not null]
+  description String
+  file_name String [not null]
+  file_path String [not null]
+  file_type String [not null]
+  file_size Int [not null]
+  category_id Int
+  is_active Boolean [not null, default: true]
+  created_by Int
+  created_at DateTime [default: `now()`, not null]
+  updated_by Int
+  updated_at DateTime
+  deleted_by Int
+  deleted_at DateTime
+  officerId Int
+  lab_id Int
+  test_type_id Int
+  inspection_type_id Int
+  Category tbm_category
+  InspectionType tb_inspection_type
+  Lab tb_lab
+  Officer tb_officer
+  TestType tb_test_type
+  AttachmentLab tb_attachment_lab [not null]
+  AttachmentLog tbl_attachment_log [not null]
+}
+
+Table tb_attachment_lab {
+  id Int [pk, increment]
+  attachment_id Int [not null]
+  lab_id Int [not null]
+  attachmentId Int
+  Attachment tb_attachment
+  Lab tb_lab [not null]
+}
+
+Table tbl_attachment_log {
+  id Int [pk, increment]
+  attachment_id Int [not null]
+  category_id Int [not null]
+  created_at DateTime [default: `now()`, not null]
+  created_by Int
+  deleted_at DateTime
+  deleted_by Int
+  description String
+  file_name String [not null]
+  file_path String [not null]
+  file_size Int [not null]
+  file_type String [not null]
+  is_active Boolean [not null, default: true]
+  name String [not null]
+  updated_at DateTime
+  updated_by Int
+  Attachment tb_attachment [not null]
+}
+
+Table tb_patient {
+  id Int [pk, increment]
+  hn String [not null]
+  an String [not null]
+  hospital_id Int [not null]
+  case_no String [not null]
+  first_name String [not null]
+  last_name String [not null]
+  gender String [not null]
+  age Int [not null]
+  id_card String [not null]
+  passport String
+  phone_no String [not null]
+  visit_type String [not null]
+  sat_id String [not null]
+  test_type_id Int
+  is_anonymous Boolean [not null, default: false]
+  date_of_birth DateTime
+  date_of_send DateTime
+  collected_date DateTime
+  received_date DateTime
+  updated_by Int
+  updated_at DateTime
+  deleted_by Int
+  deleted_at DateTime
+  inspection_type_id Int [not null]
+  collected_time String [default: '00:00']
+  received_time String [default: '00:00']
+  title String
+  Lab tb_lab [not null]
+  hospital tb_hospital [not null]
+  InspectionType tb_inspection_type [not null]
+}
+
+Table tb_hospital {
+  id Int [pk, increment]
+  name String [not null]
+  address String [not null]
+  phone_no String [not null]
+  updated_by Int
+  updated_at DateTime
+  deleted_by Int
+  deleted_at DateTime
+  Lab tb_lab [not null]
+  Patient tb_patient [not null]
+}
+
+Table tb_test_type {
+  id Int [pk, increment]
+  description String
+  prefix_name String [not null]
+  subfix_name String [not null]
+  updated_by Int
+  updated_at DateTime
+  deleted_by Int
+  deleted_at DateTime
+  Attachment tb_attachment [not null]
+  Lab tb_lab [not null]
+  Machine tb_machine [not null]
+  PathogensTestType tb_pathogens_test_type [not null]
+}
+
+Table tb_pathogens {
+  id Int [pk, increment]
+  name String [not null]
+  code String
+  description String
+  updated_by Int
+  updated_at DateTime
+  deleted_by Int
+  deleted_at DateTime
+  machine_id Int
+  LabTest tb_lab_test [not null]
+  MachineLab tb_machine_lab [not null]
+  Machine tb_machine
+  PathogensTestType tb_pathogens_test_type [not null]
+}
+
+Table tb_inspection_type {
+  id Int [pk, increment]
+  code String
+  name String [not null]
+  description String
+  updated_by Int
+  updated_at DateTime
+  deleted_by Int
+  deleted_at DateTime
+  machine_id Int
+  Attachment tb_attachment [not null]
+  Machine tb_machine
+  Lab tb_lab [not null]
+  Patient tb_patient [not null]
+}
+
+Table tb_machine {
+  id Int [pk, increment]
+  name String [not null]
+  description String [not null]
+  code String [not null]
+  updated_by Int
+  updated_at DateTime
+  deleted_by Int
+  deleted_at DateTime
+  test_type_id Int [not null]
+  is_age Boolean [not null]
+  is_an Boolean [not null]
+  is_collecteddate Boolean [not null]
+  is_gender Boolean [not null]
+  is_history Boolean [not null]
+  is_hn Boolean [not null]
+  is_hospital Boolean [not null]
+  is_idcard Boolean [not null]
+  is_labno Boolean [not null]
+  is_name Boolean [not null]
+  is_recieveddate Boolean [not null]
+  is_satid Boolean [not null]
+  is_specimens Boolean [not null]
+  is_visittype Boolean [not null]
+  report_type Int [not null]
+  rows Int [not null]
+  InspectionType tb_inspection_type [not null]
+  Lab tb_lab [not null]
+  TestType tb_test_type [not null]
+  MachineLab tb_machine_lab [not null]
+  MachinePrefix tb_machine_prefix [not null]
+  MachineSuffix tb_machine_suffix [not null]
+  Pathogens tb_pathogens [not null]
+  MachineLog tbl_machine_log [not null]
+}
+
+Table tbl_machine_log {
+  id Int [pk, increment]
+  machine_id Int [not null]
+  updated_by Int
+  updated_at DateTime
+  deleted_by Int
+  deleted_at DateTime
+  code String [not null]
+  description String [not null]
+  name String [not null]
+  report_type Int [not null]
+  Machine tb_machine [not null]
+}
+
+Table tb_machine_lab {
+  id Int [pk, increment]
+  machine_id Int [not null]
+  virus_type_id Int [not null]
+  Machine tb_machine [not null]
+  Pathogens tb_pathogens [not null]
+  MachineLabLog tbl_machine_lab_log [not null]
+}
+
+Table tb_machine_prefix {
+  id Int [pk, increment]
+  machine_id Int [not null]
+  text String [not null]
+  Machine tb_machine [not null]
+  MachineSuffix tb_machine_suffix [not null]
+}
+
+Table tb_machine_suffix {
+  id Int [pk, increment]
+  machine_prefix_id Int [not null]
+  tb1_nil String [not null]
+  tb2_nil String [not null]
+  mitogen_nil String [not null]
+  qft_plus_result String [not null]
+  report String [not null]
+  machineId Int
+  Machine tb_machine
+  MachinePrefix tb_machine_prefix [not null]
+}
+
+Table tbl_machine_lab_log {
+  id Int [pk, increment]
+  machine_lab_id Int [not null]
+  updated_by Int
+  updated_at DateTime
+  deleted_by Int
+  deleted_at DateTime
+  machine_id Int [not null]
+  virus_type_id Int [not null]
+  MachineLab tb_machine_lab [not null]
+}
+
+Table tb_lab {
+  id Int [pk, increment]
+  case_no String [not null]
+  machine_id Int [not null]
+  hospital_id Int
+  patient_id Int
+  paper_code String
+  comment String
+  detection_method String
+  status String
+  updated_by Int
+  updated_at DateTime [default: `now()`]
+  deleted_by Int
+  deleted_at DateTime
+  detail String
+  inspection_type_id Int [not null]
+  test_type_id Int
+  approve_by_id Int
+  approve_date DateTime [default: `now()`]
+  created_at DateTime [default: `now()`, not null]
+  result Int [not null, default: 0]
+  report_by_id Int
+  report_date DateTime [default: `now()`]
+  report_time String [default: '00:00']
+  approve_time String [default: '00:00']
+  Attachment tb_attachment [not null]
+  AttachmentLab tb_attachment_lab [not null]
+  Hospital tb_hospital
+  InspectionType tb_inspection_type [not null]
+  Machine tb_machine [not null]
+  Patient tb_patient
+  TestType tb_test_type
+  LabTest tb_lab_test [not null]
+  LabLog tbl_lab_log [not null]
+}
+
+Table tbl_lab_log {
+  id Int [pk, increment]
+  lab_id Int [not null]
+  status String [not null]
+  updated_by Int
+  updated_at DateTime
+  deleted_by Int
+  deleted_at DateTime
+  case_no String [not null]
+  comment String [not null]
+  detection_method String [not null]
+  hospital_id Int [not null]
+  machine_id Int [not null]
+  paper_code String [not null]
+  patient_id Int [not null]
+  Lab tb_lab [not null]
+}
+
+Table tb_lab_test {
+  id Int [pk, increment]
+  lab_id Int [not null]
+  result String [not null]
+  remark String [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime
+  deleted_at DateTime
+  pathogens_id Int [not null]
+  Lab tb_lab [not null]
+  Pathogens tb_pathogens [not null]
+  LabTestLog tbl_lab_test_log [not null]
+}
+
+Table tbl_lab_test_log {
+  id Int [pk, increment]
+  lab_test_id Int [not null]
+  remark String [not null]
+  updated_by Int
+  updated_at DateTime
+  deleted_by Int
+  deleted_at DateTime
+  lab_id Int [not null]
+  machineLab_id Int [not null]
+  result String [not null]
+  LabTest tb_lab_test [not null]
+}
+
+Table tbm_geographic {
+  id Int [pk, increment]
+  name String [not null]
+  Provinces tbm_provinces [not null]
+}
+
+Table tbm_provinces {
+  id Int [pk, increment]
+  name_th String [not null]
+  name_en String [not null]
+  geography_id Int [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime
+  deleted_at DateTime
+  Amphures tbm_amphures [not null]
+  Geographic tbm_geographic [not null]
+}
+
+Table tbm_amphures {
+  id Int [pk, increment]
+  name_th String [not null]
+  name_en String [not null]
+  province_id Int [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime
+  deleted_at DateTime
+  Provinces tbm_provinces [not null]
+  Tambons tbm_tambons [not null]
+}
+
+Table tbm_tambons {
+  id Int [pk, increment]
+  zip_code Int [not null]
+  name_th String [not null]
+  name_en String [not null]
+  amphure_id Int [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime
+  deleted_at DateTime
+  Amphures tbm_amphures [not null]
+}
+
+Table tbm_role {
+  role_id Int [pk, increment]
+  name String [not null]
+  position String
+  department String
+  permission_patient Boolean [not null, default: false]
+  permission_lab Boolean [not null, default: false]
+  permission_news Boolean [not null, default: false]
+  permission_management Boolean [not null, default: false]
+  permission_data Boolean [not null, default: false]
+  permission_history Boolean [not null, default: false]
+  is_admin Boolean [not null, default: false]
+  is_active Boolean [not null, default: true]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime
+  deleted_at DateTime
+  member tb_member [not null]
+  Officer tb_officer [not null]
+}
+
+Table tb_member {
+  id Int [pk, increment]
+  username String [not null]
+  password String [not null]
+  role_id Int [not null]
+  is_active Boolean [not null, default: true]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime
+  Role tbm_role [not null]
+  Officer tb_officer [not null]
+  Person tb_person [not null]
+}
+
+Table tbl_member_log {
+  id Int [pk, increment]
+  member_id Int [not null]
+  action String [not null]
+  action_by Int [not null]
+  action_at DateTime [default: `now()`, not null]
+  Officer tb_officer [not null]
+}
+
+Table tbl_officer_log {
+  id Int [pk, increment]
+  officer_id Int [not null]
+  action String [not null]
+  action_by Int [not null]
+  action_at DateTime [default: `now()`, not null]
+  Officer tb_officer [not null]
+}
+
+Table tb_officer {
+  id Int [pk, increment]
+  citizen_id String [not null]
+  title_name String
+  first_name String [not null]
+  last_name String [not null]
+  mobile_phone String
+  email String
+  telephone String
+  position String
+  department String
+  role_id Int [not null]
+  is_active Boolean [not null, default: true]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime
+  member_id Int [not null]
+  nickname String
+  Attachment tb_attachment [not null]
+  member tb_member [not null]
+  role tbm_role [not null]
+  MemberLog tbl_member_log [not null]
+  OfficerLog tbl_officer_log [not null]
+}
+
+Table tb_person {
+  id Int [pk, increment]
+  id_card String [not null]
+  title_name String
+  first_name String [not null]
+  last_name String [not null]
+  gender String
+  email String
+  age Int
+  address String [not null]
+  province_id Int
+  amphure_id Int
+  tombon_id Int
+  postcode String [not null]
+  telephone String
+  mobile_phone String [not null]
+  fax String
+  occupation String
+  organization String
+  is_active Boolean [not null, default: true]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime
+  member_id Int [not null]
+  Member tb_member [not null]
+}
+
+Table tb_notification {
+  id Int [pk, increment]
+  name String [not null]
+  description String
+  is_active Boolean [not null, default: true]
+  sender_type String [not null]
+  sender_id String [not null]
+  receiver_id String [not null]
+  is_read Boolean [not null, default: false]
+  created_by Int [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_by Int [not null]
+  updated_at DateTime
+  deleted_by Int [not null]
+  deleted_at DateTime
+}
+
+Table tb_news {
+  id Int [pk, increment]
+  type_id Int [not null]
+  title String [not null]
+  description String
+  view_count Int [not null, default: 0]
+  date_start DateTime
+  date_end DateTime
+  is_active Boolean [not null, default: true]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime
+  deleted_at DateTime
+  images tb_news_images [not null]
+}
+
+Table tb_news_images {
+  id Int [pk, increment]
+  news_id Int [not null]
+  file_name String [not null]
+  file_path String [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime
+  deleted_at DateTime
+  News tb_news [not null]
+}
+
+Table tbm_news_type {
+  id Int [pk, increment]
+  code String [not null]
+  name String [not null]
+  description String
+  is_active Boolean [not null, default: true]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime
+  deleted_at DateTime
+}
+
+Table tb_pathogens_test_type {
+  id Int [pk, increment]
+  name String [not null]
+  code String
+  description String
+  updated_by Int
+  updated_at DateTime
+  deleted_by Int
+  deleted_at DateTime
+  pathogens_id Int [not null]
+  test_type_id Int [not null]
+  tb_pathogens tb_pathogens [not null]
+  tb_test_type tb_test_type [not null]
+}
+
+Ref: tb_attachment.category_id > tbm_category.id
+
+Ref: tb_attachment.inspection_type_id > tb_inspection_type.id
+
+Ref: tb_attachment.lab_id > tb_lab.id [delete: Cascade]
+
+Ref: tb_attachment.officerId > tb_officer.id
+
+Ref: tb_attachment.test_type_id > tb_test_type.id
+
+Ref: tb_attachment_lab.attachmentId > tb_attachment.id
+
+Ref: tb_attachment_lab.lab_id > tb_lab.id
+
+Ref: tbl_attachment_log.attachment_id > tb_attachment.id
+
+Ref: tb_patient.hospital_id > tb_hospital.id
+
+Ref: tb_patient.inspection_type_id > tb_inspection_type.id
+
+Ref: tb_pathogens.machine_id > tb_machine.id
+
+Ref: tb_inspection_type.machine_id > tb_machine.id
+
+Ref: tb_machine.test_type_id > tb_test_type.id
+
+Ref: tbl_machine_log.machine_id > tb_machine.id
+
+Ref: tb_machine_lab.machine_id > tb_machine.id
+
+Ref: tb_machine_lab.virus_type_id > tb_pathogens.id
+
+Ref: tb_machine_prefix.machine_id > tb_machine.id
+
+Ref: tb_machine_suffix.machineId > tb_machine.id
+
+Ref: tb_machine_suffix.machine_prefix_id > tb_machine_prefix.id
+
+Ref: tbl_machine_lab_log.machine_lab_id > tb_machine_lab.id
+
+Ref: tb_lab.hospital_id > tb_hospital.id
+
+Ref: tb_lab.inspection_type_id > tb_inspection_type.id
+
+Ref: tb_lab.machine_id > tb_machine.id
+
+Ref: tb_lab.patient_id > tb_patient.id
+
+Ref: tb_lab.test_type_id > tb_test_type.id
+
+Ref: tbl_lab_log.lab_id > tb_lab.id [delete: Cascade]
+
+Ref: tb_lab_test.lab_id > tb_lab.id [delete: Cascade]
+
+Ref: tb_lab_test.pathogens_id > tb_pathogens.id
+
+Ref: tbl_lab_test_log.lab_test_id > tb_lab_test.id
+
+Ref: tbm_provinces.geography_id > tbm_geographic.id
+
+Ref: tbm_amphures.province_id > tbm_provinces.id
+
+Ref: tbm_tambons.amphure_id > tbm_amphures.id
+
+Ref: tb_member.role_id > tbm_role.role_id
+
+Ref: tbl_member_log.member_id > tb_officer.id
+
+Ref: tbl_officer_log.officer_id > tb_officer.id
+
+Ref: tb_officer.member_id > tb_member.id
+
+Ref: tb_officer.role_id > tbm_role.role_id
+
+Ref: tb_person.member_id > tb_member.id
+
+Ref: tb_news_images.news_id > tb_news.id [delete: Cascade]
+
+Ref: tb_pathogens_test_type.pathogens_id > tb_pathogens.id [delete: No Action]
+
+Ref: tb_pathogens_test_type.test_type_id > tb_test_type.id [delete: No Action]

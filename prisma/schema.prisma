@@ -1,0 +1,674 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String?      @db.Text
+  opm_code    String?
+  is_active   Boolean      @default(true)
+  created_by  Int?
+  created_at  DateTime     @default(now())
+  updated_by  Int?
+  updated_at  DateTime?
+  deleted_by  Int?
+  deleted_at  DateTime?
+  Attachment  Attachment[]
+
+  @@map("tbm_category")
+}
+
+model Attachment {
+  id                 Int             @id @default(autoincrement())
+  name               String
+  description        String?         @db.Text
+  file_name          String
+  file_path          String
+  file_type          String
+  file_size          Int
+  category_id        Int?
+  is_active          Boolean         @default(true)
+  created_by         Int?
+  created_at         DateTime        @default(now())
+  updated_by         Int?
+  updated_at         DateTime?
+  deleted_by         Int?
+  deleted_at         DateTime?
+  officerId          Int?
+  lab_id             Int?
+  test_type_id       Int?
+  inspection_type_id Int?
+  Category           Category?       @relation(fields: [category_id], references: [id])
+  InspectionType     InspectionType? @relation(fields: [inspection_type_id], references: [id])
+  Lab                Lab?            @relation(fields: [lab_id], references: [id], onDelete: Cascade)
+  Officer            Officer?        @relation(fields: [officerId], references: [id])
+  TestType           TestType?       @relation(fields: [test_type_id], references: [id])
+  AttachmentLab      AttachmentLab[]
+  AttachmentLog      AttachmentLog[]
+
+  @@index([category_id], map: "tb_attachment_category_id_fkey")
+  @@index([inspection_type_id], map: "tb_attachment_inspection_type_id_fkey")
+  @@index([lab_id], map: "tb_attachment_lab_id_fkey")
+  @@index([officerId], map: "tb_attachment_officerId_fkey")
+  @@index([test_type_id], map: "tb_attachment_test_type_id_fkey")
+  @@map("tb_attachment")
+}
+
+model AttachmentLab {
+  id            Int         @id @default(autoincrement())
+  attachment_id Int
+  lab_id        Int
+  attachmentId  Int?
+  Attachment    Attachment? @relation(fields: [attachmentId], references: [id])
+  Lab           Lab         @relation(fields: [lab_id], references: [id])
+
+  @@index([attachmentId], map: "tb_attachment_lab_attachmentId_fkey")
+  @@index([lab_id], map: "tb_attachment_lab_lab_id_fkey")
+  @@map("tb_attachment_lab")
+}
+
+model AttachmentLog {
+  id            Int        @id @default(autoincrement())
+  attachment_id Int
+  category_id   Int
+  created_at    DateTime   @default(now())
+  created_by    Int?
+  deleted_at    DateTime?
+  deleted_by    Int?
+  description   String?    @db.Text
+  file_name     String
+  file_path     String
+  file_size     Int
+  file_type     String
+  is_active     Boolean    @default(true)
+  name          String
+  updated_at    DateTime?
+  updated_by    Int?
+  Attachment    Attachment @relation(fields: [attachment_id], references: [id])
+
+  @@index([attachment_id], map: "tbl_attachment_log_attachment_id_fkey")
+  @@map("tbl_attachment_log")
+}
+
+model Patient {
+  id                 Int            @id @default(autoincrement())
+  hn                 String
+  an                 String
+  hospital_id        Int
+  case_no            String
+  first_name         String
+  last_name          String
+  gender             String
+  age                Int
+  id_card            String
+  passport           String?
+  phone_no           String
+  visit_type         String
+  sat_id             String
+  test_type_id       Int?
+  is_anonymous       Boolean        @default(false)
+  date_of_birth      DateTime?
+  date_of_send       DateTime?
+  collected_date     DateTime?
+  received_date      DateTime?
+  updated_by         Int?
+  updated_at         DateTime?
+  deleted_by         Int?
+  deleted_at         DateTime?
+  inspection_type_id Int
+  collected_time     String?        @default("00:00")
+  received_time      String?        @default("00:00")
+  title              String?
+  Lab                Lab[]
+  hospital           Hospital       @relation(fields: [hospital_id], references: [id])
+  InspectionType     InspectionType @relation(fields: [inspection_type_id], references: [id])
+
+  @@index([hospital_id], map: "tb_patient_hospital_id_fkey")
+  @@index([inspection_type_id], map: "tb_patient_inspection_type_id_fkey")
+  @@map("tb_patient")
+}
+
+model Hospital {
+  id         Int       @id @default(autoincrement())
+  name       String
+  address    String
+  phone_no   String
+  updated_by Int?
+  updated_at DateTime?
+  deleted_by Int?
+  deleted_at DateTime?
+  Lab        Lab[]
+  Patient    Patient[]
+
+  @@map("tb_hospital")
+}
+
+model TestType {
+  id                Int                 @id @default(autoincrement())
+  description       String?
+  prefix_name       String
+  subfix_name       String
+  updated_by        Int?
+  updated_at        DateTime?
+  deleted_by        Int?
+  deleted_at        DateTime?
+  Attachment        Attachment[]
+  Lab               Lab[]
+  Machine           Machine[]
+  PathogensTestType PathogensTestType[]
+
+  @@map("tb_test_type")
+}
+
+model Pathogens {
+  id                Int                 @id @default(autoincrement())
+  name              String
+  code              String?
+  description       String?
+  updated_by        Int?
+  updated_at        DateTime?
+  deleted_by        Int?
+  deleted_at        DateTime?
+  machine_id        Int?
+  LabTest           LabTest[]
+  MachineLab        MachineLab[]
+  Machine           Machine?            @relation(fields: [machine_id], references: [id])
+  PathogensTestType PathogensTestType[]
+
+  @@index([machine_id], map: "tb_pathogens_machine_id_fkey")
+  @@map("tb_pathogens")
+}
+
+model InspectionType {
+  id          Int          @id @default(autoincrement())
+  code        String?
+  name        String
+  description String?
+  updated_by  Int?
+  updated_at  DateTime?
+  deleted_by  Int?
+  deleted_at  DateTime?
+  machine_id  Int?
+  Attachment  Attachment[]
+  Machine     Machine?     @relation(fields: [machine_id], references: [id])
+  Lab         Lab[]
+  Patient     Patient[]
+
+  @@index([machine_id], map: "tb_inspection_type_machine_id_fkey")
+  @@map("tb_inspection_type")
+}
+
+model Machine {
+  id               Int              @id @default(autoincrement())
+  name             String
+  description      String
+  code             String
+  updated_by       Int?
+  updated_at       DateTime?
+  deleted_by       Int?
+  deleted_at       DateTime?
+  test_type_id     Int
+  is_age           Boolean
+  is_an            Boolean
+  is_collecteddate Boolean
+  is_gender        Boolean
+  is_history       Boolean
+  is_hn            Boolean
+  is_hospital      Boolean
+  is_idcard        Boolean
+  is_labno         Boolean
+  is_name          Boolean
+  is_recieveddate  Boolean
+  is_satid         Boolean
+  is_specimens     Boolean
+  is_visittype     Boolean
+  report_type      Int
+  rows             Int
+  InspectionType   InspectionType[]
+  Lab              Lab[]
+  TestType         TestType         @relation(fields: [test_type_id], references: [id])
+  MachineLab       MachineLab[]
+  MachinePrefix    MachinePrefix[]
+  MachineSuffix    MachineSuffix[]
+  Pathogens        Pathogens[]
+  MachineLog       MachineLog[]
+
+  @@index([test_type_id], map: "tb_machine_test_type_id_fkey")
+  @@map("tb_machine")
+}
+
+model MachineLog {
+  id          Int       @id @default(autoincrement())
+  machine_id  Int
+  updated_by  Int?
+  updated_at  DateTime?
+  deleted_by  Int?
+  deleted_at  DateTime?
+  code        String
+  description String
+  name        String
+  report_type Int
+  Machine     Machine   @relation(fields: [machine_id], references: [id])
+
+  @@index([machine_id], map: "tbl_machine_log_machine_id_fkey")
+  @@map("tbl_machine_log")
+}
+
+model MachineLab {
+  id            Int             @id @default(autoincrement())
+  machine_id    Int
+  virus_type_id Int
+  Machine       Machine         @relation(fields: [machine_id], references: [id])
+  Pathogens     Pathogens       @relation(fields: [virus_type_id], references: [id])
+  MachineLabLog MachineLabLog[]
+
+  @@index([machine_id], map: "tb_machine_lab_machine_id_fkey")
+  @@index([virus_type_id], map: "tb_machine_lab_virus_type_id_fkey")
+  @@map("tb_machine_lab")
+}
+
+model MachinePrefix {
+  id            Int             @id @default(autoincrement())
+  machine_id    Int
+  text          String
+  Machine       Machine         @relation(fields: [machine_id], references: [id])
+  MachineSuffix MachineSuffix[]
+
+  @@index([machine_id], map: "tb_machine_prefix_machine_id_fkey")
+  @@map("tb_machine_prefix")
+}
+
+model MachineSuffix {
+  id                Int           @id @default(autoincrement())
+  machine_prefix_id Int
+  tb1_nil           String
+  tb2_nil           String
+  mitogen_nil       String
+  qft_plus_result   String
+  report            String
+  machineId         Int?
+  Machine           Machine?      @relation(fields: [machineId], references: [id])
+  MachinePrefix     MachinePrefix @relation(fields: [machine_prefix_id], references: [id])
+
+  @@index([machineId], map: "tb_machine_suffix_machineId_fkey")
+  @@index([machine_prefix_id], map: "tb_machine_suffix_machine_prefix_id_fkey")
+  @@map("tb_machine_suffix")
+}
+
+model MachineLabLog {
+  id             Int        @id @default(autoincrement())
+  machine_lab_id Int
+  updated_by     Int?
+  updated_at     DateTime?
+  deleted_by     Int?
+  deleted_at     DateTime?
+  machine_id     Int
+  virus_type_id  Int
+  MachineLab     MachineLab @relation(fields: [machine_lab_id], references: [id])
+
+  @@index([machine_lab_id], map: "tbl_machine_lab_log_machine_lab_id_fkey")
+  @@map("tbl_machine_lab_log")
+}
+
+model Lab {
+  id                 Int             @id @default(autoincrement())
+  case_no            String
+  machine_id         Int
+  hospital_id        Int?
+  patient_id         Int?
+  paper_code         String?
+  comment            String?
+  detection_method   String?
+  status             String?
+  updated_by         Int?
+  updated_at         DateTime?       @default(now())
+  deleted_by         Int?
+  deleted_at         DateTime?
+  detail             String?
+  inspection_type_id Int
+  test_type_id       Int?
+  approve_by_id      Int?
+  approve_date       DateTime?       @default(now())
+  created_at         DateTime        @default(now())
+  result             Int             @default(0)
+  report_by_id       Int?
+  report_date        DateTime?       @default(now())
+  report_time        String?         @default("00:00")
+  approve_time       String?         @default("00:00")
+  Attachment         Attachment[]
+  AttachmentLab      AttachmentLab[]
+  Hospital           Hospital?       @relation(fields: [hospital_id], references: [id])
+  InspectionType     InspectionType  @relation(fields: [inspection_type_id], references: [id])
+  Machine            Machine         @relation(fields: [machine_id], references: [id])
+  Patient            Patient?        @relation(fields: [patient_id], references: [id])
+  TestType           TestType?       @relation(fields: [test_type_id], references: [id])
+  LabTest            LabTest[]
+  LabLog             LabLog[]
+
+  @@index([hospital_id], map: "tb_lab_hospital_id_fkey")
+  @@index([inspection_type_id], map: "tb_lab_inspection_type_id_fkey")
+  @@index([machine_id], map: "tb_lab_machine_id_fkey")
+  @@index([patient_id], map: "tb_lab_patient_id_fkey")
+  @@index([test_type_id], map: "tb_lab_test_type_id_fkey")
+  @@map("tb_lab")
+}
+
+model LabLog {
+  id               Int       @id @default(autoincrement())
+  lab_id           Int
+  status           String
+  updated_by       Int?
+  updated_at       DateTime?
+  deleted_by       Int?
+  deleted_at       DateTime?
+  case_no          String
+  comment          String
+  detection_method String
+  hospital_id      Int
+  machine_id       Int
+  paper_code       String
+  patient_id       Int
+  Lab              Lab       @relation(fields: [lab_id], references: [id], onDelete: Cascade)
+
+  @@index([lab_id], map: "tbl_lab_log_lab_id_fkey")
+  @@map("tbl_lab_log")
+}
+
+model LabTest {
+  id           Int          @id @default(autoincrement())
+  lab_id       Int
+  result       String
+  remark       String
+  created_at   DateTime     @default(now())
+  updated_at   DateTime?
+  deleted_at   DateTime?
+  pathogens_id Int
+  Lab          Lab          @relation(fields: [lab_id], references: [id], onDelete: Cascade)
+  Pathogens    Pathogens    @relation(fields: [pathogens_id], references: [id])
+  LabTestLog   LabTestLog[]
+
+  @@index([lab_id], map: "tb_lab_test_lab_id_fkey")
+  @@index([pathogens_id], map: "tb_lab_test_pathogens_id_fkey")
+  @@map("tb_lab_test")
+}
+
+model LabTestLog {
+  id            Int       @id @default(autoincrement())
+  lab_test_id   Int
+  remark        String
+  updated_by    Int?
+  updated_at    DateTime?
+  deleted_by    Int?
+  deleted_at    DateTime?
+  lab_id        Int
+  machineLab_id Int
+  result        String
+  LabTest       LabTest   @relation(fields: [lab_test_id], references: [id])
+
+  @@index([lab_test_id], map: "tbl_lab_test_log_lab_test_id_fkey")
+  @@map("tbl_lab_test_log")
+}
+
+model Geographic {
+  id        Int         @id @default(autoincrement())
+  name      String
+  Provinces Provinces[]
+
+  @@map("tbm_geographic")
+}
+
+model Provinces {
+  id           Int        @id @default(autoincrement())
+  name_th      String
+  name_en      String
+  geography_id Int
+  created_at   DateTime   @default(now())
+  updated_at   DateTime?
+  deleted_at   DateTime?
+  Amphures     Amphures[]
+  Geographic   Geographic @relation(fields: [geography_id], references: [id])
+
+  @@index([geography_id], map: "tbm_provinces_geography_id_fkey")
+  @@map("tbm_provinces")
+}
+
+model Amphures {
+  id          Int       @id @default(autoincrement())
+  name_th     String
+  name_en     String
+  province_id Int
+  created_at  DateTime  @default(now())
+  updated_at  DateTime?
+  deleted_at  DateTime?
+  Provinces   Provinces @relation(fields: [province_id], references: [id])
+  Tambons     Tambons[]
+
+  @@index([province_id], map: "tbm_amphures_province_id_fkey")
+  @@map("tbm_amphures")
+}
+
+model Tambons {
+  id         Int       @id @default(autoincrement())
+  zip_code   Int
+  name_th    String
+  name_en    String
+  amphure_id Int
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+  deleted_at DateTime?
+  Amphures   Amphures  @relation(fields: [amphure_id], references: [id])
+
+  @@index([amphure_id], map: "tbm_tambons_amphure_id_fkey")
+  @@map("tbm_tambons")
+}
+
+model Role {
+  role_id               Int       @id @default(autoincrement())
+  name                  String
+  position              String?
+  department            String?
+  permission_patient    Boolean   @default(false)
+  permission_lab        Boolean   @default(false)
+  permission_news       Boolean   @default(false)
+  permission_management Boolean   @default(false)
+  permission_data       Boolean   @default(false)
+  permission_history    Boolean   @default(false)
+  is_admin              Boolean   @default(false)
+  is_active             Boolean   @default(true)
+  created_at            DateTime  @default(now())
+  updated_at            DateTime?
+  deleted_at            DateTime?
+  member                Member[]
+  Officer               Officer[]
+
+  @@map("tbm_role")
+}
+
+model Member {
+  id         Int       @id @default(autoincrement())
+  username   String
+  password   String
+  role_id    Int
+  is_active  Boolean   @default(true)
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+  Role       Role      @relation(fields: [role_id], references: [role_id])
+  Officer    Officer[]
+  Person     Person[]
+
+  @@index([role_id], map: "tb_member_role_id_fkey")
+  @@map("tb_member")
+}
+
+model MemberLog {
+  id        Int      @id @default(autoincrement())
+  member_id Int
+  action    String
+  action_by Int
+  action_at DateTime @default(now())
+  Officer   Officer  @relation(fields: [member_id], references: [id])
+
+  @@index([member_id], map: "tbl_member_log_member_id_fkey")
+  @@map("tbl_member_log")
+}
+
+model OfficerLog {
+  id         Int      @id @default(autoincrement())
+  officer_id Int
+  action     String
+  action_by  Int
+  action_at  DateTime @default(now())
+  Officer    Officer  @relation(fields: [officer_id], references: [id])
+
+  @@index([officer_id], map: "tbl_officer_log_officer_id_fkey")
+  @@map("tbl_officer_log")
+}
+
+model Officer {
+  id           Int          @id @default(autoincrement())
+  citizen_id   String
+  title_name   String?
+  first_name   String
+  last_name    String
+  mobile_phone String?
+  email        String?
+  telephone    String?
+  position     String?
+  department   String?
+  role_id      Int
+  is_active    Boolean      @default(true)
+  created_at   DateTime     @default(now())
+  updated_at   DateTime?
+  member_id    Int
+  nickname     String?
+  Attachment   Attachment[]
+  member       Member       @relation(fields: [member_id], references: [id])
+  role         Role         @relation(fields: [role_id], references: [role_id])
+  MemberLog    MemberLog[]
+  OfficerLog   OfficerLog[]
+
+  @@index([member_id], map: "tb_officer_member_id_fkey")
+  @@index([role_id], map: "tb_officer_role_id_fkey")
+  @@map("tb_officer")
+}
+
+model Person {
+  id           Int       @id @default(autoincrement())
+  id_card      String
+  title_name   String?
+  first_name   String
+  last_name    String
+  gender       String?
+  email        String?
+  age          Int?
+  address      String
+  province_id  Int?
+  amphure_id   Int?
+  tombon_id    Int?
+  postcode     String
+  telephone    String?
+  mobile_phone String
+  fax          String?
+  occupation   String?
+  organization String?
+  is_active    Boolean   @default(true)
+  created_at   DateTime  @default(now())
+  updated_at   DateTime?
+  member_id    Int
+  Member       Member    @relation(fields: [member_id], references: [id])
+
+  @@index([member_id], map: "tb_person_member_id_fkey")
+  @@map("tb_person")
+}
+
+model Notification {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  is_active   Boolean   @default(true)
+  sender_type String
+  sender_id   String
+  receiver_id String
+  is_read     Boolean   @default(false)
+  created_by  Int
+  created_at  DateTime  @default(now())
+  updated_by  Int
+  updated_at  DateTime?
+  deleted_by  Int
+  deleted_at  DateTime?
+
+  @@map("tb_notification")
+}
+
+model News {
+  id          Int          @id @default(autoincrement())
+  type_id     Int
+  title       String
+  description String?
+  view_count  Int          @default(0)
+  date_start  DateTime?
+  date_end    DateTime?
+  is_active   Boolean      @default(true)
+  created_at  DateTime     @default(now())
+  updated_at  DateTime?
+  deleted_at  DateTime?
+  images      NewsImages[]
+
+  @@map("tb_news")
+}
+
+model NewsImages {
+  id         Int       @id @default(autoincrement())
+  news_id    Int
+  file_name  String
+  file_path  String
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+  deleted_at DateTime?
+  News       News      @relation(fields: [news_id], references: [id], onDelete: Cascade)
+
+  @@index([news_id], map: "tb_news_images_news_id_fkey")
+  @@map("tb_news_images")
+}
+
+model NewsType {
+  id          Int       @id @default(autoincrement())
+  code        String
+  name        String
+  description String?
+  is_active   Boolean   @default(true)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime?
+  deleted_at  DateTime?
+
+  @@map("tbm_news_type")
+}
+
+model PathogensTestType {
+  id           Int       @id @default(autoincrement())
+  name         String
+  code         String?
+  description  String?
+  updated_by   Int?
+  updated_at   DateTime?
+  deleted_by   Int?
+  deleted_at   DateTime?
+  pathogens_id Int
+  test_type_id Int
+  tb_pathogens Pathogens @relation(fields: [pathogens_id], references: [id], onDelete: NoAction)
+  tb_test_type TestType  @relation(fields: [test_type_id], references: [id], onDelete: NoAction)
+
+  @@index([pathogens_id], map: "tb_pathogens_machine_id_fkey")
+  @@index([test_type_id], map: "tb_pathogens_test_type_test_type_id_fkey_idx")
+  @@map("tb_pathogens_test_type")
+}

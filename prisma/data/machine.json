@@ -1,0 +1,52 @@
+{
+    "RECORDS": [
+        {
+            "id": 1,
+            "name": "FM 02-007(A)",
+            "description": "",
+            "code": "โปรแกรมการตรวจ",
+            "rows": 9,
+            "report_type": 1,
+            "is_name": true,
+            "is_labno": false,
+            "is_gender": false,
+            "is_age": false,
+            "is_idcard": false,
+            "is_hn": false,
+            "is_an": false,
+            "is_hospital": false,
+            "is_specimens": false,
+            "is_satid": false,
+            "is_visittype": false,
+            "is_collecteddate": false,
+            "is_recieveddate": false,
+            "is_history": false,
+            "is_result": false,
+            "test_type_id": 1
+        },
+        {
+            "id": 2,
+            "name": "FM 02-007(B)",
+            "description": "",
+            "code": "โปรแกรมการตรวจ",
+            "rows": 10,
+            "report_type": 2,
+            "is_name": true,
+            "is_labno": true,
+            "is_gender": true,
+            "is_age": true,
+            "is_idcard": true,
+            "is_hn": true,
+            "is_an": true,
+            "is_hospital": false,
+            "is_specimens": false,
+            "is_satid": true,
+            "is_visittype": false,
+            "is_collecteddate": false,
+            "is_recieveddate": false,
+            "is_history": false,
+            "is_result": false,
+            "test_type_id": 1
+        }
+    ]
+}

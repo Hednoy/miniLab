@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+@layer base {
+  html {
+	  font-family: var(--promptFont) !important;
+    color: theme("colors.black");
+  }
+  button {
+    font-family: var(--promptFont) !important;
+  }
+  a {
+    @apply text-primary;
+    &:hover {
+      @apply underline;
+    }
+  }
+  h1 {
+    @apply text-4xl font-bold;
+  }
+  h2 {
+    @apply text-3xl font-bold;
+  }
+  h3 {
+    @apply text-2xl font-bold;
+  }
+  h4 {
+    @apply text-xl font-bold;
+  }
+}
+
+body {
+}
+
+.table-rirunraj {
+};
+
+.table-rirunraj th {
+  @apply px-4 py-2;
+  @apply text-left;
+};
+
+.table-rirunraj td {
+  @apply px-4 py-2;
+};
+
+.table-rirunraj tbody tr:nth-child(odd) {
+  @apply bg-secondary;
+};
+
+/* radius */
+.table-rirunraj tr:first-child td:first-child {
+  @apply rounded-tl;
+};
+
+.table-rirunraj tr:first-child td:last-child {
+  @apply rounded-tr;
+};
+
+.table-rirunraj tr:last-child td:first-child {
+  @apply rounded-bl;
+};
+
+.table-rirunraj tr:last-child td:last-child {
+  @apply rounded-br;
+};
+
+.bt-text {
+  @apply bg-transparent text-primary;
+}

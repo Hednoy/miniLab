@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql
+    volumes:
+      - .storage/mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: mmfc
+      MYSQL_USER: my_user
+      MYSQL_PASSWORD: my_password
+      MYSQL_ROOT_PASSWORD: my_password
+      MYSQL_PORT: 3306
+    ports:
+      - 3306:3306
+    command: >
+      --mysql-native-password=ON
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --explicit-defaults-for-timestamp=1
+      --max-allowed-packet=1G
+      --wait-timeout=28800
+      --max-connections=65535
+      --performance-schema=on
+      --open-files-limit=65535
+      --innodb-buffer-pool-size=1G
+      --innodb-buffer-pool-instances=1
+      --innodb-log-file-size=1G
+      --innodb-flush-log-at-trx_commit=1
+      --innodb-flush-method=O_DIRECT
+      --innodb-file-per-table=ON
+      --innodb-stats-on-metadata=OFF
+      --innodb-thread-concurrency=0
+      --innodb-doublewrite=1
+    ulimits:
+      nofile:
+        soft: 327680
+        hard: 327680
+    # restart: always
+    container_name: db

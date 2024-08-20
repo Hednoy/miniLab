@@ -1,0 +1,16 @@
+{
+    "RECORDS": [
+        {
+            "id": 1,
+            "code": "inspection_a",
+            "name": "Inspection A",
+            "description": "Inspection A"
+        },
+        {
+            "id": 2,
+            "code": "inspection_b",
+            "name": "Inspection B",
+            "description": "Inspection B"
+        }
+    ]
+}
