@@ -74,9 +74,21 @@ const CustomSelect = React.forwardRef(
     );
     const [query, setQuery] = useState("");
 
+
     const filteredOption = useCallback(
-      (input: string, option?: { name: string; value: string }) => {
-        return (option?.name ?? "").toLowerCase().includes(input.toLowerCase());
+      (
+        input: string,
+        option?: { name: string; value: string; case_no: string },
+      ) => {
+        // console.log(
+        //   "input : ",
+        //   input,
+        //   "option : ",
+        //   option,
+        // );
+        return (option?.name ?? option?.case_no ?? "")
+          .toLowerCase()
+          .includes(input.toLowerCase());
       },
       [query, option]
     );

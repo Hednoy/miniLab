@@ -123,7 +123,7 @@ function LaboratoryManageComponent({
 
   const watchFields = watch("test_type_id");
   const { data: pathogensDataType } = usePathogensByTestTypeId(watchFields);
-  // console.log(pathogensDataType)
+
   // const optionByTestName = () => {
   //   switch (watchFields) {
   //     case 15:
@@ -234,7 +234,6 @@ function LaboratoryManageComponent({
   //       return pathogensData.filter((pathogen) => pathogen.id === 1);
   //   }
   // };
-
   useEffect(() => {
     const caseNo = getValues("case_no");
     const findPatient = patientsData.find((e) => e.case_no === caseNo);
@@ -407,13 +406,8 @@ function LaboratoryManageComponent({
     }
   }, [watch("detection_method")]);
 
-  useEffect(() => {
-    // console.log("form  ", formFields);
-  }, [formFields]);
-
-  useEffect(() => {
-    // console.log("labData" + labsData?.lab_tests.map((data) => console.log(data.pathogens_id)))
-  }, []);
+  // console.log(patientsData);
+  // console.log(machinesData);
 
   async function onSubmit(labData: LabCreateFormData) {
     const lab: any = labData.lab_tests;
