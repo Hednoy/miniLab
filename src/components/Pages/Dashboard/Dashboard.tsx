@@ -18,12 +18,11 @@ import {
   useTestTypeAll,
   useTestTypeById,
 } from "@/lib-client/react-query/test-type";
-import { usePathogens } from "@/lib-client/react-query/pathogens";
+import { usePathogens, usePathogensByTestTypeId } from "@/lib-client/react-query/pathogens";
 
 const Dashboard: FC = () => {
   const { push } = useRouter();
   const { data: testTypeData } = useTestTypeAll();
-  const { data: pathogensDataType } = usePathogens({});
   const [textSearch, setTextSearch] = useState("");
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [chartData, setChartData] = useState<any[]>([]);
@@ -33,6 +32,7 @@ const Dashboard: FC = () => {
     testTypeId: "",
     result: "",
   });
+  const { data: pathogensDataType } = usePathogensByTestTypeId(Number(filter.testTypeId));
   const { data: testTypeDataById } = useTestTypeById(Number(filter.testTypeId));
 
   const refs = {

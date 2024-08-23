@@ -478,9 +478,9 @@ export const getLabList = async (
 };
 
 export const getLabChartData = async (month: number): Promise<LabChart> => {
-  const labDetected = await prisma.lab.count({
+  const labDetected = await prisma.labTest.count({
     where: {
-      result: 1,
+      result: "Detected",
       created_at: {
         gte: new Date(new Date().getFullYear(), month - 1, 1), // January 1st of the current year
         lt: new Date(new Date().getFullYear(), month, 1), // February 1st of the current year
@@ -488,45 +488,45 @@ export const getLabChartData = async (month: number): Promise<LabChart> => {
     },
   });
 
-  const labNotDetected = await prisma.lab.count({
+  const labNotDetected = await prisma.labTest.count({
     where: {
-      result: 2,
+      result: "Not detected",
       created_at: {
         gte: new Date(new Date().getFullYear(), month - 1, 1), // January 1st of the current year
         lt: new Date(new Date().getFullYear(), month, 1), // February 1st of the current year
       },
     },
   });
-  const labPositive = await prisma.lab.count({
+  const labPositive = await prisma.labTest.count({
     where: {
-      result: 3,
+      result: "Positive",
       created_at: {
         gte: new Date(new Date().getFullYear(), month - 1, 1), // January 1st of the current year
         lt: new Date(new Date().getFullYear(), month, 1), // February 1st of the current year
       },
     },
   });
-  const labNegative = await prisma.lab.count({
+  const labNegative = await prisma.labTest.count({
     where: {
-      result: 4,
+      result: "Negative",
       created_at: {
         gte: new Date(new Date().getFullYear(), month - 1, 1), // January 1st of the current year
         lt: new Date(new Date().getFullYear(), month, 1), // February 1st of the current year
       },
     },
   });
-  const labIndeterminate = await prisma.lab.count({
+  const labIndeterminate = await prisma.labTest.count({
     where: {
-      result: 5,
+      result: "Indeterminate",
       created_at: {
         gte: new Date(new Date().getFullYear(), month - 1, 1), // January 1st of the current year
         lt: new Date(new Date().getFullYear(), month, 1), // February 1st of the current year
       },
     },
   });
-  const labBorderline = await prisma.lab.count({
+  const labBorderline = await prisma.labTest.count({
     where: {
-      result: 6,
+      result: "Borderline",
       created_at: {
         gte: new Date(new Date().getFullYear(), month - 1, 1), // January 1st of the current year
         lt: new Date(new Date().getFullYear(), month, 1), // February 1st of the current year
