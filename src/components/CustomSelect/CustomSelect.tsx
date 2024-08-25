@@ -75,20 +75,33 @@ const CustomSelect = React.forwardRef(
     const [query, setQuery] = useState("");
 
 
+    // const filteredOption = useCallback(
+    //   (
+    //     input: string,
+    //     option?: { name: string; value: string; case_no: string },
+    //   ) => {
+    //     // console.log(
+    //     //   "input : ",
+    //     //   input,
+    //     //   "option : ",
+    //     //   option,
+    //     // );
+    //     return (option?.name ?? option?.case_no ?? "")
+    //       .toLowerCase()
+    //       .includes(input.toLowerCase());
+    //   },
+    //   [query, option]
+    // );
     const filteredOption = useCallback(
       (
         input: string,
-        option?: { name: string; value: string; case_no: string },
+        option?: { name: string; value: string; case_no: string; prefix_name: string },
       ) => {
-        // console.log(
-        //   "input : ",
-        //   input,
-        //   "option : ",
-        //   option,
-        // );
-        return (option?.name ?? option?.case_no ?? "")
-          .toLowerCase()
-          .includes(input.toLowerCase());
+        return (
+          (option?.name ?? option?.case_no ?? option?.prefix_name ?? "")
+            .toLowerCase()
+            .includes(input.toLowerCase())
+        );
       },
       [query, option]
     );

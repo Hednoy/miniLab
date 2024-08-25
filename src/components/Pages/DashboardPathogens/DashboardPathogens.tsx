@@ -31,8 +31,10 @@ const DashboardPathogens: FC = () => {
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const { data: testtypeAll } = useTestTypeAll();
   const { data: dashboardChart } = useDashboardChartPathogens({
-    month: Number(month),
+    // test_type_id: 0,
     pathogensId: Number(pathogens),
+    startDate: "",
+    endDate: "",
   });
 
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -68,7 +70,7 @@ const DashboardPathogens: FC = () => {
         "yyyy-MM-dd'T'HH:mm:ss'Z'"
       );
     }
-    console.log(pathogens);
+    // console.log(pathogens);
     setFilter({
       ...filter,
       dateStart: startDate,

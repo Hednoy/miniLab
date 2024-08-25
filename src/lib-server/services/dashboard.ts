@@ -576,7 +576,8 @@ export const getLabChartData = async (month: number): Promise<LabChart> => {
 };
 
 export const getLabChartPathogensData = async (
-  month: number,
+  startDate: Date,
+  endDate: Date,
   pathogensId?: number
 ): Promise<any> => {
   // get pathogens data
@@ -586,41 +587,11 @@ export const getLabChartPathogensData = async (
     count: number;
   }[] = [];
 
-  // const pathogens = await prisma.pathogens
-  //   .findMany({
-  //     select: {
-  //       id: true,
-  //       name: true,
-  //     },
-  //     take: 9,
-  //   })
-  //   .then((res) => {
-  //     res.map(async (pathogen) => {
-  //       const countLabtest = await prisma.labTest.count({
-  //         where: {
-  //           pathogens_id: pathogen.id,
-  //           created_at: {
-  //             gte: new Date(new Date().getFullYear(), month - 1, 1), // January 1st of the current year
-  //             lt: new Date(new Date().getFullYear(), month, 1), // February 1st of the current year
-  //           },
-  //         },
-  //       });
-
-  //       if (countLabtest > 0)
-  //         labTestResult.push({
-  //           id: pathogen.id,
-  //           name: pathogen.name,
-  //           count: countLabtest,
-  //         });
-  //     });
-  //   });
-
   const pathogens2 = await prisma.pathogens.findMany({
     select: {
       id: true,
       name: true,
     },
-    // take: 9,
   });
 
   if (pathogens2) {
@@ -638,8 +609,8 @@ export const getLabChartPathogensData = async (
         where: {
           pathogens_id: pathogen.id,
           created_at: {
-            gte: new Date(new Date().getFullYear(), month - 1, 1), // January 1st of the current year
-            lt: new Date(new Date().getFullYear(), month, 1), // February 1st of the current year
+            gte: startDate,
+            lt: endDate,
           },
         },
       });
@@ -661,8 +632,8 @@ export const getLabChartPathogensData = async (
   const countLabtest = await prisma.labTest.count({
     where: {
       created_at: {
-        gte: new Date(new Date().getFullYear(), month - 1, 1), // January 1st of the current year
-        lt: new Date(new Date().getFullYear(), month, 1), // February 1st of the current year
+        gte: startDate,
+        lt: endDate,
       },
     },
   });

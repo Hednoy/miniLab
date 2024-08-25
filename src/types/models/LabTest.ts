@@ -69,8 +69,11 @@ export type LabTestChart = {
 };
 
 export type LabTestChartParams = {
-  month: number;
+  // month: number;
+  // test_type_id: number;
   pathogensId: number;
+  startDate: string;
+  endDate: string;
 };
 
 export type LabTestPDFData = {

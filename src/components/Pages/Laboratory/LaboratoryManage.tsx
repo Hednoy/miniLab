@@ -5,7 +5,7 @@ import { useYupValidationResolver } from "@/components/hooks";
 import { Routes } from "@/lib-client/constants";
 import { useDetectionMethod } from "@/lib-client/react-query/detection-method/useDetectionMethod";
 import { useInspectionTypes } from "@/lib-client/react-query/inspection-type";
-import { useLabById } from "@/lib-client/react-query/lab";
+import { useLabById, useLabs } from "@/lib-client/react-query/lab";
 import { useCreateLab } from "@/lib-client/react-query/lab/useCreateLab";
 import { useUpdateLab } from "@/lib-client/react-query/lab/useUpdateLab";
 import { useCreateLogAction } from "@/lib-client/react-query/log";
@@ -80,6 +80,7 @@ function LaboratoryManageComponent({
   const { data: patientsData } = usePatients({});
   const { data: pathogensData } = usePathogens({});
   const { data: officerData } = useOfficers({});
+  const { data: labData } = useLabs({});
   const { mutate: createLab } = useCreateLab();
   const { mutate: updateLab } = useUpdateLab();
 
@@ -234,6 +235,9 @@ function LaboratoryManageComponent({
   //       return pathogensData.filter((pathogen) => pathogen.id === 1);
   //   }
   // };
+  const filteredPatientsData = patientsData.filter(
+    (patient) => Array.isArray(labData) && !labData.some((lab) => lab.case_no === patient.case_no)
+  );
   useEffect(() => {
     const caseNo = getValues("case_no");
     const findPatient = patientsData.find((e) => e.case_no === caseNo);
@@ -563,7 +567,7 @@ function LaboratoryManageComponent({
                     disabled={!!id || state}
                     value={field.value}
                     ref={refs.case_no}
-                    option={patientsData}
+                    option={filteredPatientsData}
                     onChange={(val: any) => {
                       field.onChange(val);
                     }}

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { Label, Select } from "flowbite-react";
@@ -8,7 +8,6 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
-
 import CustomDatePicker from "@/components/Datepicker/CustomDatePicker";
 import CustomSelect from "@/components/CustomSelect/CustomSelect";
 import { customIcons, swal } from "@/components/Sweetalert/SweetAlert";
@@ -18,22 +17,55 @@ import {
   useTestTypeAll,
   useTestTypeById,
 } from "@/lib-client/react-query/test-type";
-import { usePathogens, usePathogensByTestTypeId } from "@/lib-client/react-query/pathogens";
+import {
+  usePathogens,
+  usePathogensById,
+  usePathogensByTestTypeId,
+} from "@/lib-client/react-query/pathogens";
+import { useDashboardChartPathogens } from "@/lib-client/react-query/dashboard";
 
 const Dashboard: FC = () => {
+  const {
+    register,
+    control,
+    watch,
+    formState: { errors },
+  } = useForm();
   const { push } = useRouter();
   const { data: testTypeData } = useTestTypeAll();
   const [textSearch, setTextSearch] = useState("");
   const [month, setMonth] = useState(new Date().getMonth() + 1);
-  const [chartData, setChartData] = useState<any[]>([]);
+  // const [chartData, setChartData] = useState<any[]>([]);
   const [filter, setFilter] = useState({
     dateStart: "",
     dateEnd: "",
     testTypeId: "",
     result: "",
   });
-  const { data: pathogensDataType } = usePathogensByTestTypeId(Number(filter.testTypeId));
-  const { data: testTypeDataById } = useTestTypeById(Number(filter.testTypeId));
+  const [pathogens, setPathogens] = useState<string>("");
+  const testTypeIds = watch("test_type_id");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
+  const { data: testTypeDataById } = useTestTypeById(Number(testTypeIds));
+  const { data: pathogensDataType } = usePathogensByTestTypeId(
+    Number(testTypeIds)
+  );
+  const { data: dashboardChartPathogens, isSuccess } =
+    useDashboardChartPathogens({
+      pathogensId: Number(pathogens),
+      startDate:
+        startDate ||
+        format(
+          new Date(new Date().getFullYear(), month - 1, 1),
+          "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        ),
+      endDate:
+        endDate ||
+        format(
+          new Date(new Date().getFullYear(), month, 0),
+          "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        ),
+    });
 
   const refs = {
     dateStart: useRef<any>(),
@@ -41,57 +73,34 @@ const Dashboard: FC = () => {
     test_type_id: useRef<any>(),
   };
 
-  const updateChartData = (dashboardChart: any) => {
-    const chartEntries = [
-      {
-        name: "Detected",
-        value: dashboardChart?.detected,
-        percentage: dashboardChart?.detected_percentage,
-      },
-      {
-        name: "Not Detected",
-        value: dashboardChart?.not_detected,
-        percentage: dashboardChart?.not_detected_percentage,
-      },
-      {
-        name: "Positive",
-        value: dashboardChart?.positive,
-        percentage: dashboardChart?.positive_percentage,
-      },
-      {
-        name: "Negative",
-        value: dashboardChart?.negative,
-        percentage: dashboardChart?.negative_percentage,
-      },
-      {
-        name: "Indeterminate",
-        value: dashboardChart?.indeterminate,
-        percentage: dashboardChart?.indeterminate_percentage,
-      },
-      {
-        name: "Borderline",
-        value: dashboardChart?.borderline,
-        percentage: dashboardChart?.borderline_percentage,
-      },
-    ];
-    setChartData(chartEntries.filter((entry) => entry.value !== undefined));
-  };
+  const { data: pathogensList } = usePathogens({
+    limit: 100,
+    page: 1,
+  });
+
+  const pathogensId = Number(pathogens);
+  const { data: pathogensLists } = usePathogensById(pathogensId);
+  const [chartData, setChartData] = useState<{ name: string; value: any; percentage: number; }[]>([]);
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      const data = Object.keys(dashboardChartPathogens || {})
+        .filter((f) => f != "total")
+        .map((item) => {
+          return {
+            name: pathogensList?.find((f) => `${f.id}` === item)?.name || "",
+            value: dashboardChartPathogens?.[item],
+            percentage:
+              (dashboardChartPathogens?.[item] / dashboardChartPathogens?.total) *
+              100,
+          };
+        });
+      setChartData(data);
+    }, 500); // Set timeout to 1 second (1000 milliseconds)
+
+    return () => clearTimeout(timeoutId); // Cleanup timeout on unmount or dependency change
+  }, [dashboardChartPathogens, pathogensList]);
 
   useEffect(() => {
-    const fetchDashboardChart = async () => {
-      try {
-        const response = await axiosInstance.get<any>(
-          Routes.API.DASHBOARD_CHART,
-          {
-            params: { month: Number(month) },
-          }
-        );
-        updateChartData(response.data);
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-      }
-    };
-
     const currentMonth = new Date().getMonth() + 1;
     const startDate = format(
       new Date(new Date().getFullYear(), month - 1, 1),
@@ -105,7 +114,6 @@ const Dashboard: FC = () => {
     );
 
     setFilter({ ...filter, dateStart: startDate, dateEnd: endDate });
-    fetchDashboardChart();
   }, [month]);
 
   const handleSearch = () => {
@@ -161,44 +169,42 @@ const Dashboard: FC = () => {
     return buf;
   };
 
-  const COLORS = [
-    "#FF6633",
-    "#FFB399",
-    "#FF33FF",
-    "#FFFF99",
-    "#00B3E6",
-    "#E6B333",
-  ];
+  const COLORS = Array.from(
+    { length: 10 },
+    () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
+  );
 
   const renderLegend = (props: any) => {
-    const { payload } = props;
+    const { payload } = props || {};
     return (
       <div className="flex flex-col">
-        {payload.map((entry: any, index: any) => (
-          <div className="flex items-center gap-1" key={`item-${index}`}>
-            <div
-              className="h-3 w-3 rounded-full"
-              style={{ backgroundColor: entry.color }}
-            ></div>
-            <div className="flex gap-2">
-              <p>
-                {entry.value} : {entry.payload.value} คน
-              </p>
-              <p className="text-primary">
-                (คิดเป็น {entry.payload.percentage}%)
-              </p>
-            </div>
-          </div>
-        ))}
+        <table className="dashboard">
+          <thead>
+            <tr className="text-left">
+              <th>Pathogens</th>
+              <th>จำนวน</th>
+              <th>คิดเป็น</th>
+            </tr>
+          </thead>
+          <tbody>
+            {payload.map((entry: any, index: any) => (
+              <tr key={index}>
+                <td className="truncate">{entry.value}</td>
+                <td className="truncate">{entry.payload.payload.value} คน</td>
+                <td className="truncate text-primary">
+                  (คิดเป็น {entry.payload.percentage.toFixed(2)}%)
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     );
   };
 
-  const {
-    register,
-    control,
-    formState: { errors },
-  } = useForm();
+  const handlePathogensChange = (val: any) => {
+    setPathogens(val);
+  };
 
   return (
     <>
@@ -247,7 +253,6 @@ const Dashboard: FC = () => {
                   option={testTypeData}
                   onChange={(val: any) => {
                     field.onChange(val);
-                    setFilter({ ...filter, testTypeId: val });
                   }}
                 />
               )}
@@ -255,49 +260,56 @@ const Dashboard: FC = () => {
           </div>
 
           <div className="flex-1">
-            <Label htmlFor={`lab_tests.pathogens_id`} value={`Pathogens`} />
+            <Label htmlFor={`pathogens_id`} value={`Pathogens`} />
             <Controller
-              name={`lab_tests.pathogens_id`}
+              name={`pathogens_id`}
               control={control}
               render={({ field }) => (
                 <CustomSelect
-                  {...register(`lab_tests.pathogens_id`)}
+                  {...register(`pathogens_id`)}
                   mainKeyId="id"
                   mainKey="name"
                   value={field.value}
                   option={pathogensDataType}
-                  onChange={(val) => field.onChange(val)}
+                  onChange={(val) => {
+                    field.onChange(val);
+                    handlePathogensChange(val);
+                  }}
                 />
               )}
             />
             <div className="mt-4 text-start">
-              {errors?.[`lab_tests.pathogens_id`] && (
+              {errors?.[`pathogens_id`] && (
                 <p className="text-red-500">
-                  {String(errors?.[`lab_tests.pathogens_id`]?.message)}
+                  {String(errors?.[`pathogens_id`]?.message)}
                 </p>
               )}
             </div>
           </div>
 
           <div className="flex-1">
-            <Label htmlFor={`startDate`} value={`ตั้งแต่`} />
+            <Label htmlFor={`startDate`} value={`วันที่เริ่มต้น`} />
             <CustomDatePicker
               ref={refs.dateStart}
-              onChange={(selectDate: string) =>
-                setFilter({ ...filter, dateStart: selectDate })
-              }
-              value={filter.dateStart ? new Date(filter.dateStart) : null}
+              onChange={(selectDate: string) => setStartDate(selectDate)}
+              value={startDate ? new Date(startDate) : null}
+              placeholder={format(
+                new Date(new Date().getFullYear(), month - 1, 1),
+                "dd-MM-Y"
+              )}
             />
           </div>
-
+          <p className="mt-8">จนถึง</p>
           <div className="flex-1">
-            <Label htmlFor={`endDate`} value={`ถึง`} />
+            <Label htmlFor={`endDate`} value={`วันที่สิ้นสุด`} />
             <CustomDatePicker
               ref={refs.dateEnd}
-              onChange={(selectDate: string) =>
-                setFilter({ ...filter, dateEnd: selectDate })
-              }
-              value={filter.dateEnd ? new Date(filter.dateEnd) : null}
+              onChange={(selectDate: string) => setEndDate(selectDate)}
+              value={endDate ? new Date(endDate) : null}
+              placeholder={format(
+                new Date(new Date().getFullYear(), month, 0),
+                "dd-MM-Y"
+              )}
             />
           </div>
         </div>
@@ -312,12 +324,13 @@ const Dashboard: FC = () => {
               innerRadius={60}
               outerRadius={100}
             >
-              {chartData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
+              {Array.isArray(chartData) &&
+                chartData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
             </Pie>
             <Legend
               content={renderLegend}
