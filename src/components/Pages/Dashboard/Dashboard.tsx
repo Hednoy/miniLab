@@ -2,7 +2,15 @@ import React, { FC, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { Label, Select } from "flowbite-react";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Legend,
+  LabelList,
+  Tooltip,
+} from "recharts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import Papa from "papaparse";
@@ -66,7 +74,6 @@ const Dashboard: FC = () => {
           "yyyy-MM-dd'T'HH:mm:ss'Z'"
         ),
     });
-
   const refs = {
     dateStart: useRef<any>(),
     dateEnd: useRef<any>(),
@@ -80,25 +87,25 @@ const Dashboard: FC = () => {
 
   const pathogensId = Number(pathogens);
   const { data: pathogensLists } = usePathogensById(pathogensId);
-  const [chartData, setChartData] = useState<{ name: string; value: any; percentage: number; }[]>([]);
+  const [chartData, setChartData] = useState<
+    { name: string; value: any; percentage: number }[]
+  >([]);
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      const data = Object.keys(dashboardChartPathogens || {})
-        .filter((f) => f != "total")
-        .map((item) => {
-          return {
-            name: pathogensList?.find((f) => `${f.id}` === item)?.name || "",
-            value: dashboardChartPathogens?.[item],
-            percentage:
-              (dashboardChartPathogens?.[item] / dashboardChartPathogens?.total) *
-              100,
-          };
-        });
-      setChartData(data);
-    }, 500); // Set timeout to 1 second (1000 milliseconds)
-
-    return () => clearTimeout(timeoutId); // Cleanup timeout on unmount or dependency change
+    const data = Object.keys(dashboardChartPathogens || {})
+      .filter((f) => f != "total")
+      .map((item) => {
+        return {
+          name: pathogensList?.find((f) => `${f.id}` === item)?.name || "",
+          value: dashboardChartPathogens?.[item],
+          percentage:
+            (dashboardChartPathogens?.[item] / dashboardChartPathogens?.total) *
+            100,
+        };
+      });
+    setChartData(data);
   }, [dashboardChartPathogens, pathogensList]);
+
+  const filteredChartData = chartData.filter((data) => data.percentage > 4);
 
   useEffect(() => {
     const currentMonth = new Date().getMonth() + 1;
@@ -169,17 +176,53 @@ const Dashboard: FC = () => {
     return buf;
   };
 
-  const COLORS = Array.from(
-    { length: 10 },
-    () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
+  // const COLORS = Array.from(
+  //   { length: 10 },
+  //   () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
+  // );
+  const generateColor = (index: number, total: number) => {
+    const hue = (index * (360 / total)) % 360; // Distributes hues evenly
+    const saturation = 70; // Saturation percentage
+    const lightness = 50; // Lightness percentage
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  };
+
+  // Generate the colors dynamically based on the number of chart data points
+  const generateUniqueColors = (dataLength: number) => {
+    return Array.from({ length: dataLength }, (_, index) =>
+      generateColor(index, dataLength)
+    );
+  };
+
+  // In your component rendering logic:
+  const COLORS = useMemo(
+    () => generateUniqueColors(chartData.length),
+    [chartData.length]
   );
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="rounded border bg-white p-2 shadow-sm">
+          <p className="font-semibold text-primary">
+            {payload[0].name || "อื่นๆ"}
+          </p>
+          <p>จำนวน: {payload[0].value} ครั้ง</p>
+          <p>คิดเป็น: {payload[0].payload.percentage.toFixed(2)}%</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   const renderLegend = (props: any) => {
     const { payload } = props || {};
+    if (!payload || payload.length === 0) {
+      return <div></div>;
+    }
     return (
       <div className="flex flex-col">
-        <table className="dashboard">
-          <thead>
+        <table className="dashboard rounded border-4 border-primary">
+          <thead className="rounded border-4 border-primary">
             <tr className="text-left">
               <th>Pathogens</th>
               <th>จำนวน</th>
@@ -188,9 +231,22 @@ const Dashboard: FC = () => {
           </thead>
           <tbody>
             {payload.map((entry: any, index: any) => (
-              <tr key={index}>
-                <td className="truncate">{entry.value}</td>
-                <td className="truncate">{entry.payload.payload.value} คน</td>
+              <tr key={index} className="rounded border-2 border-primary">
+                <td className="truncate rounded border-2 border-primary">
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: "12px",
+                      height: "12px",
+                      backgroundColor: entry.color,
+                      marginRight: "8px",
+                    }}
+                  ></span>
+                  {entry.value || "อื่นๆ"}
+                </td>
+                <td className="truncate">
+                  {entry.payload.payload.value} ครั้ง
+                </td>
                 <td className="truncate text-primary">
                   (คิดเป็น {entry.payload.percentage.toFixed(2)}%)
                 </td>
@@ -205,6 +261,16 @@ const Dashboard: FC = () => {
   const handlePathogensChange = (val: any) => {
     setPathogens(val);
   };
+
+  const [containerHeight, setContainerHeight] = useState(400);
+
+  useEffect(() => {
+    const newHeight =
+      filteredChartData.length < 10
+        ? 400 + filteredChartData.length * 50
+        : 400 + filteredChartData.length * 25;
+    setContainerHeight(newHeight);
+  }, [filteredChartData]);  
 
   return (
     <>
@@ -314,30 +380,41 @@ const Dashboard: FC = () => {
           </div>
         </div>
 
-        <ResponsiveContainer width={"100%"} height={400}>
+        <ResponsiveContainer width="100%" height={containerHeight}>
           <PieChart>
             <Pie
-              data={chartData}
+              data={filteredChartData}
               dataKey="value"
+              nameKey="name"
               cx="50%"
               cy="50%"
-              innerRadius={60}
-              outerRadius={100}
+              innerRadius={100}
+              outerRadius={150}
+              paddingAngle={2}
+              labelLine={true}
+              label={({ name, percentage }) =>
+                `${name} (${percentage.toFixed(1)}%)`
+              }
             >
-              {Array.isArray(chartData) &&
-                chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
+              {chartData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
             </Pie>
+            <Tooltip content={<CustomTooltip />} />
             <Legend
               content={renderLegend}
               align="right"
-              verticalAlign="middle"
-              width={320}
+              verticalAlign="bottom"
+              layout="horizontal"
               iconType="circle"
+              wrapperStyle={{
+                maxHeight: "40%",
+                overflowY: "scroll",
+                marginBottom: "3%",
+              }}
             />
           </PieChart>
         </ResponsiveContainer>

@@ -26,9 +26,9 @@ export const getOfficer = async (id: number): Promise<OfficerGetByID> => {
 
   const officerByID: OfficerGetByID = {
     id: officer.id,
-    citizen_id: officer.citizen_id,
+    citizen_id: officer.citizen_id || "",
     first_name: officer.first_name,
-    last_name: officer.last_name,
+    last_name: officer.last_name || "",
     nickname: officer.nickname || "",
     mobile_phone: officer.mobile_phone || "",
     email: officer.email || "",

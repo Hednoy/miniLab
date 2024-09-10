@@ -106,6 +106,7 @@ export const getLabList = async (
     sort = "updated_at",
     searchTerm = "",
     sortDirection = "desc",
+    test_type_id,
   } = labGetData;
 
   let dateSearch: Date | undefined;
@@ -115,58 +116,21 @@ export const getLabList = async (
       dateSearch = parsedDate;
     }
   }
+
   const translateGender = (term: string) => {
     const lowerTerm = term.toLowerCase();
-    if (lowerTerm.startsWith("ช")) return "Male";
-    if (lowerTerm.startsWith("ห") || lowerTerm.startsWith("ญ")) return "Female";
+    if (lowerTerm.startsWith("ชาย")) return "Male";
+    if (lowerTerm.startsWith("หญิง")) return "Female";
     return term;
   };
-  const nameParts = searchTerm ? searchTerm.split(" ") : [];
-  const patientConditions = [];
-
-  if (nameParts.length === 1) {
-    patientConditions.push(
-      { OR: [{ title: { contains: nameParts[0] } }, { title: null }] },
-      { first_name: { contains: nameParts[1] || nameParts[0] } },
-      { last_name: { contains: nameParts[0] || nameParts[1] } }
-    );
-  } else if (nameParts.length > 1) {
-    patientConditions.push({
-      AND: [
-        { OR: [{ title: { contains: nameParts[0] } }, { title: null }] },
-        { first_name: { contains: nameParts[1] || nameParts[0] } },
-        { last_name: { contains: nameParts[2] || nameParts[1] } },
-      ],
-    });
-  }
 
   const where: Prisma.LabWhereInput = {
     OR: [
-      {
-        case_no: {
-          contains: searchTerm,
-        },
-      },
-      {
-        detection_method: {
-          contains: searchTerm,
-        },
-      },
-      {
-        Patient: {
-          OR: patientConditions,
-        },
-      },
-      {
-        InspectionType: {
-          OR: [{ name: { contains: searchTerm } }],
-        },
-      },
-      {
-        Machine: {
-          OR: [{ name: { contains: searchTerm } }],
-        },
-      },
+      { case_no: { contains: searchTerm } },
+      { detection_method: { contains: searchTerm } },
+      { Patient: { OR: [{ title: { contains: searchTerm } } ,{ first_name: { contains: searchTerm } }, { last_name: { contains: searchTerm } }] } },
+      { InspectionType: { OR: [{ name: { contains: searchTerm } }] } },
+      { Machine: { OR: [{ name: { contains: searchTerm } }] } },
       {
         TestType: {
           OR: [
@@ -177,27 +141,20 @@ export const getLabList = async (
       },
       ...(dateSearch
         ? [
-            {
-              created_at: {
-                gte: dateSearch,
-              },
-            },
-            {
-              updated_at: {
-                gte: dateSearch,
-              },
-            },
+            { created_at: { gte: dateSearch } },
+            { updated_at: { gte: dateSearch } },
           ]
         : []),
     ],
+    ...(test_type_id && { test_type_id }),
   };
-  if (labGetData?.test_type_id) {
-    where.test_type_id = labGetData.test_type_id;
-  }
 
+  // console.log('Search Term:', searchTerm);
+  // console.log('Where Condition:', where);
+  
   const totalCount = await prisma.lab.count({ where });
 
-  let labs = await prisma.lab.findMany({
+  const labs = await prisma.lab.findMany({
     where,
     include: {
       TestType: true,
@@ -209,26 +166,22 @@ export const getLabList = async (
     skip: (page - 1) * limit,
     take: limit,
     orderBy: {
-      [sort]: sortDirection as SortDirection,
+      [sort]: sortDirection as Prisma.SortOrder,
     },
   });
 
-  labs = Array.isArray(labs) ? labs : [];
-
-  const result = {
+  return {
     items: labs,
     pagination: {
       total: totalCount,
       pagesCount: Math.ceil(totalCount / limit),
       currentPage: page,
       perPage: limit,
-      from: (page - 1) * limit + 1, // from item
+      from: (page - 1) * limit + 1,
       to: (page - 1) * limit + labs.length,
       hasMore: page < Math.ceil(totalCount / limit),
     },
   };
-
-  return result;
 };
 
 export const createLab = async (data: LabCreateFormData): Promise<Lab> => {

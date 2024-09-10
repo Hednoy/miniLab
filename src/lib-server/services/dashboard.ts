@@ -245,18 +245,18 @@ export const getLabListForReport = async (
   }
 
   if (dateStart && dateEnd) {
-    console.log(`Filtering from ${dateStart} to ${dateEnd}`);
+    // console.log(`Filtering from ${dateStart} to ${dateEnd}`);
     where.created_at = {
       gte: new Date(dateStart),
       lte: new Date(dateEnd),
     };
   } else if (dateStart) {
-    console.log(`Filtering from ${dateStart}`);
+    // console.log(`Filtering from ${dateStart}`);
     where.created_at = {
       gte: new Date(dateStart),
     };
   } else if (dateEnd) {
-    console.log(`Filtering up to ${dateEnd}`);
+    // console.log(`Filtering up to ${dateEnd}`);
     where.created_at = {
       lte: new Date(dateEnd),
     };
@@ -384,18 +384,18 @@ export const getLabList = async (
 
   // Log date filtering information
   if (dateStart && dateEnd) {
-    console.log(`Filtering from ${dateStart} to ${dateEnd}`);
+    // console.log(`Filtering from ${dateStart} to ${dateEnd}`);
     where.created_at = {
       gte: new Date(dateStart),
       lte: new Date(dateEnd),
     };
   } else if (dateStart) {
-    console.log(`Filtering from ${dateStart}`);
+    // console.log(`Filtering from ${dateStart}`);
     where.created_at = {
       gte: new Date(dateStart),
     };
   } else if (dateEnd) {
-    console.log(`Filtering up to ${dateEnd}`);
+    // console.log(`Filtering up to ${dateEnd}`);
     where.created_at = {
       lte: new Date(dateEnd),
     };
@@ -595,16 +595,16 @@ export const getLabChartPathogensData = async (
   });
 
   if (pathogens2) {
-    await labTestResult.push({
-      id: 0,
-      name: "อื่นๆ",
-      count: 0,
-    });
+    // labTestResult.push({
+    //   id: 0,
+    //   name: "อื่นๆ",
+    //   count: 0,
+    // });
     const filterPathogen = pathogensId
       ? pathogens2.filter((e) => e.id == pathogensId)
       : pathogens2;
 
-    filterPathogen.forEach(async (pathogen, i) => {
+    for (const pathogen of filterPathogen) {
       const countLabtest = await prisma.labTest.count({
         where: {
           pathogens_id: pathogen.id,
@@ -612,21 +612,22 @@ export const getLabChartPathogensData = async (
             gte: startDate,
             lt: endDate,
           },
+          result: "Detected",
         },
       });
 
-      if (i < 9) {
-        if (countLabtest > 0) {
-          await labTestResult.push({
-            id: pathogen.id,
-            name: pathogen.name,
-            count: countLabtest,
-          });
-        }
-      } else {
-        labTestResult[0].count += countLabtest;
+      // if (labTestResult.length < 10) {
+      if (countLabtest > 0) {
+        labTestResult.push({
+          id: pathogen.id,
+          name: pathogen.name,
+          count: countLabtest,
+        });
       }
-    });
+      // } else {
+      //   labTestResult[0].count += countLabtest;
+      // }
+    }
   }
 
   const countLabtest = await prisma.labTest.count({
@@ -635,11 +636,12 @@ export const getLabChartPathogensData = async (
         gte: startDate,
         lt: endDate,
       },
+      result: "Detected",
     },
   });
 
   // array to object
-  const res = await labTestResult.reduce(
+  const res = labTestResult.reduce(
     (acc, cur) => {
       acc[cur.id] = cur.count;
       return acc;
