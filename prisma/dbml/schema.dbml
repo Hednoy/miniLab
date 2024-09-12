@@ -438,10 +438,10 @@ Table tbl_officer_log {
 
 Table tb_officer {
   id Int [pk, increment]
-  citizen_id String [not null]
+  citizen_id String
   title_name String
   first_name String [not null]
-  last_name String [not null]
+  last_name String
   mobile_phone String
   email String
   telephone String
@@ -567,39 +567,39 @@ Ref: tb_attachment.test_type_id > tb_test_type.id
 
 Ref: tb_attachment_lab.attachmentId > tb_attachment.id
 
-Ref: tb_attachment_lab.lab_id > tb_lab.id
+Ref: tb_attachment_lab.lab_id > tb_lab.id [delete: No Action]
 
-Ref: tbl_attachment_log.attachment_id > tb_attachment.id
+Ref: tbl_attachment_log.attachment_id > tb_attachment.id [delete: No Action]
 
-Ref: tb_patient.hospital_id > tb_hospital.id
+Ref: tb_patient.hospital_id > tb_hospital.id [delete: No Action]
 
-Ref: tb_patient.inspection_type_id > tb_inspection_type.id
+Ref: tb_patient.inspection_type_id > tb_inspection_type.id [delete: No Action]
 
 Ref: tb_pathogens.machine_id > tb_machine.id
 
 Ref: tb_inspection_type.machine_id > tb_machine.id
 
-Ref: tb_machine.test_type_id > tb_test_type.id
+Ref: tb_machine.test_type_id > tb_test_type.id [delete: No Action]
 
-Ref: tbl_machine_log.machine_id > tb_machine.id
+Ref: tbl_machine_log.machine_id > tb_machine.id [delete: No Action]
 
-Ref: tb_machine_lab.machine_id > tb_machine.id
+Ref: tb_machine_lab.machine_id > tb_machine.id [delete: No Action]
 
-Ref: tb_machine_lab.virus_type_id > tb_pathogens.id
+Ref: tb_machine_lab.virus_type_id > tb_pathogens.id [delete: No Action]
 
-Ref: tb_machine_prefix.machine_id > tb_machine.id
+Ref: tb_machine_prefix.machine_id > tb_machine.id [delete: No Action]
 
 Ref: tb_machine_suffix.machineId > tb_machine.id
 
-Ref: tb_machine_suffix.machine_prefix_id > tb_machine_prefix.id
+Ref: tb_machine_suffix.machine_prefix_id > tb_machine_prefix.id [delete: No Action]
 
-Ref: tbl_machine_lab_log.machine_lab_id > tb_machine_lab.id
+Ref: tbl_machine_lab_log.machine_lab_id > tb_machine_lab.id [delete: No Action]
 
 Ref: tb_lab.hospital_id > tb_hospital.id
 
-Ref: tb_lab.inspection_type_id > tb_inspection_type.id
+Ref: tb_lab.inspection_type_id > tb_inspection_type.id [delete: No Action]
 
-Ref: tb_lab.machine_id > tb_machine.id
+Ref: tb_lab.machine_id > tb_machine.id [delete: No Action]
 
 Ref: tb_lab.patient_id > tb_patient.id
 
@@ -609,27 +609,27 @@ Ref: tbl_lab_log.lab_id > tb_lab.id [delete: Cascade]
 
 Ref: tb_lab_test.lab_id > tb_lab.id [delete: Cascade]
 
-Ref: tb_lab_test.pathogens_id > tb_pathogens.id
+Ref: tb_lab_test.pathogens_id > tb_pathogens.id [delete: No Action]
 
-Ref: tbl_lab_test_log.lab_test_id > tb_lab_test.id
+Ref: tbl_lab_test_log.lab_test_id > tb_lab_test.id [delete: No Action]
 
-Ref: tbm_provinces.geography_id > tbm_geographic.id
+Ref: tbm_provinces.geography_id > tbm_geographic.id [delete: No Action]
 
-Ref: tbm_amphures.province_id > tbm_provinces.id
+Ref: tbm_amphures.province_id > tbm_provinces.id [delete: No Action]
 
-Ref: tbm_tambons.amphure_id > tbm_amphures.id
+Ref: tbm_tambons.amphure_id > tbm_amphures.id [delete: No Action]
 
-Ref: tb_member.role_id > tbm_role.role_id
+Ref: tb_member.role_id > tbm_role.role_id [delete: No Action]
 
-Ref: tbl_member_log.member_id > tb_officer.id
+Ref: tbl_member_log.member_id > tb_officer.id [delete: No Action]
 
-Ref: tbl_officer_log.officer_id > tb_officer.id
+Ref: tbl_officer_log.officer_id > tb_officer.id [delete: No Action]
 
-Ref: tb_officer.member_id > tb_member.id
+Ref: tb_officer.member_id > tb_member.id [delete: No Action]
 
-Ref: tb_officer.role_id > tbm_role.role_id
+Ref: tb_officer.role_id > tbm_role.role_id [delete: No Action]
 
-Ref: tb_person.member_id > tb_member.id
+Ref: tb_person.member_id > tb_member.id [delete: No Action]
 
 Ref: tb_news_images.news_id > tb_news.id [delete: Cascade]
 

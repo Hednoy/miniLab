@@ -70,7 +70,7 @@ model AttachmentLab {
   lab_id        Int
   attachmentId  Int?
   Attachment    Attachment? @relation(fields: [attachmentId], references: [id])
-  Lab           Lab         @relation(fields: [lab_id], references: [id])
+  Lab           Lab         @relation(fields: [lab_id], references: [id], onDelete: NoAction)
 
   @@index([attachmentId], map: "tb_attachment_lab_attachmentId_fkey")
   @@index([lab_id], map: "tb_attachment_lab_lab_id_fkey")
@@ -94,7 +94,7 @@ model AttachmentLog {
   name          String
   updated_at    DateTime?
   updated_by    Int?
-  Attachment    Attachment @relation(fields: [attachment_id], references: [id])
+  Attachment    Attachment @relation(fields: [attachment_id], references: [id], onDelete: NoAction)
 
   @@index([attachment_id], map: "tbl_attachment_log_attachment_id_fkey")
   @@map("tbl_attachment_log")
@@ -130,8 +130,8 @@ model Patient {
   received_time      String?        @default("00:00")
   title              String?
   Lab                Lab[]
-  hospital           Hospital       @relation(fields: [hospital_id], references: [id])
-  InspectionType     InspectionType @relation(fields: [inspection_type_id], references: [id])
+  hospital           Hospital       @relation(fields: [hospital_id], references: [id], onDelete: NoAction)
+  InspectionType     InspectionType @relation(fields: [inspection_type_id], references: [id], onDelete: NoAction)
 
   @@index([hospital_id], map: "tb_patient_hospital_id_fkey")
   @@index([inspection_type_id], map: "tb_patient_inspection_type_id_fkey")
@@ -236,7 +236,7 @@ model Machine {
   rows             Int
   InspectionType   InspectionType[]
   Lab              Lab[]
-  TestType         TestType         @relation(fields: [test_type_id], references: [id])
+  TestType         TestType         @relation(fields: [test_type_id], references: [id], onDelete: NoAction)
   MachineLab       MachineLab[]
   MachinePrefix    MachinePrefix[]
   MachineSuffix    MachineSuffix[]
@@ -258,7 +258,7 @@ model MachineLog {
   description String
   name        String
   report_type Int
-  Machine     Machine   @relation(fields: [machine_id], references: [id])
+  Machine     Machine   @relation(fields: [machine_id], references: [id], onDelete: NoAction)
 
   @@index([machine_id], map: "tbl_machine_log_machine_id_fkey")
   @@map("tbl_machine_log")
@@ -268,8 +268,8 @@ model MachineLab {
   id            Int             @id @default(autoincrement())
   machine_id    Int
   virus_type_id Int
-  Machine       Machine         @relation(fields: [machine_id], references: [id])
-  Pathogens     Pathogens       @relation(fields: [virus_type_id], references: [id])
+  Machine       Machine         @relation(fields: [machine_id], references: [id], onDelete: NoAction)
+  Pathogens     Pathogens       @relation(fields: [virus_type_id], references: [id], onDelete: NoAction)
   MachineLabLog MachineLabLog[]
 
   @@index([machine_id], map: "tb_machine_lab_machine_id_fkey")
@@ -281,7 +281,7 @@ model MachinePrefix {
   id            Int             @id @default(autoincrement())
   machine_id    Int
   text          String
-  Machine       Machine         @relation(fields: [machine_id], references: [id])
+  Machine       Machine         @relation(fields: [machine_id], references: [id], onDelete: NoAction)
   MachineSuffix MachineSuffix[]
 
   @@index([machine_id], map: "tb_machine_prefix_machine_id_fkey")
@@ -298,7 +298,7 @@ model MachineSuffix {
   report            String
   machineId         Int?
   Machine           Machine?      @relation(fields: [machineId], references: [id])
-  MachinePrefix     MachinePrefix @relation(fields: [machine_prefix_id], references: [id])
+  MachinePrefix     MachinePrefix @relation(fields: [machine_prefix_id], references: [id], onDelete: NoAction)
 
   @@index([machineId], map: "tb_machine_suffix_machineId_fkey")
   @@index([machine_prefix_id], map: "tb_machine_suffix_machine_prefix_id_fkey")
@@ -314,7 +314,7 @@ model MachineLabLog {
   deleted_at     DateTime?
   machine_id     Int
   virus_type_id  Int
-  MachineLab     MachineLab @relation(fields: [machine_lab_id], references: [id])
+  MachineLab     MachineLab @relation(fields: [machine_lab_id], references: [id], onDelete: NoAction)
 
   @@index([machine_lab_id], map: "tbl_machine_lab_log_machine_lab_id_fkey")
   @@map("tbl_machine_lab_log")
@@ -348,8 +348,8 @@ model Lab {
   Attachment         Attachment[]
   AttachmentLab      AttachmentLab[]
   Hospital           Hospital?       @relation(fields: [hospital_id], references: [id])
-  InspectionType     InspectionType  @relation(fields: [inspection_type_id], references: [id])
-  Machine            Machine         @relation(fields: [machine_id], references: [id])
+  InspectionType     InspectionType  @relation(fields: [inspection_type_id], references: [id], onDelete: NoAction)
+  Machine            Machine         @relation(fields: [machine_id], references: [id], onDelete: NoAction)
   Patient            Patient?        @relation(fields: [patient_id], references: [id])
   TestType           TestType?       @relation(fields: [test_type_id], references: [id])
   LabTest            LabTest[]
@@ -394,7 +394,7 @@ model LabTest {
   deleted_at   DateTime?
   pathogens_id Int
   Lab          Lab          @relation(fields: [lab_id], references: [id], onDelete: Cascade)
-  Pathogens    Pathogens    @relation(fields: [pathogens_id], references: [id])
+  Pathogens    Pathogens    @relation(fields: [pathogens_id], references: [id], onDelete: NoAction)
   LabTestLog   LabTestLog[]
 
   @@index([lab_id], map: "tb_lab_test_lab_id_fkey")
@@ -413,7 +413,7 @@ model LabTestLog {
   lab_id        Int
   machineLab_id Int
   result        String
-  LabTest       LabTest   @relation(fields: [lab_test_id], references: [id])
+  LabTest       LabTest   @relation(fields: [lab_test_id], references: [id], onDelete: NoAction)
 
   @@index([lab_test_id], map: "tbl_lab_test_log_lab_test_id_fkey")
   @@map("tbl_lab_test_log")
@@ -436,7 +436,7 @@ model Provinces {
   updated_at   DateTime?
   deleted_at   DateTime?
   Amphures     Amphures[]
-  Geographic   Geographic @relation(fields: [geography_id], references: [id])
+  Geographic   Geographic @relation(fields: [geography_id], references: [id], onDelete: NoAction)
 
   @@index([geography_id], map: "tbm_provinces_geography_id_fkey")
   @@map("tbm_provinces")
@@ -450,7 +450,7 @@ model Amphures {
   created_at  DateTime  @default(now())
   updated_at  DateTime?
   deleted_at  DateTime?
-  Provinces   Provinces @relation(fields: [province_id], references: [id])
+  Provinces   Provinces @relation(fields: [province_id], references: [id], onDelete: NoAction)
   Tambons     Tambons[]
 
   @@index([province_id], map: "tbm_amphures_province_id_fkey")
@@ -466,7 +466,7 @@ model Tambons {
   created_at DateTime  @default(now())
   updated_at DateTime?
   deleted_at DateTime?
-  Amphures   Amphures  @relation(fields: [amphure_id], references: [id])
+  Amphures   Amphures  @relation(fields: [amphure_id], references: [id], onDelete: NoAction)
 
   @@index([amphure_id], map: "tbm_tambons_amphure_id_fkey")
   @@map("tbm_tambons")
@@ -502,7 +502,7 @@ model Member {
   is_active  Boolean   @default(true)
   created_at DateTime  @default(now())
   updated_at DateTime?
-  Role       Role      @relation(fields: [role_id], references: [role_id])
+  Role       Role      @relation(fields: [role_id], references: [role_id], onDelete: NoAction)
   Officer    Officer[]
   Person     Person[]
 
@@ -516,7 +516,7 @@ model MemberLog {
   action    String
   action_by Int
   action_at DateTime @default(now())
-  Officer   Officer  @relation(fields: [member_id], references: [id])
+  Officer   Officer  @relation(fields: [member_id], references: [id], onDelete: NoAction)
 
   @@index([member_id], map: "tbl_member_log_member_id_fkey")
   @@map("tbl_member_log")
@@ -528,7 +528,7 @@ model OfficerLog {
   action     String
   action_by  Int
   action_at  DateTime @default(now())
-  Officer    Officer  @relation(fields: [officer_id], references: [id])
+  Officer    Officer  @relation(fields: [officer_id], references: [id], onDelete: NoAction)
 
   @@index([officer_id], map: "tbl_officer_log_officer_id_fkey")
   @@map("tbl_officer_log")
@@ -536,10 +536,10 @@ model OfficerLog {
 
 model Officer {
   id           Int          @id @default(autoincrement())
-  citizen_id   String
+  citizen_id   String?
   title_name   String?
   first_name   String
-  last_name    String
+  last_name    String?
   mobile_phone String?
   email        String?
   telephone    String?
@@ -552,8 +552,8 @@ model Officer {
   member_id    Int
   nickname     String?
   Attachment   Attachment[]
-  member       Member       @relation(fields: [member_id], references: [id])
-  role         Role         @relation(fields: [role_id], references: [role_id])
+  member       Member       @relation(fields: [member_id], references: [id], onDelete: NoAction)
+  role         Role         @relation(fields: [role_id], references: [role_id], onDelete: NoAction)
   MemberLog    MemberLog[]
   OfficerLog   OfficerLog[]
 
@@ -585,7 +585,7 @@ model Person {
   created_at   DateTime  @default(now())
   updated_at   DateTime?
   member_id    Int
-  Member       Member    @relation(fields: [member_id], references: [id])
+  Member       Member    @relation(fields: [member_id], references: [id], onDelete: NoAction)
 
   @@index([member_id], map: "tb_person_member_id_fkey")
   @@map("tb_person")
