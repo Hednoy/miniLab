@@ -38,7 +38,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useWatch } from "react-hook-form";
 import * as yup from "yup";
-import { number } from "zod";
 
 type LaboratoryManageProps = {
   id: number;
@@ -124,121 +123,15 @@ function LaboratoryManageComponent({
   const watchFields = watch("test_type_id");
   const { data: pathogensDataType } = usePathogensByTestTypeId(watchFields);
 
-  // const optionByTestName = () => {
-  //   switch (watchFields) {
-  //     case 15:
-  //       return pathogensData.filter(
-  //         (pathogen) =>
-  //           pathogen.id === 7 ||
-  //           pathogen.id === 2 ||
-  //           pathogen.id === 3 ||
-  //           pathogen.id === 8 ||
-  //           pathogen.id === 9 ||
-  //           pathogen.id === 10 ||
-  //           pathogen.id === 11 ||
-  //           pathogen.id === 12 ||
-  //           pathogen.id === 13 ||
-  //           pathogen.id === 14 ||
-  //           pathogen.id === 15 ||
-  //           pathogen.id === 16 ||
-  //           pathogen.id === 17 ||
-  //           pathogen.id === 18 ||
-  //           pathogen.id === 19 ||
-  //           pathogen.id === 20 ||
-  //           pathogen.id === 21 ||
-  //           pathogen.id === 22 ||
-  //           pathogen.id === 23 ||
-  //           pathogen.id === 24 ||
-  //           pathogen.id === 34 ||
-  //           pathogen.id === 25 ||
-  //           pathogen.id === 26
-  //       );
-  //     case 16:
-  //       return pathogensData.filter(
-  //         (pathogen) =>
-  //           pathogen.id === 2 ||
-  //           pathogen.id === 3 ||
-  //           pathogen.id === 8 ||
-  //           pathogen.id === 10 ||
-  //           pathogen.id === 11 ||
-  //           pathogen.id === 12 ||
-  //           pathogen.id === 13 ||
-  //           pathogen.id === 14 ||
-  //           pathogen.id === 15 ||
-  //           pathogen.id === 16 ||
-  //           pathogen.id === 17 ||
-  //           pathogen.id === 18 ||
-  //           pathogen.id === 19 ||
-  //           pathogen.id === 20 ||
-  //           pathogen.id === 21 ||
-  //           pathogen.id === 37 ||
-  //           pathogen.id === 38 ||
-  //           pathogen.id === 35 ||
-  //           pathogen.id === 36 ||
-  //           pathogen.id === 39 ||
-  //           pathogen.id === 40 ||
-  //           pathogen.id === 34 ||
-  //           pathogen.id === 41 ||
-  //           pathogen.id === 42 ||
-  //           pathogen.id === 26 ||
-  //           pathogen.id === 43 ||
-  //           pathogen.id === 4
-  //       );
-  //     case 11:
-  //       return pathogensData.filter(
-  //         (pathogen) =>
-  //           pathogen.id === 2 ||
-  //           pathogen.id === 3 ||
-  //           pathogen.id === 8 ||
-  //           pathogen.id === 9 ||
-  //           pathogen.id === 10 ||
-  //           pathogen.id === 11 ||
-  //           pathogen.id === 12 ||
-  //           pathogen.id === 13 ||
-  //           pathogen.id === 17 ||
-  //           pathogen.id === 18 ||
-  //           pathogen.id === 19 ||
-  //           pathogen.id === 20 ||
-  //           pathogen.id === 21 ||
-  //           pathogen.id === 37 ||
-  //           pathogen.id === 38 ||
-  //           pathogen.id === 23 ||
-  //           pathogen.id === 24 ||
-  //           pathogen.id === 34 ||
-  //           pathogen.id === 32 ||
-  //           pathogen.id === 44 ||
-  //           pathogen.id === 25 ||
-  //           pathogen.id === 45 ||
-  //           pathogen.id === 26 ||
-  //           pathogen.id === 46 ||
-  //           pathogen.id === 47 ||
-  //           pathogen.id === 48 ||
-  //           pathogen.id === 43 ||
-  //           pathogen.id === 49 ||
-  //           pathogen.id === 50 ||
-  //           pathogen.id === 51 ||
-  //           pathogen.id === 52 ||
-  //           pathogen.id === 53 ||
-  //           pathogen.id === 54 ||
-  //           pathogen.id === 55 ||
-  //           pathogen.id === 56 ||
-  //           pathogen.id === 57
-  //       );
-  //     case 9:
-  //       return pathogensData.filter((pathogen) => pathogen.id === 6);
-  //     case 6:
-  //       return pathogensData.filter((pathogen) => pathogen.id === 4);
-  //     case 12:
-  //       return pathogensData.filter((pathogen) => pathogen.id === 4);
-  //     default:
-  //       return pathogensData.filter((pathogen) => pathogen.id === 1);
-  //   }
-  // };
   useEffect(() => {
-    const caseNo = getValues("case_no");
+    if(!id)
+{const caseNo = getValues("case_no");
+    console.log(caseNo)
     const findPatient = patientsData.find((e) => e.case_no === caseNo);
-
+    console.log("this useEffectWork")
+    console.log(findPatient)
     if (!findPatient || !findPatient.Lab || !findPatient.Lab[0]) {
+      console.log("dontwait")
       clearErrors("machine_id");
       setValue("machine_id", "กรุณาเลือก");
       setValue("detection_method", "กรุณาเลือก");
@@ -246,15 +139,16 @@ function LaboratoryManageComponent({
     }
     // Only set the timeout if data is found
     setTimeout(() => {
+      console.log("wait to for caseNo to set machineId and detectionMethod")
+      console.log(findPatient.Lab[0].machine_id)
       setValue("machine_id", findPatient.Lab[0].machine_id);
       setValue("detection_method", findPatient.Lab[0].detection_method);
-    }, 1000);
+    }, 3000);}    
   }, [watch("case_no")]);
 
   useEffect(() => {
-    const caseNo = getValues("case_no");
+    if(!id){const caseNo = getValues("case_no");
     const findPatient = patientsData.find((e) => e.case_no === caseNo);
-
     if (!findPatient || !findPatient.Lab || !findPatient.Lab[0]) {
       clearErrors("detection_method");
       setValue("detection_method", "กรุณาเลือก");
@@ -264,7 +158,7 @@ function LaboratoryManageComponent({
     setTimeout(() => {
       // setValue("machine_id", findPatient.Lab[0].machine_id);
       setValue("detection_method", findPatient.Lab[0].detection_method);
-    }, 1000);
+    }, 3000);}
   }, [watch("machine_id")]);
 
   // useEffect(() => {
