@@ -43,29 +43,11 @@ export const getPatientList = async (
 
   const translateGender = (term: string) => {
     const lowerTerm = term.toLowerCase();
-    if (lowerTerm.startsWith("ช")) return "Male";
-    if (lowerTerm.startsWith("ห") || lowerTerm.startsWith("ญ")) return "Female";
+    if (lowerTerm.startsWith("ชาย")) return "Male";
+    if (lowerTerm.startsWith("หญิง")) return "Female";
     return term;
   };
   const translatedSearchTerm = translateGender(searchTerm);
-  const nameParts = searchTerm ? searchTerm.split(" ") : [];
-  const patientConditions: Prisma.PatientWhereInput[] = [];
-
-  if (nameParts.length === 1) {
-    patientConditions.push(
-      { OR: [{ title: { contains: nameParts[0] } }, { title: null }] },
-      { first_name: { contains: nameParts[0] } },
-      { last_name: { contains: nameParts[0] } }
-    );
-  } else if (nameParts.length > 1) {
-    patientConditions.push({
-      AND: [
-        { OR: [{ title: { contains: nameParts[0] } }, { title: null }] },
-        { first_name: { contains: nameParts[1] || nameParts[0] } },
-        { last_name: { contains: nameParts[2] || nameParts[1] } },
-      ],
-    });
-  }
 
   const where: Prisma.PatientWhereInput = {
     OR: [
@@ -73,7 +55,9 @@ export const getPatientList = async (
       { hn: { contains: searchTerm } },
       { an: { contains: searchTerm } },
       { id_card: { contains: searchTerm } },
-      ...patientConditions,
+      { title: { contains: searchTerm } },
+      { first_name: { contains: searchTerm } },
+      { last_name: { contains: searchTerm } },
       { gender: { contains: translatedSearchTerm } },
       {
         InspectionType: {

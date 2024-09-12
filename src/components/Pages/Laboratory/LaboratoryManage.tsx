@@ -5,7 +5,7 @@ import { useYupValidationResolver } from "@/components/hooks";
 import { Routes } from "@/lib-client/constants";
 import { useDetectionMethod } from "@/lib-client/react-query/detection-method/useDetectionMethod";
 import { useInspectionTypes } from "@/lib-client/react-query/inspection-type";
-import { useLabById } from "@/lib-client/react-query/lab";
+import { useLabById, useLabs } from "@/lib-client/react-query/lab";
 import { useCreateLab } from "@/lib-client/react-query/lab/useCreateLab";
 import { useUpdateLab } from "@/lib-client/react-query/lab/useUpdateLab";
 import { useCreateLogAction } from "@/lib-client/react-query/log";
@@ -79,6 +79,7 @@ function LaboratoryManageComponent({
   const { data: patientsData } = usePatients({});
   const { data: pathogensData } = usePathogens({});
   const { data: officerData } = useOfficers({});
+  const { data: labData } = useLabs({});
   const { mutate: createLab } = useCreateLab();
   const { mutate: updateLab } = useUpdateLab();
 
@@ -123,15 +124,14 @@ function LaboratoryManageComponent({
   const watchFields = watch("test_type_id");
   const { data: pathogensDataType } = usePathogensByTestTypeId(watchFields);
 
+  const filteredPatientsData = patientsData.filter(
+    (patient) => Array.isArray(labData) && !labData.some((lab) => lab.case_no === patient.case_no)
+  );
   useEffect(() => {
     if(!id)
 {const caseNo = getValues("case_no");
-    console.log(caseNo)
     const findPatient = patientsData.find((e) => e.case_no === caseNo);
-    console.log("this useEffectWork")
-    console.log(findPatient)
     if (!findPatient || !findPatient.Lab || !findPatient.Lab[0]) {
-      console.log("dontwait")
       clearErrors("machine_id");
       setValue("machine_id", "กรุณาเลือก");
       setValue("detection_method", "กรุณาเลือก");
@@ -139,8 +139,6 @@ function LaboratoryManageComponent({
     }
     // Only set the timeout if data is found
     setTimeout(() => {
-      console.log("wait to for caseNo to set machineId and detectionMethod")
-      console.log(findPatient.Lab[0].machine_id)
       setValue("machine_id", findPatient.Lab[0].machine_id);
       setValue("detection_method", findPatient.Lab[0].detection_method);
     }, 3000);}    
@@ -154,7 +152,6 @@ function LaboratoryManageComponent({
       setValue("detection_method", "กรุณาเลือก");
       return;
     }
-
     setTimeout(() => {
       // setValue("machine_id", findPatient.Lab[0].machine_id);
       setValue("detection_method", findPatient.Lab[0].detection_method);
@@ -457,7 +454,7 @@ function LaboratoryManageComponent({
                     disabled={!!id || state}
                     value={field.value}
                     ref={refs.case_no}
-                    option={patientsData}
+                    option={filteredPatientsData}
                     onChange={(val: any) => {
                       field.onChange(val);
                     }}

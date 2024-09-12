@@ -1,14 +1,21 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { Label, Select } from "flowbite-react";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Legend,
+  LabelList,
+  Tooltip,
+} from "recharts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
-
 import CustomDatePicker from "@/components/Datepicker/CustomDatePicker";
 import CustomSelect from "@/components/CustomSelect/CustomSelect";
 import { customIcons, swal } from "@/components/Sweetalert/SweetAlert";
@@ -18,80 +25,89 @@ import {
   useTestTypeAll,
   useTestTypeById,
 } from "@/lib-client/react-query/test-type";
-import { usePathogens } from "@/lib-client/react-query/pathogens";
+import {
+  usePathogens,
+  usePathogensById,
+  usePathogensByTestTypeId,
+} from "@/lib-client/react-query/pathogens";
+import { useDashboardChartPathogens } from "@/lib-client/react-query/dashboard";
 
 const Dashboard: FC = () => {
+  const {
+    register,
+    control,
+    watch,
+    formState: { errors },
+  } = useForm();
   const { push } = useRouter();
   const { data: testTypeData } = useTestTypeAll();
-  const { data: pathogensDataType } = usePathogens({});
   const [textSearch, setTextSearch] = useState("");
   const [month, setMonth] = useState(new Date().getMonth() + 1);
-  const [chartData, setChartData] = useState<any[]>([]);
+  // const [chartData, setChartData] = useState<any[]>([]);
   const [filter, setFilter] = useState({
     dateStart: "",
     dateEnd: "",
     testTypeId: "",
     result: "",
   });
-  const { data: testTypeDataById } = useTestTypeById(Number(filter.testTypeId));
-
+  const [pathogens, setPathogens] = useState<string>("");
+  const testTypeIds = watch("test_type_id");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
+  const { data: testTypeDataById } = useTestTypeById(Number(testTypeIds));
+  const { data: pathogensDataType } = usePathogensByTestTypeId(
+    Number(testTypeIds)
+  );
+  const { data: dashboardChartPathogens, isSuccess } =
+    useDashboardChartPathogens({
+      pathogensId: Number(pathogens),
+      startDate:
+        startDate ||
+        format(
+          new Date(new Date().getFullYear(), month - 1, 1),
+          "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        ),
+      endDate:
+        endDate ||
+        format(
+          new Date(new Date().getFullYear(), month, 0),
+          "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        ),
+    });
   const refs = {
     dateStart: useRef<any>(),
     dateEnd: useRef<any>(),
     test_type_id: useRef<any>(),
   };
 
-  const updateChartData = (dashboardChart: any) => {
-    const chartEntries = [
-      {
-        name: "Detected",
-        value: dashboardChart?.detected,
-        percentage: dashboardChart?.detected_percentage,
-      },
-      {
-        name: "Not Detected",
-        value: dashboardChart?.not_detected,
-        percentage: dashboardChart?.not_detected_percentage,
-      },
-      {
-        name: "Positive",
-        value: dashboardChart?.positive,
-        percentage: dashboardChart?.positive_percentage,
-      },
-      {
-        name: "Negative",
-        value: dashboardChart?.negative,
-        percentage: dashboardChart?.negative_percentage,
-      },
-      {
-        name: "Indeterminate",
-        value: dashboardChart?.indeterminate,
-        percentage: dashboardChart?.indeterminate_percentage,
-      },
-      {
-        name: "Borderline",
-        value: dashboardChart?.borderline,
-        percentage: dashboardChart?.borderline_percentage,
-      },
-    ];
-    setChartData(chartEntries.filter((entry) => entry.value !== undefined));
-  };
+  const { data: pathogensList } = usePathogens({
+    limit: 100,
+    page: 1,
+  });
+
+  const pathogensId = Number(pathogens);
+  const { data: pathogensLists } = usePathogensById(pathogensId);
+  const [chartData, setChartData] = useState<
+    { name: string; value: any; percentage: number }[]
+  >([]);
+  useEffect(() => {
+    const data = Object.keys(dashboardChartPathogens || {})
+      .filter((f) => f != "total")
+      .map((item) => {
+        return {
+          name: pathogensList?.find((f) => `${f.id}` === item)?.name || "",
+          value: dashboardChartPathogens?.[item],
+          percentage:
+            (dashboardChartPathogens?.[item] / dashboardChartPathogens?.total) *
+            100,
+        };
+      });
+    setChartData(data);
+  }, [dashboardChartPathogens, pathogensList]);
+
+  const filteredChartData = chartData.filter((data) => data.percentage > 4);
 
   useEffect(() => {
-    const fetchDashboardChart = async () => {
-      try {
-        const response = await axiosInstance.get<any>(
-          Routes.API.DASHBOARD_CHART,
-          {
-            params: { month: Number(month) },
-          }
-        );
-        updateChartData(response.data);
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-      }
-    };
-
     const currentMonth = new Date().getMonth() + 1;
     const startDate = format(
       new Date(new Date().getFullYear(), month - 1, 1),
@@ -105,7 +121,6 @@ const Dashboard: FC = () => {
     );
 
     setFilter({ ...filter, dateStart: startDate, dateEnd: endDate });
-    fetchDashboardChart();
   }, [month]);
 
   const handleSearch = () => {
@@ -161,44 +176,101 @@ const Dashboard: FC = () => {
     return buf;
   };
 
-  const COLORS = [
-    "#FF6633",
-    "#FFB399",
-    "#FF33FF",
-    "#FFFF99",
-    "#00B3E6",
-    "#E6B333",
-  ];
+  // const COLORS = Array.from(
+  //   { length: 10 },
+  //   () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
+  // );
+  const generateColor = (index: number, total: number) => {
+    const hue = (index * (360 / total)) % 360; // Distributes hues evenly
+    const saturation = 70; // Saturation percentage
+    const lightness = 50; // Lightness percentage
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  };
+
+  // Generate the colors dynamically based on the number of chart data points
+  const generateUniqueColors = (dataLength: number) => {
+    return Array.from({ length: dataLength }, (_, index) =>
+      generateColor(index, dataLength)
+    );
+  };
+
+  // In your component rendering logic:
+  const COLORS = useMemo(
+    () => generateUniqueColors(chartData.length),
+    [chartData.length]
+  );
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="rounded border bg-white p-2 shadow-sm">
+          <p className="font-semibold text-primary">
+            {payload[0].name || "อื่นๆ"}
+          </p>
+          <p>จำนวน: {payload[0].value} ครั้ง</p>
+          <p>คิดเป็น: {payload[0].payload.percentage.toFixed(2)}%</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   const renderLegend = (props: any) => {
-    const { payload } = props;
+    const { payload } = props || {};
+    if (!payload || payload.length === 0) {
+      return <div></div>;
+    }
     return (
       <div className="flex flex-col">
-        {payload.map((entry: any, index: any) => (
-          <div className="flex items-center gap-1" key={`item-${index}`}>
-            <div
-              className="h-3 w-3 rounded-full"
-              style={{ backgroundColor: entry.color }}
-            ></div>
-            <div className="flex gap-2">
-              <p>
-                {entry.value} : {entry.payload.value} คน
-              </p>
-              <p className="text-primary">
-                (คิดเป็น {entry.payload.percentage}%)
-              </p>
-            </div>
-          </div>
-        ))}
+        <table className="dashboard rounded border-4 border-primary">
+          <thead className="rounded border-4 border-primary">
+            <tr className="text-left">
+              <th>Pathogens</th>
+              <th>จำนวน</th>
+              <th>คิดเป็น</th>
+            </tr>
+          </thead>
+          <tbody>
+            {payload.map((entry: any, index: any) => (
+              <tr key={index} className="rounded border-2 border-primary">
+                <td className="truncate rounded border-2 border-primary">
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: "12px",
+                      height: "12px",
+                      backgroundColor: entry.color,
+                      marginRight: "8px",
+                    }}
+                  ></span>
+                  {entry.value || "อื่นๆ"}
+                </td>
+                <td className="truncate">
+                  {entry.payload.payload.value} ครั้ง
+                </td>
+                <td className="truncate text-primary">
+                  (คิดเป็น {entry.payload.percentage.toFixed(2)}%)
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     );
   };
 
-  const {
-    register,
-    control,
-    formState: { errors },
-  } = useForm();
+  const handlePathogensChange = (val: any) => {
+    setPathogens(val);
+  };
+
+  const [containerHeight, setContainerHeight] = useState(400);
+
+  useEffect(() => {
+    const newHeight =
+      filteredChartData.length < 10
+        ? 400 + filteredChartData.length * 50
+        : 400 + filteredChartData.length * 25;
+    setContainerHeight(newHeight);
+  }, [filteredChartData]);  
 
   return (
     <>
@@ -247,7 +319,6 @@ const Dashboard: FC = () => {
                   option={testTypeData}
                   onChange={(val: any) => {
                     field.onChange(val);
-                    setFilter({ ...filter, testTypeId: val });
                   }}
                 />
               )}
@@ -255,62 +326,75 @@ const Dashboard: FC = () => {
           </div>
 
           <div className="flex-1">
-            <Label htmlFor={`lab_tests.pathogens_id`} value={`Pathogens`} />
+            <Label htmlFor={`pathogens_id`} value={`Pathogens`} />
             <Controller
-              name={`lab_tests.pathogens_id`}
+              name={`pathogens_id`}
               control={control}
               render={({ field }) => (
                 <CustomSelect
-                  {...register(`lab_tests.pathogens_id`)}
+                  {...register(`pathogens_id`)}
                   mainKeyId="id"
                   mainKey="name"
                   value={field.value}
                   option={pathogensDataType}
-                  onChange={(val) => field.onChange(val)}
+                  onChange={(val) => {
+                    field.onChange(val);
+                    handlePathogensChange(val);
+                  }}
                 />
               )}
             />
             <div className="mt-4 text-start">
-              {errors?.[`lab_tests.pathogens_id`] && (
+              {errors?.[`pathogens_id`] && (
                 <p className="text-red-500">
-                  {String(errors?.[`lab_tests.pathogens_id`]?.message)}
+                  {String(errors?.[`pathogens_id`]?.message)}
                 </p>
               )}
             </div>
           </div>
 
           <div className="flex-1">
-            <Label htmlFor={`startDate`} value={`ตั้งแต่`} />
+            <Label htmlFor={`startDate`} value={`วันที่เริ่มต้น`} />
             <CustomDatePicker
               ref={refs.dateStart}
-              onChange={(selectDate: string) =>
-                setFilter({ ...filter, dateStart: selectDate })
-              }
-              value={filter.dateStart ? new Date(filter.dateStart) : null}
+              onChange={(selectDate: string) => setStartDate(selectDate)}
+              value={startDate ? new Date(startDate) : null}
+              placeholder={format(
+                new Date(new Date().getFullYear(), month - 1, 1),
+                "dd-MM-Y"
+              )}
             />
           </div>
-
+          <p className="mt-8">จนถึง</p>
           <div className="flex-1">
-            <Label htmlFor={`endDate`} value={`ถึง`} />
+            <Label htmlFor={`endDate`} value={`วันที่สิ้นสุด`} />
             <CustomDatePicker
               ref={refs.dateEnd}
-              onChange={(selectDate: string) =>
-                setFilter({ ...filter, dateEnd: selectDate })
-              }
-              value={filter.dateEnd ? new Date(filter.dateEnd) : null}
+              onChange={(selectDate: string) => setEndDate(selectDate)}
+              value={endDate ? new Date(endDate) : null}
+              placeholder={format(
+                new Date(new Date().getFullYear(), month, 0),
+                "dd-MM-Y"
+              )}
             />
           </div>
         </div>
 
-        <ResponsiveContainer width={"100%"} height={400}>
+        <ResponsiveContainer width="100%" height={containerHeight}>
           <PieChart>
             <Pie
-              data={chartData}
+              data={filteredChartData}
               dataKey="value"
+              nameKey="name"
               cx="50%"
               cy="50%"
-              innerRadius={60}
-              outerRadius={100}
+              innerRadius={100}
+              outerRadius={150}
+              paddingAngle={2}
+              labelLine={true}
+              label={({ name, percentage }) =>
+                `${name} (${percentage.toFixed(1)}%)`
+              }
             >
               {chartData.map((entry, index) => (
                 <Cell
@@ -319,12 +403,18 @@ const Dashboard: FC = () => {
                 />
               ))}
             </Pie>
+            <Tooltip content={<CustomTooltip />} />
             <Legend
               content={renderLegend}
               align="right"
-              verticalAlign="middle"
-              width={320}
+              verticalAlign="bottom"
+              layout="horizontal"
               iconType="circle"
+              wrapperStyle={{
+                maxHeight: "40%",
+                overflowY: "scroll",
+                marginBottom: "3%",
+              }}
             />
           </PieChart>
         </ResponsiveContainer>

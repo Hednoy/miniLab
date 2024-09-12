@@ -12,8 +12,11 @@ import { NextRequest } from "next/server";
 import { z } from "zod";
 
 const dashboardSchema = z.object({
-  month: z.preprocess(stringToNumber, z.number().min(1).optional()),
+  // month: z.preprocess(stringToNumber, z.number().min(1).optional()),
+  // pathogensId: z.preprocess(stringToNumber, z.number().optional()),
   pathogensId: z.preprocess(stringToNumber, z.number().optional()),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
 });
 
 const validateDashboardQueryParams = (
@@ -35,9 +38,14 @@ const GET = async (request: NextRequest) => {
 
     const parsedData = validateDashboardQueryParams(params);
 
+    // Convert startDate and endDate to Date objects if they are strings
+    const startDate = parsedData?.startDate ? new Date(parsedData.startDate) : new Date();
+    const endDate = parsedData?.endDate ? new Date(parsedData.endDate) : new Date();
+
     const dashboard = await getLabChartPathogensData(
-      parsedData?.month || 1,
-      parsedData?.pathogensId
+      startDate,
+      endDate,
+      parsedData?.pathogensId || 0,
     );
 
     return Response.json(dashboard);

@@ -382,6 +382,10 @@ export async function PDFlab2(id: number): Promise<Buffer> {
   const approveBy = await prisma.officer.findUnique({
     where: { id: lab?.approve_by_id || 0 },
   });
+
+  const reportByName = reportBy ? `${reportBy.first_name || ''} ${reportBy.last_name || ''}` : 'Unknown';
+  const approveByName = approveBy ? `${approveBy.first_name || ''} ${approveBy.last_name || ''}` : 'Unknown';
+
   if (lab?.Machine.name == "FM 02-001(C) ใบรายงานผล COVID-19 (ระบบ MP)") {
     template.pageMargins = [20, 20, 20, 20];
     (template.background = function (currentPage, pageSize) {
@@ -1045,13 +1049,6 @@ export async function PDFlab2(id: number): Promise<Buffer> {
       },
       {} as { [key: string]: LabTest }
     );
-    const reportBy = await prisma.officer.findUnique({
-      where: { id: lab?.report_by_id || 0 },
-    });
-    const approveBy = await prisma.officer.findUnique({
-      where: { id: lab?.approve_by_id || 0 },
-    });
-
     template.pageMargins = [20, 20, 20, 20];
     template.background = (currentPage, pageSize) => ({
       image: logo.base64,
@@ -1225,7 +1222,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                   },
                   "\n",
                   {
-                    text: reportBy?.first_name + " " + reportBy?.last_name,
+                    text: reportByName,
                     style: "tableValue",
                     margin: [10, 10, 10, 10],
                   },
@@ -1246,7 +1243,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                   },
                   "\n",
                   {
-                    text: approveBy?.first_name + " " + approveBy?.last_name,
+                    text: approveByName,
                     style: "tableValue",
                   },
                   "\n",
@@ -2163,6 +2160,9 @@ export async function PDFLAB(id: number): Promise<Buffer> {
     where: { id: lab?.approve_by_id || 0 },
   });
 
+  const reportByName = reportBy ? `${reportBy.first_name || ''} ${reportBy.last_name || ''}` : 'Unknown';
+  const approveByName = approveBy ? `${approveBy.first_name || ''} ${approveBy.last_name || ''}` : 'Unknown';
+
   if (lab?.Machine?.name !== "FM 02-000(A)") {
     template.pageMargins = [20, 20, 20, 20];
     (template.background = function (currentPage, pageSize) {
@@ -2378,18 +2378,14 @@ export async function PDFLAB(id: number): Promise<Buffer> {
             text: [
               { text: "Reported by : ", style: "tableKey" },
               {
-                text: reportBy?.first_name + " " + reportBy?.last_name,
+                text: reportByName,
                 style: "tableValue",
               },
               "\n\n",
               { text: "Approved by : ", style: "tableKey" },
               {
                 text:
-                  approveBy?.first_name +
-                  " " +
-                  reportBy?.last_name +
-                  " " +
-                  lab?.approve_time,
+                  approveByName + lab?.approve_time,
                 style: "tableValue",
               },
             ],
@@ -2682,7 +2678,7 @@ export async function PDFLAB(id: number): Promise<Buffer> {
             text: [
               { text: "Reported by : ", style: "tableKey" },
               {
-                text: reportBy?.first_name + " " + reportBy?.last_name,
+                text: reportByName,
                 style: "tableValue",
               },
               "\n\n",

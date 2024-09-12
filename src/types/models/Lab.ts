@@ -230,6 +230,8 @@ export type LabChart = {
 };
 
 export type LabChartParams = {
-  month: number;
+  // month: number;
   pathogensId: number;
+  startDate: string;
+  endDate: string;
 };
