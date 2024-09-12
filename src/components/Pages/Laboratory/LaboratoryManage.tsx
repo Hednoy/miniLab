@@ -806,17 +806,18 @@ function LaboratoryManageComponent({
                   <div className="rounded-[20px] bg-secondary p-2 text-sm">
                     {file.file_name ? file.file_name : file.old_file_name}
                   </div>
-                  <button
+                   <button
                     type="button"
                     className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary"
                     onClick={() => {
-                      if (file.file_path)
-                        window.open(
-                          file.file_path.replace("/public", ""),
-                          "_blank"
-                        );
-                      else
-                        window.open(file.path.replace("/public", ""), "_blank");
+                      const link = document.createElement("a");
+                      link.href = file.file_path
+                        ? file.file_path.replace("/public", "")
+                        : file.path.replace("/public", "");
+                      link.download = file.file_name || file.old_file_name;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
                     }}
                   >
                     <FontAwesomeIcon
