@@ -134,7 +134,7 @@ export const getLabList = async (
       {
         TestType: {
           OR: [
-            { prefix_name: { contains: searchTerm } },
+            // { prefix_name: { contains: searchTerm } },
             { subfix_name: { contains: searchTerm } },
           ],
         },

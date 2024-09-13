@@ -125,7 +125,9 @@ function LaboratoryManageComponent({
   const { data: pathogensDataType } = usePathogensByTestTypeId(watchFields);
 
   const filteredPatientsData = patientsData.filter(
-    (patient) => Array.isArray(labData) && !labData.some((lab) => lab.case_no === patient.case_no)
+    (patient) =>
+      Array.isArray(labData) &&
+      !labData.some((lab) => lab.case_no === patient.case_no)
   );
   useEffect(() => {
     if(!id)
