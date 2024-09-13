@@ -31,6 +31,7 @@ import {
   usePathogensByTestTypeId,
 } from "@/lib-client/react-query/pathogens";
 import { useDashboardChartPathogens } from "@/lib-client/react-query/dashboard";
+import { data } from "@/components/DashBoardComponents/ReportChart";
 
 const Dashboard: FC = () => {
   const {
@@ -43,7 +44,6 @@ const Dashboard: FC = () => {
   const { data: testTypeData } = useTestTypeAll();
   const [textSearch, setTextSearch] = useState("");
   const [month, setMonth] = useState(new Date().getMonth() + 1);
-  // const [chartData, setChartData] = useState<any[]>([]);
   const [filter, setFilter] = useState({
     dateStart: "",
     dateEnd: "",
@@ -60,7 +60,8 @@ const Dashboard: FC = () => {
   );
   const { data: dashboardChartPathogens, isSuccess } =
     useDashboardChartPathogens({
-      pathogensId: Number(pathogens),
+      test_type_id: Number(testTypeIds) || 0,
+      pathogensId: Number(pathogens) || 0,
       startDate:
         startDate ||
         format(
@@ -103,9 +104,19 @@ const Dashboard: FC = () => {
         };
       });
     setChartData(data);
+    if (pathogensLists) {
+      console.log(pathogensLists.name);
+    }
   }, [dashboardChartPathogens, pathogensList]);
 
-  const filteredChartData = chartData.filter((data) => data.percentage > 4);
+  const filteredChartData =
+    pathogensId && pathogensLists !== undefined
+      ? chartData.filter((data) => data.name == pathogensLists.name)
+      : chartData.filter((data) => data.percentage > 4);
+  const filteredChartDataTable =
+    pathogensId && pathogensLists !== undefined
+      ? chartData.filter((data) => data.name == pathogensLists.name)
+      : chartData;
 
   useEffect(() => {
     const currentMonth = new Date().getMonth() + 1;
@@ -176,25 +187,19 @@ const Dashboard: FC = () => {
     return buf;
   };
 
-  // const COLORS = Array.from(
-  //   { length: 10 },
-  //   () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
-  // );
   const generateColor = (index: number, total: number) => {
-    const hue = (index * (360 / total)) % 360; // Distributes hues evenly
-    const saturation = 70; // Saturation percentage
-    const lightness = 50; // Lightness percentage
+    const hue = (index * (360 / total)) % 360;
+    const saturation = 70;
+    const lightness = 50;
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   };
 
-  // Generate the colors dynamically based on the number of chart data points
   const generateUniqueColors = (dataLength: number) => {
     return Array.from({ length: dataLength }, (_, index) =>
       generateColor(index, dataLength)
     );
   };
 
-  // In your component rendering logic:
   const COLORS = useMemo(
     () => generateUniqueColors(chartData.length),
     [chartData.length]
@@ -214,10 +219,15 @@ const Dashboard: FC = () => {
     return null;
   };
 
-  const renderLegend = (props: any) => {
-    const { payload } = props || {};
-    if (!payload || payload.length === 0) {
-      return <div></div>;
+  const renderLegend = () => {
+    if (!chartData || chartData.length === 0) {
+      return (
+        <div className="flex items-center justify-center p-4">
+          <p className="text-gray-500 text-lg font-semibold">
+            No data available
+          </p>
+        </div>
+      );
     }
     return (
       <div className="flex flex-col">
@@ -230,7 +240,7 @@ const Dashboard: FC = () => {
             </tr>
           </thead>
           <tbody>
-            {payload.map((entry: any, index: any) => (
+            {filteredChartDataTable.map((entry, index) => (
               <tr key={index} className="rounded border-2 border-primary">
                 <td className="truncate rounded border-2 border-primary">
                   <span
@@ -238,20 +248,31 @@ const Dashboard: FC = () => {
                       display: "inline-block",
                       width: "12px",
                       height: "12px",
-                      backgroundColor: entry.color,
+                      backgroundColor: COLORS[index % COLORS.length],
                       marginRight: "8px",
                     }}
                   ></span>
-                  {entry.value || "อื่นๆ"}
+                  {entry.name || "อื่นๆ"}
                 </td>
-                <td className="truncate">
-                  {entry.payload.payload.value} ครั้ง
-                </td>
+                <td className="truncate">{entry.value} ครั้ง</td>
                 <td className="truncate text-primary">
-                  (คิดเป็น {entry.payload.percentage.toFixed(2)}%)
+                  (คิดเป็น {entry.percentage.toFixed(2)}%)
                 </td>
               </tr>
             ))}
+            <tr className="rounded border-2 border-primary font-semibold">
+              <td className="truncate rounded border-2 border-primary">
+                รวมทั้งหมด
+              </td>
+              <td className="truncate">
+                {filteredChartDataTable.reduce(
+                  (acc, entry) => acc + entry.value,
+                  0
+                )}{" "}
+                ครั้ง
+              </td>
+              <td className="truncate text-primary"></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -267,10 +288,10 @@ const Dashboard: FC = () => {
   useEffect(() => {
     const newHeight =
       filteredChartData.length < 10
-        ? 400 + filteredChartData.length * 50
+        ? 500 + filteredChartData.length * 50
         : 400 + filteredChartData.length * 25;
     setContainerHeight(newHeight);
-  }, [filteredChartData]);  
+  }, [filteredChartData]);
 
   return (
     <>
@@ -389,7 +410,7 @@ const Dashboard: FC = () => {
               cx="50%"
               cy="50%"
               innerRadius={100}
-              outerRadius={150}
+              outerRadius={140}
               paddingAngle={2}
               labelLine={true}
               label={({ name, percentage }) =>
@@ -411,7 +432,7 @@ const Dashboard: FC = () => {
               layout="horizontal"
               iconType="circle"
               wrapperStyle={{
-                maxHeight: "40%",
+                maxHeight: "30%",
                 overflowY: "scroll",
                 marginBottom: "3%",
               }}

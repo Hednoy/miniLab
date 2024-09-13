@@ -578,7 +578,8 @@ export const getLabChartData = async (month: number): Promise<LabChart> => {
 export const getLabChartPathogensData = async (
   startDate: Date,
   endDate: Date,
-  pathogensId?: number
+  pathogensId?: number,
+  test_type_id?: number
 ): Promise<any> => {
   // get pathogens data
   const labTestResult: {
@@ -594,7 +595,22 @@ export const getLabChartPathogensData = async (
     },
   });
 
-  if (pathogens2) {
+  const labTest = await prisma.pathogens.findMany({
+    select: {
+      id: true,
+      name: true,
+      PathogensTestType: {
+        select: {
+          id: true,
+          name: true,
+          pathogens_id: true,
+          test_type_id: true,
+        },
+      },
+    },
+  });
+
+  if (pathogensId || !pathogensId && !test_type_id) {
     // labTestResult.push({
     //   id: 0,
     //   name: "อื่นๆ",
@@ -612,7 +628,9 @@ export const getLabChartPathogensData = async (
             gte: startDate,
             lt: endDate,
           },
-          result: "Detected",
+          result: {
+            in: ["Detected", "Positive"]
+          },
         },
       });
 
@@ -629,6 +647,33 @@ export const getLabChartPathogensData = async (
       // }
     }
   }
+  if (test_type_id) {
+    const filterPathogen = test_type_id
+      ? labTest.filter((e) => e.PathogensTestType.some(pt => pt.test_type_id == test_type_id))
+      : labTest;
+
+    for (const pathogen of filterPathogen) {
+      const countLabtest = await prisma.labTest.count({
+        where: {
+          pathogens_id: pathogen.id,
+          created_at: {
+            gte: startDate,
+            lt: endDate,
+          },
+          result: {
+            in: ["Detected", "Positive"]
+          },
+        },
+      });
+      if (countLabtest > 0) {
+        labTestResult.push({
+          id: pathogen.id,
+          name: pathogen.name,
+          count: countLabtest,
+        });
+      }
+    }
+  }
 
   const countLabtest = await prisma.labTest.count({
     where: {
@@ -636,7 +681,9 @@ export const getLabChartPathogensData = async (
         gte: startDate,
         lt: endDate,
       },
-      result: "Detected",
+      result: {
+        in: ["Detected", "Positive"]
+      },
     },
   });
 

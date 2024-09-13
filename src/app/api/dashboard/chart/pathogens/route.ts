@@ -14,6 +14,7 @@ import { z } from "zod";
 const dashboardSchema = z.object({
   // month: z.preprocess(stringToNumber, z.number().min(1).optional()),
   // pathogensId: z.preprocess(stringToNumber, z.number().optional()),
+  test_type_id: z.preprocess(stringToNumber, z.number().optional()),
   pathogensId: z.preprocess(stringToNumber, z.number().optional()),
   startDate: z.string().optional(),
   endDate: z.string().optional(),
@@ -46,6 +47,7 @@ const GET = async (request: NextRequest) => {
       startDate,
       endDate,
       parsedData?.pathogensId || 0,
+      parsedData?.test_type_id || 0
     );
 
     return Response.json(dashboard);

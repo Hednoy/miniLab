@@ -182,6 +182,7 @@ export type LabForReport = {
 
 export type LabSearchData = {
   id: number;
+  detection_method: string;
   created_at: Date | null;
   case_no: string;
   paper_code: string;
@@ -231,6 +232,7 @@ export type LabChart = {
 
 export type LabChartParams = {
   // month: number;
+  test_type_id: number;
   pathogensId: number;
   startDate: string;
   endDate: string;

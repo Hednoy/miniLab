@@ -116,7 +116,7 @@ const Sidebar: FC<SidebarProps> = ({
           <div className="flex flex-col p-4">
             <Image
               src={"/images/ddc-logo.svg"}
-              width={160}
+              width={200}
               height={150}
               alt="ddc-logo"
               className={`mb-10 hidden self-center py-5 md:block`}

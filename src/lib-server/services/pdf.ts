@@ -383,8 +383,8 @@ export async function PDFlab2(id: number): Promise<Buffer> {
     where: { id: lab?.approve_by_id || 0 },
   });
 
-  const reportByName = reportBy ? `${reportBy.first_name || ''} ${reportBy.last_name || ''}` : 'Unknown';
-  const approveByName = approveBy ? `${approveBy.first_name || ''} ${approveBy.last_name || ''}` : 'Unknown';
+  const reportByName = reportBy ? `${reportBy.first_name || ""} ${reportBy.last_name || ""}` : "Unknown";
+  const approveByName = approveBy ? `${approveBy.first_name || ""} ${approveBy.last_name || ""}` : "Unknown";
 
   if (lab?.Machine.name == "FM 02-001(C) ใบรายงานผล COVID-19 (ระบบ MP)") {
     template.pageMargins = [20, 20, 20, 20];
@@ -414,7 +414,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                   },
                   "\n\n",
                   {
-                    text: "24/56 Phahonynthin Rd, Anusawari, Rang-khen. Rangknk 10770 \nTel +66 2972 9606, +66 96 0966075, E-mail: labiudcbkk@gmail.com",
+                    text: "24/56 Phahonyothin Rd, Anusawari, Bang-khen. Bangkok 10770 \nTel +66 2972 9606, +66 96 0966075, E-mail: labiudcbkk@gmail.com",
                   },
                 ],
                 margin: [10, 0, 0, 0],
@@ -593,27 +593,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 margin: [10, 0, 0, 0],
               },
               {
-                text: reportBy?.title_name || "",
-                style: "tableValue",
-                margin: [10, 0, 0, 0],
-              },
-              {
-                text: " ",
-                style: "tableValue",
-                margin: [10, 0, 0, 0],
-              },
-              {
-                text: reportBy?.first_name || "",
-                style: "tableValue",
-                margin: [10, 0, 0, 0],
-              },
-              {
-                text: " ",
-                style: "tableValue",
-                margin: [10, 0, 0, 0],
-              },
-              {
-                text: reportBy?.last_name || "",
+                text: reportByName || "",
                 style: "tableValue",
                 margin: [10, 0, 0, 0],
               },
@@ -624,27 +604,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 margin: [10, 0, 0, 0],
               },
               {
-                text: approveBy?.title_name || "",
-                style: "tableValue",
-                margin: [10, 0, 0, 0],
-              },
-              {
-                text: " ",
-                style: "tableValue",
-                margin: [10, 0, 0, 0],
-              },
-              {
-                text: approveBy?.first_name || "",
-                style: "tableValue",
-                margin: [10, 0, 0, 0],
-              },
-              {
-                text: " ",
-                style: "tableValue",
-                margin: [10, 0, 0, 0],
-              },
-              {
-                text: approveBy?.last_name || "",
+                text: approveByName || "",
                 style: "tableValue",
                 margin: [10, 0, 0, 0],
               },
@@ -655,7 +615,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 margin: [10, 0, 0, 0],
               },
               {
-                text: convertDateToString(lab?.report_date ?? null),
+                text: convertDateToString(lab?.report_date ?? null) + " " + lab?.report_time,
                 style: "tableValue",
                 margin: [10, 0, 0, 0],
               },
@@ -1071,7 +1031,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
           {
             text: [
               {
-                text: "กลุ่มห้องปฏิบัติการทางการแพทย์ด้านการควบคุมโรค สถาบันป้องกันควบคุมโรคเขตเมือง",
+                text: "กลุ่มห้องปฏิบัติการสาธาณสุข สถาบันป้องกันควบคุมโรคเขตเมือง",
                 style: "header",
               },
               "\n\n",
@@ -1224,7 +1184,6 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                   {
                     text: reportByName,
                     style: "tableValue",
-                    margin: [10, 10, 10, 10],
                   },
                   "\n",
                   {
@@ -1361,7 +1320,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
             {
               text: [
                 {
-                  text: "กลุ่มห้องปฏิบัติการทางการแพทย์ด้านการควบคุมโรค สถาบันป้องกันควบคุมโรคเขตเมือง ",
+                  text: "กลุ่มห้องปฏิบัติการสาธาณสุข สถาบันป้องกันควบคุมโรคเขตเมือง ",
                   style: "header",
                 },
                 "\n\n",
@@ -1867,7 +1826,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                   },
                   "\n\n",
                   {
-                    text: "24/56 Phahonynthin Rd, Anusawari, Rang-khen. Rangknk 10770 \nTel +66 2972 9606, +66 96 0966075, E-mail: labiudcbkk@gmail.com",
+                    text: "24/56 Phahonyothin Rd, Anusawari, Bang-khen. Bangkok 10770 \nTel +66 2972 9606, +66 96 0966075, E-mail: labiudcbkk@gmail.com",
                   },
                 ],
                 margin: [10, 0, 0, 0],
@@ -1878,7 +1837,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
             style: "tableExample",
             margin: [0, 0, 0, 0],
             table: {
-              widths: [170, 170, 170],
+              widths: [170, 250, 170],
 
               body: [
                 [
@@ -1898,7 +1857,8 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       { text: lab?.Patient?.age, style: "tableValue" },
                       "\n",
                       { text: "Sex : ", style: "tableKey" },
-                      { text: "", style: "tableValue" },
+                      { text: lab?.Patient?.gender, style: "tableValue" },
+                      // { text: lab?.Patient?.gender === 'male' ? 'ชาย' : 'หญิง', style: "tableValue" },
                     ],
                     margin: [0, 5, 0, 5],
                   },
@@ -1909,14 +1869,14 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       { text: lab?.Patient?.hn, style: "tableValue" },
                       "\n",
                       { text: "Request By : ", style: "tableKey" },
-                      { text: lab?.Patient?.gender, style: "tableValue" },
+                      { text: reportByName, style: "tableValue" },
                       "\n",
                       { text: "Receive By : ", style: "tableKey" },
-                      { text: lab?.Patient?.gender, style: "tableValue" },
+                      { text: "", style: "tableValue" },
                       "\n",
                     ],
                     alignment: "right",
-                    margin: [0, 5, 30, 5],
+                    margin: [0, 5, 100, 5],
                   },
                   {
                     border: [false, true, false, true],
@@ -1928,7 +1888,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       { text: lab?.Patient?.visit_type, style: "tableValue" },
                       "\n",
                       { text: "Receive Time : ", style: "tableKey" },
-                      { text: lab?.Patient?.id_card, style: "tableValue" },
+                      { text: lab?.Patient?.received_time, style: "tableValue" },
                     ],
                     margin: [10, 5, 0, 5],
                   },
@@ -1963,8 +1923,8 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 ...Object.keys(labtestPdf).map((key) => [
                   { text: labtestPdf[key]?.name, style: "tableSecVal" },
                   { text: labtestPdf[key]?.result, style: "tableSecVal" },
-                  { text: labtestPdf[key]?.remark, style: "tableSecVal" },
                   { text: "", style: "tableSecVal" },
+                  { text: lab?.detection_method, style: "tableSecVal" },
                 ]),
               ],
             },
@@ -2031,11 +1991,11 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Date: ", style: "tableKey" },
                       {
-                        text: convertDateToString(lab?.report_date ?? null),
+                        text: convertDateToString(lab?.report_date ?? null) + " " + lab?.report_time,
                         style: "tableValue",
                       },
                     ],
-                    margin: [30, 0, 0, 0],
+                    margin: [40, 0, 0, 0],
                     border: [false, false, false, false],
                     alignment: "left",
                   },
@@ -2059,11 +2019,11 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Date: ", style: "tableKey" },
                       {
-                        text: convertDateToString(lab?.approve_date ?? null),
+                        text: convertDateToString(lab?.approve_date ?? null) + " " + lab?.approve_time,
                         style: "tableValue",
                       },
                     ],
-                    margin: [0, 0, 0, 0],
+                    margin: [60, 0, 0, 0],
                     border: [false, false, false, false],
                     alignment: "left",
                   },
@@ -2160,8 +2120,8 @@ export async function PDFLAB(id: number): Promise<Buffer> {
     where: { id: lab?.approve_by_id || 0 },
   });
 
-  const reportByName = reportBy ? `${reportBy.first_name || ''} ${reportBy.last_name || ''}` : 'Unknown';
-  const approveByName = approveBy ? `${approveBy.first_name || ''} ${approveBy.last_name || ''}` : 'Unknown';
+  const reportByName = reportBy ? `${reportBy.first_name || ""} ${reportBy.last_name || ""}` : "Unknown";
+  const approveByName = approveBy ? `${approveBy.first_name || ""} ${approveBy.last_name || ""}` : "Unknown";
 
   if (lab?.Machine?.name !== "FM 02-000(A)") {
     template.pageMargins = [20, 20, 20, 20];
@@ -2385,7 +2345,7 @@ export async function PDFLAB(id: number): Promise<Buffer> {
               { text: "Approved by : ", style: "tableKey" },
               {
                 text:
-                  approveByName + lab?.approve_time,
+                  approveByName,
                 style: "tableValue",
               },
             ],
@@ -2684,7 +2644,7 @@ export async function PDFLAB(id: number): Promise<Buffer> {
               "\n\n",
               { text: "Approved by : ", style: "tableKey" },
               {
-                text: approveBy?.first_name + " " + reportBy?.last_name,
+                text: approveByName,
                 style: "tableValue",
               },
             ],
