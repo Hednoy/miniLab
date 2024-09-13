@@ -40,8 +40,12 @@ const GET = async (request: NextRequest) => {
     const parsedData = validateDashboardQueryParams(params);
 
     // Convert startDate and endDate to Date objects if they are strings
-    const startDate = parsedData?.startDate ? new Date(parsedData.startDate) : new Date();
-    const endDate = parsedData?.endDate ? new Date(parsedData.endDate) : new Date();
+    const startDate = parsedData?.startDate
+      ? new Date(parsedData.startDate)
+      : new Date();
+    const endDate = parsedData?.endDate
+      ? new Date(parsedData.endDate)
+      : new Date();
 
     const dashboard = await getLabChartPathogensData(
       startDate,

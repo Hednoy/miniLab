@@ -383,8 +383,12 @@ export async function PDFlab2(id: number): Promise<Buffer> {
     where: { id: lab?.approve_by_id || 0 },
   });
 
-  const reportByName = reportBy ? `${reportBy.first_name || ""} ${reportBy.last_name || ""}` : "Unknown";
-  const approveByName = approveBy ? `${approveBy.first_name || ""} ${approveBy.last_name || ""}` : "Unknown";
+  const reportByName = reportBy
+    ? `${reportBy.first_name || ""} ${reportBy.last_name || ""}`
+    : "Unknown";
+  const approveByName = approveBy
+    ? `${approveBy.first_name || ""} ${approveBy.last_name || ""}`
+    : "Unknown";
 
   if (lab?.Machine.name == "FM 02-001(C) ใบรายงานผล COVID-19 (ระบบ MP)") {
     template.pageMargins = [20, 20, 20, 20];
@@ -615,7 +619,10 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 margin: [10, 0, 0, 0],
               },
               {
-                text: convertDateToString(lab?.report_date ?? null) + " " + lab?.report_time,
+                text:
+                  convertDateToString(lab?.report_date ?? null) +
+                  " " +
+                  lab?.report_time,
                 style: "tableValue",
                 margin: [10, 0, 0, 0],
               },
@@ -1888,7 +1895,10 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       { text: lab?.Patient?.visit_type, style: "tableValue" },
                       "\n",
                       { text: "Receive Time : ", style: "tableKey" },
-                      { text: lab?.Patient?.received_time, style: "tableValue" },
+                      {
+                        text: lab?.Patient?.received_time,
+                        style: "tableValue",
+                      },
                     ],
                     margin: [10, 5, 0, 5],
                   },
@@ -1991,7 +2001,10 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Date: ", style: "tableKey" },
                       {
-                        text: convertDateToString(lab?.report_date ?? null) + " " + lab?.report_time,
+                        text:
+                          convertDateToString(lab?.report_date ?? null) +
+                          " " +
+                          lab?.report_time,
                         style: "tableValue",
                       },
                     ],
@@ -2019,7 +2032,10 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Date: ", style: "tableKey" },
                       {
-                        text: convertDateToString(lab?.approve_date ?? null) + " " + lab?.approve_time,
+                        text:
+                          convertDateToString(lab?.approve_date ?? null) +
+                          " " +
+                          lab?.approve_time,
                         style: "tableValue",
                       },
                     ],
@@ -2120,8 +2136,13 @@ export async function PDFLAB(id: number): Promise<Buffer> {
     where: { id: lab?.approve_by_id || 0 },
   });
 
-  const reportByName = reportBy ? `${reportBy.first_name || ""} ${reportBy.last_name || ""}` : "Unknown";
-  const approveByName = approveBy ? `${approveBy.first_name || ""} ${approveBy.last_name || ""}` : "Unknown";
+  const reportByName = reportBy
+    ? `${reportBy.first_name || ""} ${reportBy.last_name || ""}`
+    : "Unknown";
+
+  const approveByName = approveBy
+    ? `${approveBy.first_name || ""} ${approveBy.last_name || ""}`
+    : "Unknown";
 
   if (lab?.Machine?.name !== "FM 02-000(A)") {
     template.pageMargins = [20, 20, 20, 20];
@@ -2343,11 +2364,7 @@ export async function PDFLAB(id: number): Promise<Buffer> {
               },
               "\n\n",
               { text: "Approved by : ", style: "tableKey" },
-              {
-                text:
-                  approveByName,
-                style: "tableValue",
-              },
+              { text: approveByName, style: "tableValue" },
             ],
           },
           {

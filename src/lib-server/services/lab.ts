@@ -128,7 +128,15 @@ export const getLabList = async (
     OR: [
       { case_no: { contains: searchTerm } },
       { detection_method: { contains: searchTerm } },
-      { Patient: { OR: [{ title: { contains: searchTerm } } ,{ first_name: { contains: searchTerm } }, { last_name: { contains: searchTerm } }] } },
+      {
+        Patient: {
+          OR: [
+            { title: { contains: searchTerm } },
+            { first_name: { contains: searchTerm } },
+            { last_name: { contains: searchTerm } },
+          ],
+        },
+      },
       { InspectionType: { OR: [{ name: { contains: searchTerm } }] } },
       { Machine: { OR: [{ name: { contains: searchTerm } }] } },
       {
@@ -151,7 +159,7 @@ export const getLabList = async (
 
   // console.log('Search Term:', searchTerm);
   // console.log('Where Condition:', where);
-  
+
   const totalCount = await prisma.lab.count({ where });
 
   const labs = await prisma.lab.findMany({

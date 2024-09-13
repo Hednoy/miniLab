@@ -74,7 +74,6 @@ const CustomSelect = React.forwardRef(
     );
     const [query, setQuery] = useState("");
 
-
     // const filteredOption = useCallback(
     //   (
     //     input: string,
@@ -95,13 +94,16 @@ const CustomSelect = React.forwardRef(
     const filteredOption = useCallback(
       (
         input: string,
-        option?: { name: string; value: string; case_no: string; prefix_name: string },
+        option?: {
+          name: string;
+          value: string;
+          case_no: string;
+          prefix_name: string;
+        }
       ) => {
-        return (
-          (option?.name ?? option?.case_no ?? option?.prefix_name ?? "")
-            .toLowerCase()
-            .includes(input.toLowerCase())
-        );
+        return (option?.name ?? option?.case_no ?? option?.prefix_name ?? "")
+          .toLowerCase()
+          .includes(input.toLowerCase());
       },
       [query, option]
     );

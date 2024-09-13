@@ -31,7 +31,7 @@ const DashboardPathogens: FC = () => {
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const { data: testtypeAll } = useTestTypeAll();
   const { data: dashboardChart } = useDashboardChartPathogens({
-    // test_type_id: 0,
+    test_type_id: 0,
     pathogensId: Number(pathogens),
     startDate: "",
     endDate: "",
