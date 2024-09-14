@@ -72,6 +72,8 @@ function LaboratoryManageComponent({
     date: useRef<any>(),
   };
 
+  console.log(labsData)
+
   const { data: machinesData } = useMachines({});
   const { data: inspectionTypes } = useInspectionTypes({});
   const { data: detectionMethodData } = useDetectionMethod();
@@ -124,6 +126,9 @@ function LaboratoryManageComponent({
   const watchFields = watch("test_type_id");
   const { data: pathogensDataType } = usePathogensByTestTypeId(watchFields);
 
+  const watchAllFields = watch();
+  console.log(watchAllFields);
+
   const filteredPatientsData = patientsData.filter(
     (patient) =>
       Array.isArray(labData) &&
@@ -143,7 +148,7 @@ function LaboratoryManageComponent({
     setTimeout(() => {
       setValue("machine_id", findPatient.Lab[0].machine_id);
       setValue("detection_method", findPatient.Lab[0].detection_method);
-    }, 3000);}    
+    }, 5000);}    
   }, [watch("case_no")]);
 
   useEffect(() => {
@@ -155,34 +160,9 @@ function LaboratoryManageComponent({
       return;
     }
     setTimeout(() => {
-      // setValue("machine_id", findPatient.Lab[0].machine_id);
       setValue("detection_method", findPatient.Lab[0].detection_method);
-    }, 3000);}
+    }, 5000);}
   }, [watch("machine_id")]);
-
-  // useEffect(() => {
-  //   const caseNo = getValues("case_no");
-  //   const machineId = getValues("machine_id");
-  //   const findPatient = patientsData.find((e) => e.case_no === caseNo);
-
-  //   if (!findPatient || !findPatient.Lab || !findPatient.Lab[0]) {
-  //     clearErrors(["machine_id", "detection_method"]);
-  //     setValue("machine_id", "กรุณาเลือก");
-  //     setValue("detection_method", "กรุณาเลือก");
-  //     setTimeout(() => {
-  //       setValue("machine_id", findPatient?.Lab[0].machine_id);
-  //       setValue("detection_method", findPatient?.Lab[0].detection_method);
-  //     }, 1000);
-  //     return;
-  //   } else {
-  //     setValue("machine_id", findPatient.Lab[0].machine_id);
-  //     setValue("detection_method", findPatient.Lab[0].detection_method);
-  //     setTimeout(() => {
-  //       setValue("machine_id", findPatient?.Lab[0].machine_id);
-  //       setValue("detection_method", findPatient?.Lab[0].detection_method);
-  //     }, 1000);
-  //   }
-  // }, [watch("case_no"), watch("machine_id")]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -278,37 +258,39 @@ function LaboratoryManageComponent({
     }
   }, [watch("machine_id"), formFields?.length, machinesData]);
 
+
+  const detectionMethod = watch("detection_method");
+  
   useEffect(() => {
-    const detectionMethod = watch("detection_method");
-
-    if (!detectionMethod || detectionMethod === "กรุณาเลือก") {
-      clearErrors("test_type_id");
-      setValue("test_type_id", "กรุณาเลือก");
-      return;
-    }
-
-    const detectionMethodSelected = _.find(detectionMethodData, {
-      name: detectionMethod,
-    });
-
-    if (detectionMethodSelected) {
+  if (!detectionMethod || detectionMethod === "กรุณาเลือก") {
+    clearErrors("test_type_id");
+    setValue("test_type_id", "กรุณาเลือก");
+    return;
+  }
+  const detectionMethodSelected = _.find(detectionMethodData, {
+    name: detectionMethod,
+  });
+  if (detectionMethodSelected) {
+    setTimeout(() => {
       setValue("test_type_id", detectionMethodSelected.id);
-    } else {
-      clearErrors("test_type_id");
-      setValue("test_type_id", "กรุณาเลือก");
-    }
-  }, [watch("detection_method")]);
+    }, 5000);
+  }
+}, [watch("detection_method")]);
 
-  // console.log(patientsData);
-  // console.log(machinesData);
+const result = watch("result");
+  useEffect(() => {
+  if (result === 0) {
+    clearErrors("result");
+    setValue("result", "กรุณาเลือก");
+    return;
+  }
+}, [watch("result")]);
 
   async function onSubmit(labData: LabCreateFormData) {
     const lab: any = labData.lab_tests;
     const labtest = lab.filter(
       (obj: any) => !(obj.pathogens_id === 0 && obj.result === "")
     );
-    // console.log(labtest);
-    // console.log("watchFields" + watchFields);
     if (labtest.length <= 0) {
       swal.fire({
         title: "กรุณาเลือกกรอกผลทดสอบ",
@@ -547,9 +529,9 @@ function LaboratoryManageComponent({
               render={({ field }) => (
                 <CustomSelect
                   {...register("test_type_id")}
-                  disabled
+                  disabled 
                   mainKeyId="id"
-                  mainKey="prefix_name"
+                  mainKey="subfix_name"
                   value={field.value}
                   ref={refs.test_type_id}
                   option={testTypeData}
