@@ -72,8 +72,6 @@ function LaboratoryManageComponent({
     date: useRef<any>(),
   };
 
-  console.log(labsData)
-
   const { data: machinesData } = useMachines({});
   const { data: inspectionTypes } = useInspectionTypes({});
   const { data: detectionMethodData } = useDetectionMethod();
@@ -126,8 +124,8 @@ function LaboratoryManageComponent({
   const watchFields = watch("test_type_id");
   const { data: pathogensDataType } = usePathogensByTestTypeId(watchFields);
 
-  const watchAllFields = watch();
-  console.log(watchAllFields);
+  // const watchAllFields = watch();
+  // console.log(watchAllFields);
 
   const filteredPatientsData = patientsData.filter(
     (patient) =>
@@ -235,7 +233,6 @@ function LaboratoryManageComponent({
         setValue("lab_tests", []);
         for (let index = 0; index < machineRows.rows; index++) {
           if (!labsData) {
-            // console.log("start");
             append({
               pathogens_id: 0,
               remark: "",
