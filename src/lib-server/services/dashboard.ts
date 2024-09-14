@@ -610,7 +610,7 @@ export const getLabChartPathogensData = async (
     },
   });
 
-  if (pathogensId || !pathogensId && !test_type_id) {
+  if (pathogensId || (!pathogensId && !test_type_id)) {
     // labTestResult.push({
     //   id: 0,
     //   name: "อื่นๆ",
@@ -629,7 +629,7 @@ export const getLabChartPathogensData = async (
             lt: endDate,
           },
           result: {
-            in: ["Detected", "Positive"]
+            in: ["Detected", "Positive"],
           },
         },
       });
@@ -649,9 +649,10 @@ export const getLabChartPathogensData = async (
   }
   if (test_type_id) {
     const filterPathogen = test_type_id
-      ? labTest.filter((e) => e.PathogensTestType.some(pt => pt.test_type_id == test_type_id))
+      ? labTest.filter((e) =>
+          e.PathogensTestType.some((pt) => pt.test_type_id == test_type_id)
+        )
       : labTest;
-
     for (const pathogen of filterPathogen) {
       const countLabtest = await prisma.labTest.count({
         where: {
@@ -661,7 +662,7 @@ export const getLabChartPathogensData = async (
             lt: endDate,
           },
           result: {
-            in: ["Detected", "Positive"]
+            in: ["Detected", "Positive"],
           },
         },
       });
@@ -682,7 +683,7 @@ export const getLabChartPathogensData = async (
         lt: endDate,
       },
       result: {
-        in: ["Detected", "Positive"]
+        in: ["Detected", "Positive"],
       },
     },
   });

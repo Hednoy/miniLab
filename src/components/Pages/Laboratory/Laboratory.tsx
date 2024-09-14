@@ -160,12 +160,12 @@ const Laboratory: FC = () => {
         ),
       },
       {
-        accessorKey: "detection_method",
+        accessorKey: "inspection_type",
         header: "ชนิดสิ่งส่งตรวจ",
         enableSorting: false,
         size: 100,
         cell: ({ row }) => (
-          <p className="text-black">{row.original?.detection_method}</p>
+          <p className="text-black">{row.original?.InspectionType?.name}</p>
         ),
       },
       {
