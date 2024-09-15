@@ -528,7 +528,7 @@ const result = watch("result");
                   {...register("test_type_id")}
                   disabled 
                   mainKeyId="id"
-                  mainKey="subfix_name"
+                  mainKey="prefix_name"
                   value={field.value}
                   ref={refs.test_type_id}
                   option={testTypeData}
