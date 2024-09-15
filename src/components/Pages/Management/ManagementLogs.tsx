@@ -1,4 +1,3 @@
-"use client";
 import { Pagination } from "@/components/Table";
 import Table from "@/components/Table/Table";
 import { useLogsOfficer } from "@/lib-client/react-query/log";
