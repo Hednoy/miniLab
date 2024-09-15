@@ -8,6 +8,8 @@ import { Lab } from "@prisma/client";
 import ApiError from "../error";
 import { LabTestPDFData } from "@/types/models/LabTest";
 import { convertDateToString, convertDateToStringWithTime } from "@/utils";
+import fs from 'fs';
+import path from 'path';
 
 pdfMake.vfs = pdfFonts;
 pdfMake.fonts = {
@@ -60,11 +62,15 @@ export async function PDFlab1(id: number): Promise<Buffer> {
     };
   });
 
+  const logoPath = path.resolve('public/images/logo.png');
+  const logoBase64 = fs.readFileSync(logoPath, 'base64');
+  const logoDataUrl = `data:image/png;base64,${logoBase64}`;
+
   if (lab) {
     template.pageMargins = [20, 20, 20, 20];
     (template.background = function (currentPage, pageSize) {
       return {
-        image: logo.base64,
+        image: logoDataUrl,
         width: 200,
         height: 200,
         absolutePosition: { x: 200, y: 300 },
@@ -76,7 +82,7 @@ export async function PDFlab1(id: number): Promise<Buffer> {
           {
             columns: [
               {
-                image: logo.base64,
+                image: logoDataUrl,
                 width: 100,
                 height: 100,
               },
@@ -390,11 +396,15 @@ export async function PDFlab2(id: number): Promise<Buffer> {
     ? `${approveBy.first_name || ""} ${approveBy.last_name || ""}`
     : "Unknown";
 
+  const logoPath = path.resolve('public/images/logo.png');
+  const logoBase64 = fs.readFileSync(logoPath, 'base64');
+  const logoDataUrl = `data:image/png;base64,${logoBase64}`;
+
   if (lab?.Machine.name == "FM 02-001(C) ใบรายงานผล COVID-19 (ระบบ MP)") {
     template.pageMargins = [20, 20, 20, 20];
     (template.background = function (currentPage, pageSize) {
       return {
-        image: logo.base64,
+        image: logoDataUrl,
         width: 200,
         height: 200,
         absolutePosition: { x: 200, y: 300 },
@@ -402,11 +412,19 @@ export async function PDFlab2(id: number): Promise<Buffer> {
       };
     }),
       (template.content = [
+
+        {
+          alignment: "right",
+          absolutePosition: { x: 30, y: 0 },
+          text: [
+            { text: "FM 02-001(C)", style: "tableKey", margin: [0, 0, 20, 0] },
+          ],
+        },
         [
           {
             columns: [
               {
-                image: logo.base64,
+                image: logoDataUrl,
                 width: 100,
                 height: 100,
               },
@@ -478,7 +496,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                     border: [false, true, false, true],
                     text: [
                       { text: "Lab Number : ", style: "tableKey" },
-                      { text: lab?.id, style: "tableValue" },
+                      { text: lab?.case_no, style: "tableValue" },
                       "\n",
                       { text: "Sex : ", style: "tableKey" },
                       { text: lab?.Patient?.gender, style: "tableValue" },
@@ -645,12 +663,12 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 margin: [0, 0, 20, 0],
               },
               "\n",
-              {
-                text: "FM 02-001(C)",
-                style: "tableKey",
-                margin: [0, 0, 20, 0],
-              },
-              "\n",
+              // {
+              //   text: "FM 02-001(C)",
+              //   style: "tableKey",
+              //   margin: [0, 0, 20, 0],
+              // },
+              // "\n",
             ],
           },
         ],
@@ -685,7 +703,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
     template.pageMargins = [20, 20, 20, 20];
     (template.background = function (currentPage, pageSize) {
       return {
-        image: logo.base64,
+        image: logoDataUrl,
         width: 200,
         height: 200,
         absolutePosition: { x: 200, y: 300 },
@@ -721,7 +739,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
           {
             columns: [
               {
-                image: logo.base64,
+                image: logoDataUrl,
                 width: 100,
                 height: 100,
               },
@@ -1018,7 +1036,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
     );
     template.pageMargins = [20, 20, 20, 20];
     template.background = (currentPage, pageSize) => ({
-      image: logo.base64,
+      image: logoDataUrl,
       width: 200,
       height: 200,
       absolutePosition: { x: 200, y: 300 },
@@ -1034,7 +1052,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
       },
       {
         columns: [
-          { image: logo.base64, width: 100, height: 100 },
+          { image: logoDataUrl, width: 100, height: 100 },
           {
             text: [
               {
@@ -1194,8 +1212,16 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                   },
                   "\n",
                   {
-                    text: "Date ............................................................",
+                    // text: "Date ............................................................",
+                    text: "Date ",
                     style: "tableKey",
+                  },
+                  {
+                    text:
+                      convertDateToString(lab?.report_date ?? null) +
+                      " " +
+                      lab?.report_time,
+                    style: "tableValue",
                   },
                 ],
                 alignment: "center",
@@ -1214,8 +1240,16 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                   },
                   "\n",
                   {
-                    text: "Date ............................................................",
+                    // text: "Date ............................................................",
+                    text: "Date ",
                     style: "tableKey",
+                  },
+                  {
+                    text:
+                      convertDateToString(lab?.approve_date ?? null) +
+                      " " +
+                      lab?.approve_time,
+                    style: "tableValue",
                   },
                 ],
                 alignment: "center",
@@ -1284,7 +1318,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
     template.pageMargins = [20, 20, 20, 20];
     template.background = function (currentPage, pageSize) {
       return {
-        image: logo.base64,
+        image: logoDataUrl,
         width: 200,
         height: 200,
         absolutePosition: { x: 200, y: 300 },
@@ -1320,7 +1354,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
         {
           columns: [
             {
-              image: logo.base64,
+              image: logoDataUrl,
               width: 100,
               height: 100,
             },
@@ -1809,7 +1843,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
     template.pageMargins = [20, 20, 20, 20];
     (template.background = function (currentPage, pageSize) {
       return {
-        image: logo.base64,
+        image: logoDataUrl,
         width: 200,
         height: 200,
         absolutePosition: { x: 200, y: 300 },
@@ -1821,7 +1855,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
           {
             columns: [
               {
-                image: logo.base64,
+                image: logoDataUrl,
                 width: 100,
                 height: 100,
               },
@@ -1924,7 +1958,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                     style: "tableSecVal",
                   },
                   {
-                    text: "Reference",
+                    text: "Reference Range",
                     alignment: "center",
                     style: "tableSecVal",
                   },
@@ -1933,8 +1967,8 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 ...Object.keys(labtestPdf).map((key) => [
                   { text: labtestPdf[key]?.name, style: "tableSecVal" },
                   { text: labtestPdf[key]?.result, style: "tableSecVal" },
-                  { text: "", style: "tableSecVal" },
                   { text: lab?.detection_method, style: "tableSecVal" },
+                  { text: "", style: "tableSecVal" },
                 ]),
               ],
             },
@@ -2144,11 +2178,15 @@ export async function PDFLAB(id: number): Promise<Buffer> {
     ? `${approveBy.first_name || ""} ${approveBy.last_name || ""}`
     : "Unknown";
 
+  const logoPath = path.resolve('public/images/logo.png');
+  const logoBase64 = fs.readFileSync(logoPath, 'base64');
+  const logoDataUrl = `data:image/png;base64,${logoBase64}`;
+
   if (lab?.Machine?.name !== "FM 02-000(A)") {
     template.pageMargins = [20, 20, 20, 20];
     (template.background = function (currentPage, pageSize) {
       return {
-        image: logo.base64,
+        image: logoDataUrl,
         width: 200,
         height: 200,
         absolutePosition: { x: 200, y: 300 },
@@ -2160,7 +2198,7 @@ export async function PDFLAB(id: number): Promise<Buffer> {
           {
             columns: [
               {
-                image: logo.base64,
+                image: logoDataUrl,
                 width: 100,
                 height: 100,
               },
@@ -2273,7 +2311,7 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                       { text: "Report Date : ", style: "tableKey" },
                       {
                         text: convertDateToStringWithTime(
-                          lab?.created_at ?? null
+                          lab?.report_date ?? null
                         ),
                         style: "tableValue",
                       },
@@ -2444,7 +2482,7 @@ export async function PDFLAB(id: number): Promise<Buffer> {
     template.pageMargins = [20, 20, 20, 20];
     (template.background = function (currentPage, pageSize) {
       return {
-        image: logo.base64,
+        image: logoDataUrl,
         width: 200,
         height: 200,
         absolutePosition: { x: 200, y: 300 },
@@ -2456,7 +2494,7 @@ export async function PDFLAB(id: number): Promise<Buffer> {
           {
             columns: [
               {
-                image: logo.base64,
+                image: logoDataUrl,
                 width: 100,
                 height: 100,
               },

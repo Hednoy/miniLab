@@ -154,7 +154,7 @@ const Laboratory: FC = () => {
         enableSorting: false,
         cell: ({ row }) => (
           <p className="whitespace-nowrap text-black">
-            {row.original.Patient?.title} {row.original.Patient?.first_name}{" "}
+            {row.original.Patient?.title}{" "}{row.original.Patient?.first_name}{" "}
             {row.original.Patient?.last_name}{" "}
           </p>
         ),

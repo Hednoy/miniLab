@@ -322,7 +322,7 @@ const Dashboard: FC = () => {
         </div>
 
         <div className="mb-2 flex flex-wrap gap-3">
-          <div className="flex-1">
+            <div className="flex-1 min-w-[200px]">
             <Label
               htmlFor={`lab_tests.test_type_id`}
               value={`รายการตรวจวิเคราะห์`}
@@ -331,20 +331,20 @@ const Dashboard: FC = () => {
               name="test_type_id"
               control={control}
               render={({ field }) => (
-                <CustomSelect
-                  {...register("test_type_id")}
-                  mainKeyId="id"
-                  mainKey="prefix_name"
-                  value={field.value}
-                  ref={refs.test_type_id}
-                  option={testTypeData}
-                  onChange={(val: any) => {
-                    field.onChange(val);
-                  }}
-                />
+              <CustomSelect
+                {...register("test_type_id")}
+                mainKeyId="id"
+                mainKey="prefix_name"
+                value={field.value}
+                ref={refs.test_type_id}
+                option={testTypeData}
+                onChange={(val: any) => {
+                field.onChange(val);
+                }}
+              />
               )}
             />
-          </div>
+            </div>
 
           <div className="flex-1">
             <Label htmlFor={`pathogens_id`} value={`Pathogens`} />
@@ -386,7 +386,6 @@ const Dashboard: FC = () => {
               )}
             />
           </div>
-          <p className="mt-8">จนถึง</p>
           <div className="flex-1">
             <Label htmlFor={`endDate`} value={`วันที่สิ้นสุด`} />
             <CustomDatePicker
@@ -460,7 +459,6 @@ const Dashboard: FC = () => {
                 value={filter.dateStart ? new Date(filter.dateStart) : null}
               />
             </div>
-            <p className="pb-2">จนถึง</p>
             <div>
               <Label htmlFor="dateEnd" value={`วันที่สิ้นสุด`} />
               <CustomDatePicker

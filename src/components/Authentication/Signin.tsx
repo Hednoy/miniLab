@@ -76,8 +76,8 @@ const Signin: React.FC<SigninProps> = ({
           <Image
             src={"/images/ddc-logo.svg"}
             alt="ddc-logo"
-            width={230}
-            height={230}
+            width={320}
+            height={320}
             className="my-8"
           />
           <p className="text-center text-base font-medium text-gray">

@@ -50,7 +50,7 @@ export const getOfficerLogList = async (
     skip: (page - 1) * limit,
     take: limit,
     orderBy: {
-      [sort]: sortDirection as SortDirection,
+      action_at: 'desc',
     },
   });
 

@@ -67,7 +67,7 @@ function PatientManageComponent({ id, data }: PatientManageProps): JSX.Element {
     values: data,
     resolver: useYupValidationResolver(
       yup.object().shape({
-        title: yup.string(),
+        title: yup.string().required("กรุณาเลือกคำนำหน้า"),
         first_name: yup.string().required("กรุณากรอกชื่อ"),
         last_name: yup.string().required("กรุณากรอกนามสกุล"),
         gender: yup.string().required("กรุณาเลือกเพศ"),
@@ -221,6 +221,7 @@ function PatientManageComponent({ id, data }: PatientManageProps): JSX.Element {
                     value={selectedTitle}
                     color={fieldState?.error?.message ? "failure" : undefined}
                   >
+                    <option value="">โปรดระบุ</option>
                     <option value="นาย">นาย</option>
                     <option value="นางสาว">นางสาว</option>
                     <option value="นาง">นาง</option>
