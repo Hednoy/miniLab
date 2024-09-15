@@ -286,16 +286,20 @@ function NewsManageComponent({ id, data }: NewsManageProps): JSX.Element {
                       type="button"
                       className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary"
                       onClick={() => {
-                        if (file.file_path)
-                          window.open(
-                            file.file_path.replace("/public", ""),
-                            "_blank"
-                          );
-                        else
-                          window.open(
-                            file.path.replace("/public", ""),
-                            "_blank"
-                          );
+                        if (!file) {
+                          console.error("File is not available");
+                          return;
+                        }
+                        const link = document.createElement("a");
+                        const filePath = file.file_path || file.path;
+                        link.href = filePath.startsWith("http")
+                          ? filePath
+                          : `${window.location.origin}/${filePath}`;
+                        link.download = file.file_name || file.old_file_name;
+                        link.target = "_blank";
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
                       }}
                     >
                       <FontAwesomeIcon
