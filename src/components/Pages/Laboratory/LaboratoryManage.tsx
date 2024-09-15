@@ -38,7 +38,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useWatch } from "react-hook-form";
 import * as yup from "yup";
-import { number } from "zod";
 
 type LaboratoryManageProps = {
   id: number;
@@ -125,125 +124,18 @@ function LaboratoryManageComponent({
   const watchFields = watch("test_type_id");
   const { data: pathogensDataType } = usePathogensByTestTypeId(watchFields);
 
-  // const optionByTestName = () => {
-  //   switch (watchFields) {
-  //     case 15:
-  //       return pathogensData.filter(
-  //         (pathogen) =>
-  //           pathogen.id === 7 ||
-  //           pathogen.id === 2 ||
-  //           pathogen.id === 3 ||
-  //           pathogen.id === 8 ||
-  //           pathogen.id === 9 ||
-  //           pathogen.id === 10 ||
-  //           pathogen.id === 11 ||
-  //           pathogen.id === 12 ||
-  //           pathogen.id === 13 ||
-  //           pathogen.id === 14 ||
-  //           pathogen.id === 15 ||
-  //           pathogen.id === 16 ||
-  //           pathogen.id === 17 ||
-  //           pathogen.id === 18 ||
-  //           pathogen.id === 19 ||
-  //           pathogen.id === 20 ||
-  //           pathogen.id === 21 ||
-  //           pathogen.id === 22 ||
-  //           pathogen.id === 23 ||
-  //           pathogen.id === 24 ||
-  //           pathogen.id === 34 ||
-  //           pathogen.id === 25 ||
-  //           pathogen.id === 26
-  //       );
-  //     case 16:
-  //       return pathogensData.filter(
-  //         (pathogen) =>
-  //           pathogen.id === 2 ||
-  //           pathogen.id === 3 ||
-  //           pathogen.id === 8 ||
-  //           pathogen.id === 10 ||
-  //           pathogen.id === 11 ||
-  //           pathogen.id === 12 ||
-  //           pathogen.id === 13 ||
-  //           pathogen.id === 14 ||
-  //           pathogen.id === 15 ||
-  //           pathogen.id === 16 ||
-  //           pathogen.id === 17 ||
-  //           pathogen.id === 18 ||
-  //           pathogen.id === 19 ||
-  //           pathogen.id === 20 ||
-  //           pathogen.id === 21 ||
-  //           pathogen.id === 37 ||
-  //           pathogen.id === 38 ||
-  //           pathogen.id === 35 ||
-  //           pathogen.id === 36 ||
-  //           pathogen.id === 39 ||
-  //           pathogen.id === 40 ||
-  //           pathogen.id === 34 ||
-  //           pathogen.id === 41 ||
-  //           pathogen.id === 42 ||
-  //           pathogen.id === 26 ||
-  //           pathogen.id === 43 ||
-  //           pathogen.id === 4
-  //       );
-  //     case 11:
-  //       return pathogensData.filter(
-  //         (pathogen) =>
-  //           pathogen.id === 2 ||
-  //           pathogen.id === 3 ||
-  //           pathogen.id === 8 ||
-  //           pathogen.id === 9 ||
-  //           pathogen.id === 10 ||
-  //           pathogen.id === 11 ||
-  //           pathogen.id === 12 ||
-  //           pathogen.id === 13 ||
-  //           pathogen.id === 17 ||
-  //           pathogen.id === 18 ||
-  //           pathogen.id === 19 ||
-  //           pathogen.id === 20 ||
-  //           pathogen.id === 21 ||
-  //           pathogen.id === 37 ||
-  //           pathogen.id === 38 ||
-  //           pathogen.id === 23 ||
-  //           pathogen.id === 24 ||
-  //           pathogen.id === 34 ||
-  //           pathogen.id === 32 ||
-  //           pathogen.id === 44 ||
-  //           pathogen.id === 25 ||
-  //           pathogen.id === 45 ||
-  //           pathogen.id === 26 ||
-  //           pathogen.id === 46 ||
-  //           pathogen.id === 47 ||
-  //           pathogen.id === 48 ||
-  //           pathogen.id === 43 ||
-  //           pathogen.id === 49 ||
-  //           pathogen.id === 50 ||
-  //           pathogen.id === 51 ||
-  //           pathogen.id === 52 ||
-  //           pathogen.id === 53 ||
-  //           pathogen.id === 54 ||
-  //           pathogen.id === 55 ||
-  //           pathogen.id === 56 ||
-  //           pathogen.id === 57
-  //       );
-  //     case 9:
-  //       return pathogensData.filter((pathogen) => pathogen.id === 6);
-  //     case 6:
-  //       return pathogensData.filter((pathogen) => pathogen.id === 4);
-  //     case 12:
-  //       return pathogensData.filter((pathogen) => pathogen.id === 4);
-  //     default:
-  //       return pathogensData.filter((pathogen) => pathogen.id === 1);
-  //   }
-  // };
+  // const watchAllFields = watch();
+  // console.log(watchAllFields);
+
   const filteredPatientsData = patientsData.filter(
     (patient) =>
       Array.isArray(labData) &&
       !labData.some((lab) => lab.case_no === patient.case_no)
   );
   useEffect(() => {
-    const caseNo = getValues("case_no");
+    if(!id)
+{const caseNo = getValues("case_no");
     const findPatient = patientsData.find((e) => e.case_no === caseNo);
-
     if (!findPatient || !findPatient.Lab || !findPatient.Lab[0]) {
       clearErrors("machine_id");
       setValue("machine_id", "กรุณาเลือก");
@@ -254,48 +146,21 @@ function LaboratoryManageComponent({
     setTimeout(() => {
       setValue("machine_id", findPatient.Lab[0].machine_id);
       setValue("detection_method", findPatient.Lab[0].detection_method);
-    }, 1000);
+    }, 5000);}    
   }, [watch("case_no")]);
 
   useEffect(() => {
-    const caseNo = getValues("case_no");
+    if(!id){const caseNo = getValues("case_no");
     const findPatient = patientsData.find((e) => e.case_no === caseNo);
-
     if (!findPatient || !findPatient.Lab || !findPatient.Lab[0]) {
       clearErrors("detection_method");
       setValue("detection_method", "กรุณาเลือก");
       return;
     }
-
     setTimeout(() => {
-      // setValue("machine_id", findPatient.Lab[0].machine_id);
       setValue("detection_method", findPatient.Lab[0].detection_method);
-    }, 1000);
+    }, 5000);}
   }, [watch("machine_id")]);
-
-  // useEffect(() => {
-  //   const caseNo = getValues("case_no");
-  //   const machineId = getValues("machine_id");
-  //   const findPatient = patientsData.find((e) => e.case_no === caseNo);
-
-  //   if (!findPatient || !findPatient.Lab || !findPatient.Lab[0]) {
-  //     clearErrors(["machine_id", "detection_method"]);
-  //     setValue("machine_id", "กรุณาเลือก");
-  //     setValue("detection_method", "กรุณาเลือก");
-  //     setTimeout(() => {
-  //       setValue("machine_id", findPatient?.Lab[0].machine_id);
-  //       setValue("detection_method", findPatient?.Lab[0].detection_method);
-  //     }, 1000);
-  //     return;
-  //   } else {
-  //     setValue("machine_id", findPatient.Lab[0].machine_id);
-  //     setValue("detection_method", findPatient.Lab[0].detection_method);
-  //     setTimeout(() => {
-  //       setValue("machine_id", findPatient?.Lab[0].machine_id);
-  //       setValue("detection_method", findPatient?.Lab[0].detection_method);
-  //     }, 1000);
-  //   }
-  // }, [watch("case_no"), watch("machine_id")]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -368,7 +233,6 @@ function LaboratoryManageComponent({
         setValue("lab_tests", []);
         for (let index = 0; index < machineRows.rows; index++) {
           if (!labsData) {
-            // console.log("start");
             append({
               pathogens_id: 0,
               remark: "",
@@ -391,37 +255,39 @@ function LaboratoryManageComponent({
     }
   }, [watch("machine_id"), formFields?.length, machinesData]);
 
+
+  const detectionMethod = watch("detection_method");
+  
   useEffect(() => {
-    const detectionMethod = watch("detection_method");
-
-    if (!detectionMethod || detectionMethod === "กรุณาเลือก") {
-      clearErrors("test_type_id");
-      setValue("test_type_id", "กรุณาเลือก");
-      return;
-    }
-
-    const detectionMethodSelected = _.find(detectionMethodData, {
-      name: detectionMethod,
-    });
-
-    if (detectionMethodSelected) {
+  if (!detectionMethod || detectionMethod === "กรุณาเลือก") {
+    clearErrors("test_type_id");
+    setValue("test_type_id", "กรุณาเลือก");
+    return;
+  }
+  const detectionMethodSelected = _.find(detectionMethodData, {
+    name: detectionMethod,
+  });
+  if (detectionMethodSelected) {
+    setTimeout(() => {
       setValue("test_type_id", detectionMethodSelected.id);
-    } else {
-      clearErrors("test_type_id");
-      setValue("test_type_id", "กรุณาเลือก");
-    }
-  }, [watch("detection_method")]);
+    }, 5000);
+  }
+}, [watch("detection_method")]);
 
-  // console.log(patientsData);
-  // console.log(machinesData);
+const result = watch("result");
+  useEffect(() => {
+  if (result === 0) {
+    clearErrors("result");
+    setValue("result", "กรุณาเลือก");
+    return;
+  }
+}, [watch("result")]);
 
   async function onSubmit(labData: LabCreateFormData) {
     const lab: any = labData.lab_tests;
     const labtest = lab.filter(
       (obj: any) => !(obj.pathogens_id === 0 && obj.result === "")
     );
-    // console.log(labtest);
-    // console.log("watchFields" + watchFields);
     if (labtest.length <= 0) {
       swal.fire({
         title: "กรุณาเลือกกรอกผลทดสอบ",
@@ -660,9 +526,9 @@ function LaboratoryManageComponent({
               render={({ field }) => (
                 <CustomSelect
                   {...register("test_type_id")}
-                  disabled
+                  disabled 
                   mainKeyId="id"
-                  mainKey="prefix_name"
+                  mainKey="subfix_name"
                   value={field.value}
                   ref={refs.test_type_id}
                   option={testTypeData}
@@ -812,7 +678,7 @@ function LaboratoryManageComponent({
                   <div className="rounded-[20px] bg-secondary p-2 text-sm">
                     {file.file_name ? file.file_name : file.old_file_name}
                   </div>
-                  <button
+                   <button
                     type="button"
                     className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary"
                     onClick={() => {
