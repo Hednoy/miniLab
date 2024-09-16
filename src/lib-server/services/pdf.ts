@@ -31,21 +31,21 @@ const template: TDocumentDefinitions = {
   },
 };
 
-export const dateFormatter = (lab) => {
-    const invalidDates = ["0001-01-01", "00:00:00.000", "00:00:00", "0001-01-01 "];
+export const dateFormatter = (lab: any) => {
+  const invalidDates = ["0001-01-01", "00:00:00.000", "00:00:00", "0001-01-01 "];
 
-    const isInvalid = (date :string) => invalidDates.includes(date) || date === null || date === undefined;
+  const isInvalid = (date: string) => invalidDates.includes(date) || date === null || date === undefined;
 
-    if (!isInvalid(lab.updated_at)) return lab.updated_at;
-    if (!isInvalid(lab.approve_date)) return lab.approve_date;
-    if (!isInvalid(lab.created_at)) return lab.created_at;
-    if (!isInvalid(lab.report_date)) return lab.report_date;
-    if (!isInvalid(lab.Patient?.collected_date)) return lab.Patient.collected_date;
-    if (!isInvalid(lab.Patient?.received_date)) return lab.Patient.received_date;
+  if (!isInvalid(lab.updated_at)) return lab.updated_at;
+  if (!isInvalid(lab.approve_date)) return lab.approve_date;
+  if (!isInvalid(lab.created_at)) return lab.created_at;
+  if (!isInvalid(lab.report_date)) return lab.report_date;
+  if (!isInvalid(lab.Patient?.collected_date)) return lab.Patient.collected_date;
+  if (!isInvalid(lab.Patient?.received_date)) return lab.Patient.received_date;
 
-    return ""; // Return empty string if all are invalid
-  };
-  
+  return ""; // Return empty string if all are invalid
+};
+
 
 export async function PDFlab1(id: number): Promise<Buffer> {
   const lab = await prisma.lab.findUnique({
@@ -401,8 +401,8 @@ export async function PDFlab2(id: number): Promise<Buffer> {
     };
   });
 
-  console.log("labTestList",labTestList)
-  console.log("lab",lab)
+  console.log("labTestList", labTestList)
+  console.log("lab", lab)
 
   const reportBy = await prisma.officer.findUnique({
     where: { id: lab?.report_by_id || 0 },
@@ -1049,139 +1049,139 @@ export async function PDFlab2(id: number): Promise<Buffer> {
       result?: string;
       remark?: string;
       rp23?: number;
-        rp27?: number;
-        rp36?: number;
+      rp27?: number;
+      rp36?: number;
     };
 
-   type LabTemplateItem = {
-  name: string;
-  rp23: number | null;
-  rp27: number | null;
-  rp36: number | null;
-};
+    type LabTemplateItem = {
+      name: string;
+      rp23: number | null;
+      rp27: number | null;
+      rp36: number | null;
+    };
 
     const labTemplate: LabTemplateItem[] = [
-  { name: "2019-nCoV", rp23: 1, rp27: null, rp36: null },
-  { name: "SARS-CoV-2", rp23: null, rp27: 1, rp36: null },
-  { name: "Adenovirus (AdV)", rp23: 2, rp27: null, rp36: 9 },
-  { name: "Bocavirus (HBoV)", rp23: 3, rp27: null, rp36: 10 },
-  { name: "Coronavirus 229E", rp23: 4, rp27: null, rp36: 5 },
-  { name: "Coronavirus HKU1", rp23: 5, rp27: null, rp36: 6 },
-  { name: "Coronavirus NL63", rp23: 6, rp27: null, rp36: 7 },
-  { name: "Coronavirus OC43", rp23: 7, rp27: null, rp36: 8 },
-  { name: "Human Metapneumovirus A+B", rp23: 8, rp27: null, rp36: null },
-  { name: "Human Metapneumovirus", rp23: null, rp27: 10, rp36: 16 },
-  { name: "Influenza A virus (FluA)", rp23: 9, rp27: 2, rp36: 1 },
-  { name: "Influenza B virus (FluB)", rp23: 13, rp27: 3, rp36: 2 },
-  { name: "Influenza A virus subtype H1 (FluA-H1)", rp23: 10, rp27: 6, rp36: null },
-  { name: "Influenza A virus subtype H1N1 (FluA-H1pdm09)", rp23: 11, rp27: 8, rp36: null },
-  { name: "Influenza A virus subtype H3 (FluA-H3)", rp23: 12, rp27: 7, rp36: null },
-  { name: "Parainfluenza virus 1 (HPIV-1)", rp23: 14, rp27: null, rp36: 12 },
-  { name: "Parainfluenza virus 2 (HPIV-2)", rp23: 15, rp27: null, rp36: 13 },
-  { name: "Parainfluenza virus 3 (HPIV-3)", rp23: 16, rp27: null, rp36: 14 },
-  { name: "Parainfluenza virus 4 (HPIV-4)", rp23: 17, rp27: null, rp36: 15 },
-  { name: "Human Rhinovirus (HRV) / Enterovirus (HEV)", rp23: 19, rp27: null, rp36: 11 },
-  { name: "Respiratory syncytial virus A+B", rp23: 18, rp27: null, rp36: null },
-  { name: "Bordetella pertussis (BP)", rp23: 20, rp27: 21, rp36: 23 },
-  { name: "Chlamydophila pneumoniae", rp23: 21, rp27: 22, rp36: 19 },
-  { name: "Legionella pneumophila (LP)", rp23: 22, rp27: 23, rp36: 22 },
-  { name: "Mycoplasma pneumoniae (MP)", rp23: 23, rp27: 24, rp36: 18 },
-  { name: "Streptococcus pneumoniae", rp23: null, rp27: 26, rp36: 20 },
-  { name: "Staphylococcus epidermidis", rp23: null, rp27: null, rp36: 24 },
-  { name: "Haemophilus influenzae", rp23: null, rp27: 27, rp36: 31 },
-  { name: "Escherichia coli", rp23: null, rp27: null, rp36: 17 },
-  { name: "Staphylococcus aureus", rp23: null, rp27: null, rp36: 26 },
-  { name: "Candida albicans", rp23: null, rp27: null, rp36: 27 },
-  { name: "Pseudomonas aeruginosa", rp23: null, rp27: null, rp36: 35 },
-  { name: "Aspergillus fumigatus", rp23: null, rp27: null, rp36: 29 },
-  { name: "Human Respiratory Syncytial Virus A (RSV A)", rp23: null, rp27: 4, rp36: 3 },
-  { name: "Human Respiratory Syncytial Virus B (RSV B)", rp23: null, rp27: 5, rp36: 4 },
-  { name: "Human Adenovirus", rp23: null, rp27: 9, rp36: null },
-  { name: "Human Enterovirus", rp23: null, rp27: 11, rp36: null },
-  { name: "Human Parainfluenza virus 1", rp23: null, rp27: 12, rp36: null },
-  { name: "Human Parainfluenza virus 2", rp23: null, rp27: 13, rp36: null },
-  { name: "Human Parainfluenza virus 3", rp23: null, rp27: 14, rp36: null },
-  { name: "Human Parainfluenza virus 4", rp23: null, rp27: 15, rp36: null },
-  { name: "Human Bocavirus 1/2/3/4", rp23: null, rp27: 16, rp36: null },
-  { name: "Human Rhinovirus A/B/C", rp23: null, rp27: 17, rp36: null },
-  { name: "Human Coronavirus 229E", rp23: null, rp27: 18, rp36: null },
-  { name: "Human Coronavirus NL63", rp23: null, rp27: 19, rp36: null },
-  { name: "Human Coronavirus OC43", rp23: null, rp27: 20, rp36: null },
-  { name: "Bordetella parapertussis", rp23: null, rp27: 25, rp36: null },
-  { name: "Klebsiella pneumoniae", rp23: null, rp27: null, rp36: 21 },
-  { name: "Salmonella", rp23: null, rp27: null, rp36: 25 },
-  { name: "Pneumocystis jirovecii", rp23: null, rp27: null, rp36: 28 },
-  { name: "Rickettsia", rp23: null, rp27: null, rp36: 30 },
-  { name: "Cryptococcus", rp23: null, rp27: null, rp36: 34 },
-  { name: "Acinetobacter baumannii", rp23: null, rp27: null, rp36: 33 },
-  { name: "Moraxella catarrhalis", rp23: null, rp27: null, rp36: 32 },
-  { name: "Streptococcus pyogenes", rp23: null, rp27: null, rp36: 36 },
-  
-];
+      { name: "2019-nCoV", rp23: 1, rp27: null, rp36: null },
+      { name: "SARS-CoV-2", rp23: null, rp27: 1, rp36: null },
+      { name: "Adenovirus (AdV)", rp23: 2, rp27: null, rp36: 9 },
+      { name: "Bocavirus (HBoV)", rp23: 3, rp27: null, rp36: 10 },
+      { name: "Coronavirus 229E", rp23: 4, rp27: null, rp36: 5 },
+      { name: "Coronavirus HKU1", rp23: 5, rp27: null, rp36: 6 },
+      { name: "Coronavirus NL63", rp23: 6, rp27: null, rp36: 7 },
+      { name: "Coronavirus OC43", rp23: 7, rp27: null, rp36: 8 },
+      { name: "Human Metapneumovirus A+B", rp23: 8, rp27: null, rp36: null },
+      { name: "Human Metapneumovirus", rp23: null, rp27: 10, rp36: 16 },
+      { name: "Influenza A virus (FluA)", rp23: 9, rp27: 2, rp36: 1 },
+      { name: "Influenza B virus (FluB)", rp23: 13, rp27: 3, rp36: 2 },
+      { name: "Influenza A virus subtype H1 (FluA-H1)", rp23: 10, rp27: 6, rp36: null },
+      { name: "Influenza A virus subtype H1N1 (FluA-H1pdm09)", rp23: 11, rp27: 8, rp36: null },
+      { name: "Influenza A virus subtype H3 (FluA-H3)", rp23: 12, rp27: 7, rp36: null },
+      { name: "Parainfluenza virus 1 (HPIV-1)", rp23: 14, rp27: null, rp36: 12 },
+      { name: "Parainfluenza virus 2 (HPIV-2)", rp23: 15, rp27: null, rp36: 13 },
+      { name: "Parainfluenza virus 3 (HPIV-3)", rp23: 16, rp27: null, rp36: 14 },
+      { name: "Parainfluenza virus 4 (HPIV-4)", rp23: 17, rp27: null, rp36: 15 },
+      { name: "Human Rhinovirus (HRV) / Enterovirus (HEV)", rp23: 19, rp27: null, rp36: 11 },
+      { name: "Respiratory syncytial virus A+B", rp23: 18, rp27: null, rp36: null },
+      { name: "Bordetella pertussis (BP)", rp23: 20, rp27: 21, rp36: 23 },
+      { name: "Chlamydophila pneumoniae", rp23: 21, rp27: 22, rp36: 19 },
+      { name: "Legionella pneumophila (LP)", rp23: 22, rp27: 23, rp36: 22 },
+      { name: "Mycoplasma pneumoniae (MP)", rp23: 23, rp27: 24, rp36: 18 },
+      { name: "Streptococcus pneumoniae", rp23: null, rp27: 26, rp36: 20 },
+      { name: "Staphylococcus epidermidis", rp23: null, rp27: null, rp36: 24 },
+      { name: "Haemophilus influenzae", rp23: null, rp27: 27, rp36: 31 },
+      { name: "Escherichia coli", rp23: null, rp27: null, rp36: 17 },
+      { name: "Staphylococcus aureus", rp23: null, rp27: null, rp36: 26 },
+      { name: "Candida albicans", rp23: null, rp27: null, rp36: 27 },
+      { name: "Pseudomonas aeruginosa", rp23: null, rp27: null, rp36: 35 },
+      { name: "Aspergillus fumigatus", rp23: null, rp27: null, rp36: 29 },
+      { name: "Human Respiratory Syncytial Virus A (RSV A)", rp23: null, rp27: 4, rp36: 3 },
+      { name: "Human Respiratory Syncytial Virus B (RSV B)", rp23: null, rp27: 5, rp36: 4 },
+      { name: "Human Adenovirus", rp23: null, rp27: 9, rp36: null },
+      { name: "Human Enterovirus", rp23: null, rp27: 11, rp36: null },
+      { name: "Human Parainfluenza virus 1", rp23: null, rp27: 12, rp36: null },
+      { name: "Human Parainfluenza virus 2", rp23: null, rp27: 13, rp36: null },
+      { name: "Human Parainfluenza virus 3", rp23: null, rp27: 14, rp36: null },
+      { name: "Human Parainfluenza virus 4", rp23: null, rp27: 15, rp36: null },
+      { name: "Human Bocavirus 1/2/3/4", rp23: null, rp27: 16, rp36: null },
+      { name: "Human Rhinovirus A/B/C", rp23: null, rp27: 17, rp36: null },
+      { name: "Human Coronavirus 229E", rp23: null, rp27: 18, rp36: null },
+      { name: "Human Coronavirus NL63", rp23: null, rp27: 19, rp36: null },
+      { name: "Human Coronavirus OC43", rp23: null, rp27: 20, rp36: null },
+      { name: "Bordetella parapertussis", rp23: null, rp27: 25, rp36: null },
+      { name: "Klebsiella pneumoniae", rp23: null, rp27: null, rp36: 21 },
+      { name: "Salmonella", rp23: null, rp27: null, rp36: 25 },
+      { name: "Pneumocystis jirovecii", rp23: null, rp27: null, rp36: 28 },
+      { name: "Rickettsia", rp23: null, rp27: null, rp36: 30 },
+      { name: "Cryptococcus", rp23: null, rp27: null, rp36: 34 },
+      { name: "Acinetobacter baumannii", rp23: null, rp27: null, rp36: 33 },
+      { name: "Moraxella catarrhalis", rp23: null, rp27: null, rp36: 32 },
+      { name: "Streptococcus pyogenes", rp23: null, rp27: null, rp36: 36 },
 
-type SortedLabTemplate = {
-  sortedByRp23: LabTemplateItem[];
-  sortedByRp27: LabTemplateItem[];
-  sortedByRp36: LabTemplateItem[];
-};
-    
-    
-   const sortLabTemplate = (labTemplate: LabTemplateItem[]): SortedLabTemplate => {
-  // Filter out null values and then sort by rp23, rp27, rp36
-  const sortedByRp23 = [...labTemplate]
-    .filter(item => item.rp23 !== null)
-    .sort((a, b) => (a.rp23 as number) - (b.rp23 as number));
+    ];
 
-  const sortedByRp27 = [...labTemplate]
-    .filter(item => item.rp27 !== null)
-    .sort((a, b) => (a.rp27 as number) - (b.rp27 as number));
+    type SortedLabTemplate = {
+      sortedByRp23: LabTemplateItem[];
+      sortedByRp27: LabTemplateItem[];
+      sortedByRp36: LabTemplateItem[];
+    };
 
-  const sortedByRp36 = [...labTemplate]
-    .filter(item => item.rp36 !== null)
-    .sort((a, b) => (a.rp36 as number) - (b.rp36 as number));
 
-  return {
-    sortedByRp23,
-    sortedByRp27,
-    sortedByRp36,
-  };
-};
-    
-const {sortedByRp23,sortedByRp27,sortedByRp36}=sortLabTemplate(labTemplate)
+    const sortLabTemplate = (labTemplate: LabTemplateItem[]): SortedLabTemplate => {
+      // Filter out null values and then sort by rp23, rp27, rp36
+      const sortedByRp23 = [...labTemplate]
+        .filter(item => item.rp23 !== null)
+        .sort((a, b) => (a.rp23 as number) - (b.rp23 as number));
 
-const mergeLabTestTemplate = () => {
-  if (lab.TestType && lab.TestType.prefix_name === "Respiratory Pathogen 23") {
-    return sortedByRp23.map((s) => { 
-      const testResult = labTestList.find(t => t.Pathogens.name === s.name);
+      const sortedByRp27 = [...labTemplate]
+        .filter(item => item.rp27 !== null)
+        .sort((a, b) => (a.rp27 as number) - (b.rp27 as number));
+
+      const sortedByRp36 = [...labTemplate]
+        .filter(item => item.rp36 !== null)
+        .sort((a, b) => (a.rp36 as number) - (b.rp36 as number));
+
       return {
-        name: s.name,
-        result: testResult?.result ? testResult.result : "Not detected",
-        remark: testResult?.remark ? testResult.remark : "-"
+        sortedByRp23,
+        sortedByRp27,
+        sortedByRp36,
+      };
+    };
 
-      };
-    });
-  } else if (lab.TestType?.prefix_name === "Respiratory Pathogen 27") {
-    return sortedByRp27.map((s) => { 
-      const testResult = labTestList.find(t => t.Pathogens.name === s.name);
-      return {
-        name: s.name,
-        result: testResult?.result ? testResult.result : "Not detected",
-        remark: testResult?.remark ? testResult.remark : "-"
-      };
-    });
-  } else if (lab.TestType?.prefix_name === "Respiratory Pathogen 36") {
-    return sortedByRp36.map((s) => { 
-      const testResult = labTestList.find(t => t.Pathogens.name === s.name);
-      return {
-        name: s.name,
-        result: testResult?.result ? testResult.result : "Not detected",
-        remark: testResult?.remark ? testResult.remark : "-"
-      };
-    });
-  } 
-};
+    const { sortedByRp23, sortedByRp27, sortedByRp36 } = sortLabTemplate(labTemplate)
 
-     const labtestPdf = mergeLabTestTemplate();
+    const mergeLabTestTemplate = () => {
+      if (lab.TestType && lab.TestType.prefix_name === "Respiratory Pathogen 23") {
+        return sortedByRp23.map((s) => {
+          const testResult = labTestList.find(t => t.Pathogens.name === s.name);
+          return {
+            name: s.name,
+            result: testResult?.result ? testResult.result : "Not detected",
+            remark: testResult?.remark ? testResult.remark : "-"
+
+          };
+        });
+      } else if (lab.TestType?.prefix_name === "Respiratory Pathogen 27") {
+        return sortedByRp27.map((s) => {
+          const testResult = labTestList.find(t => t.Pathogens.name === s.name);
+          return {
+            name: s.name,
+            result: testResult?.result ? testResult.result : "Not detected",
+            remark: testResult?.remark ? testResult.remark : "-"
+          };
+        });
+      } else if (lab.TestType?.prefix_name === "Respiratory Pathogen 36") {
+        return sortedByRp36.map((s) => {
+          const testResult = labTestList.find(t => t.Pathogens.name === s.name);
+          return {
+            name: s.name,
+            result: testResult?.result ? testResult.result : "Not detected",
+            remark: testResult?.remark ? testResult.remark : "-"
+          };
+        });
+      }
+    };
+
+    const labtestPdf = mergeLabTestTemplate();
 
     template.pageMargins = [20, 20, 20, 20];
     template.background = (currentPage, pageSize) => ({
@@ -1355,7 +1355,7 @@ const mergeLabTestTemplate = () => {
               {
                 border: [false, true, false, false],
                 text: [
-                  "\n","\n",
+                  "\n", "\n",
                   {
                     text: "Reported by ............................................................",
                     style: "tableKey",
@@ -1384,7 +1384,7 @@ const mergeLabTestTemplate = () => {
               {
                 border: [false, true, false, false],
                 text: [
-                  "\n","\n",
+                  "\n", "\n",
                   {
                     text: "Approved by ............................................................",
                     style: "tableKey",
