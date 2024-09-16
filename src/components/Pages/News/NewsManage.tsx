@@ -64,12 +64,22 @@ function NewsManageComponent({ id, data }: NewsManageProps): JSX.Element {
 
   const { push, back } = useRouter();
 
+  // const handleFile = async (event: any) => {
+  //   if (event.target && event.target.files.length > 0) {
+  //     const data = await UtilityUpload(event.target.files[0]);
+  //     setFile((file: any) => [...file, data]);
+  //   }
+  // };
   const handleFile = async (event: any) => {
     if (event.target && event.target.files.length > 0) {
-      const data = await UtilityUpload(event.target.files[0]);
-      setFile((file: any) => [...file, data]);
+      const filesArray = Array.from(event.target.files); // Convert FileList to array
+      const uploadedFiles = await Promise.all(
+        filesArray.map(async (file: any) => await UtilityUpload(file))
+      );
+      setFile((file: any) => [...file, ...uploadedFiles]);
     }
   };
+  
   const { mutate: createLog } = useCreateLogAction();
 
   async function onSubmit(newsData: NewsCreateFormData) {
@@ -247,12 +257,12 @@ function NewsManageComponent({ id, data }: NewsManageProps): JSX.Element {
               )}
             </div>
           </div>
-
           <input
             type="file"
             ref={fileRef}
             accept="image/png, image/jpeg, application/pdf"
             onChange={handleFile}
+            multiple // Add this to allow multiple file selection
             style={{ display: "none" }}
           />
           <div className="col-span-2">

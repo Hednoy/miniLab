@@ -49,15 +49,46 @@ export const getPatientList = async (
   };
   const translatedSearchTerm = translateGender(searchTerm);
 
+  const nameParts = searchTerm ? searchTerm.split(" ") : [];
+  const patientConditions = [];
+  console.log(nameParts.length);
+  if (nameParts.length === 1) {
+    patientConditions.push(
+      { first_name: { contains: nameParts[0] } },
+      { last_name: { contains: nameParts[0] } }
+    );
+  } else if (nameParts.length === 2) {
+    patientConditions.push(
+      { first_name: { contains: nameParts[0] } },
+      { last_name: { contains: nameParts[1] } }
+    );
+  } else if (nameParts.length === 3) {
+    patientConditions.push(
+      { title: { contains: nameParts[0] } },
+      { first_name: { contains: nameParts[1] } },
+      { last_name: { contains: nameParts[2] } }
+    );
+  } else if (nameParts.length > 3) {
+    patientConditions.push(
+      { title: { contains: nameParts[0] } },
+      { first_name: { contains: nameParts.slice(1, -1).join(" ") } },
+      { last_name: { contains: nameParts[nameParts.length - 1] } }
+    );
+    patientConditions.push(
+      { title: { contains: nameParts[0] } },
+      { first_name: { contains: nameParts[1] } },
+      { last_name: { contains: nameParts[2] } }
+    );
+  } else {
+    patientConditions.push({ title: { contains: nameParts[0] } }, { first_name: { contains: nameParts[1] } }, { last_name: { contains: nameParts[2] } });
+  }
+
   const where: Prisma.PatientWhereInput = {
     OR: [
       { case_no: { contains: searchTerm } },
       { hn: { contains: searchTerm } },
       { an: { contains: searchTerm } },
       { id_card: { contains: searchTerm } },
-      { title: { contains: searchTerm } },
-      { first_name: { contains: searchTerm } },
-      { last_name: { contains: searchTerm } },
       { gender: { contains: translatedSearchTerm } },
       {
         InspectionType: {
@@ -67,13 +98,14 @@ export const getPatientList = async (
       { hospital: { name: { contains: searchTerm } } },
       ...(dateSearch
         ? [
-            {
-              received_date: {
-                gte: dateSearch,
-              },
+          {
+            received_date: {
+              gte: dateSearch,
             },
-          ]
+          },
+        ]
         : []),
+      ...patientConditions,
     ],
   };
   const searchTermAsNumber = Number(searchTerm);

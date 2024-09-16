@@ -11,6 +11,7 @@ import {
 } from "@/types/models/Lab";
 import { PaginatedResponse, SortDirection } from "@/types";
 import { filterSearchTerm } from "@/utils";
+import { title } from "process";
 
 export const getLab = async (id: number): Promise<LabGetByID> => {
   const lab = await prisma.lab.findUnique({
@@ -132,13 +133,16 @@ export const getLabList = async (
       { first_name: { contains: nameParts[0] } },
       { last_name: { contains: nameParts[0] } }
     );
-  } else if (nameParts.length > 1) {
+  } else if (nameParts.length > 1 && nameParts.length < 3) {
     patientConditions.push({
       AND: [
+        // { title : { contains: nameParts[0] } },
         { first_name: { contains: nameParts[0] } },
         { last_name: { contains: nameParts[1] } },
       ],
     });
+  } else {
+    patientConditions.push({ title: { contains: nameParts[0]}}, { first_name: { contains: nameParts[1] } }, { last_name: { contains: nameParts[2] } });
   }
 
   const where: Prisma.LabWhereInput = {

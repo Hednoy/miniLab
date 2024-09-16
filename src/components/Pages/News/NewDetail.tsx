@@ -286,7 +286,7 @@ export default function NewsDetail({ id }: NewsDetailProps) {
           ) && (
             <Carousel
               responsive={responsive}
-              className="my-10 p-10 w-[50vw]" 
+              className="my-10 p-10 w-[50vw] rounded border-4 border-primary" 
               itemClass="carousel-item" // ใช้ class ใหม่
             >
               {newsDetail?.images.map((image: any, index: number) => (
