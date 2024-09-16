@@ -1123,7 +1123,7 @@ type SortedLabTemplate = {
 const {sortedByRp23,sortedByRp27,sortedByRp36}=sortLabTemplate(labTemplate)
 
 const mergeLabTestTemplate = () => {
-  if (lab.TestType.prefix_name === "Respiratory Pathogen 23") {
+  if (lab.TestType && lab.TestType.prefix_name === "Respiratory Pathogen 23") {
     return sortedByRp23.map((s) => { 
       const testResult = labTestList.find(t => t.Pathogens.name === s.name);
       return {
@@ -1133,7 +1133,7 @@ const mergeLabTestTemplate = () => {
 
       };
     });
-  } else if (lab.TestType.prefix_name === "Respiratory Pathogen 27") {
+  } else if (lab.TestType?.prefix_name === "Respiratory Pathogen 27") {
     return sortedByRp27.map((s) => { 
       const testResult = labTestList.find(t => t.Pathogens.name === s.name);
       return {
@@ -1142,7 +1142,7 @@ const mergeLabTestTemplate = () => {
         remark: testResult?.remark ? testResult.remark : "-"
       };
     });
-  } else if (lab.TestType.prefix_name === "Respiratory Pathogen 36") {
+  } else if (lab.TestType?.prefix_name === "Respiratory Pathogen 36") {
     return sortedByRp36.map((s) => { 
       const testResult = labTestList.find(t => t.Pathogens.name === s.name);
       return {
@@ -1289,11 +1289,11 @@ const mergeLabTestTemplate = () => {
               { text: "Result", alignment: "center", style: "tableSecVal" },
               { text: "Ct.value", alignment: "center", style: "tableSecVal" },
             ],
-            ...Object.values(labtestPdf).map((pathogen) => [
+            ...(labtestPdf ? Object.values(labtestPdf).map((pathogen) => [
               { text: pathogen?.name, style: "tableSecVal" },
               { text: pathogen?.result, style: "tableSecVal" },
               { text: pathogen?.remark, style: "tableSecVal" },
-            ]),
+            ]) : []),
           ],
         },
         layout: {
@@ -1323,6 +1323,7 @@ const mergeLabTestTemplate = () => {
               {
                 border: [false, true, false, false],
                 text: [
+                  "\n","\n",
                   {
                     text: "Reported by ............................................................",
                     style: "tableKey",
@@ -1351,6 +1352,7 @@ const mergeLabTestTemplate = () => {
               {
                 border: [false, true, false, false],
                 text: [
+                  "\n","\n",
                   {
                     text: "Approved by ............................................................",
                     style: "tableKey",
