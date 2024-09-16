@@ -1,4 +1,3 @@
-"use client";
 import { customIcons, swal } from "@/components/Sweetalert/SweetAlert";
 import { Pagination } from "@/components/Table";
 import Table from "@/components/Table/Table";
