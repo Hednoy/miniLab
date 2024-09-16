@@ -733,6 +733,11 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 style: "tableKey",
                 margin: [0, 0, 20, 0],
               },
+              {
+                text: "แก้ไขครั้งที่ 00",
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
               "\n",
             ],
           },
@@ -1170,6 +1175,11 @@ const mergeLabTestTemplate = () => {
         absolutePosition: { x: 30, y: 0 },
         text: [
           { text: "FM 02-007(A)", style: "tableKey", margin: [0, 0, 20, 0] },
+          {
+            text: "แก้ไขครั้งที่ 00",
+            style: "tableKey",
+            margin: [0, 0, 20, 0],
+          },
         ],
       },
       {
@@ -1469,6 +1479,11 @@ const mergeLabTestTemplate = () => {
             "\n",
             {
               text: "FM 02-000(A)",
+              style: "tableKey",
+              margin: [0, 0, 20, 0],
+            },
+            {
+              text: "แก้ไขครั้งที่ 00",
               style: "tableKey",
               margin: [0, 0, 20, 0],
             },
@@ -2211,6 +2226,11 @@ const mergeLabTestTemplate = () => {
             text: [
               {
                 text: "FM 02-005(A)",
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+              {
+                text: "แก้ไขครั้งที่ 00",
                 style: "tableKey",
                 margin: [0, 0, 20, 0],
               },

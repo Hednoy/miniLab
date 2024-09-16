@@ -212,7 +212,6 @@ export default function NewsDetail({ id }: NewsDetailProps) {
       items: 1,
     },
   };
-  
 
   async function DeleteNews(id: any) {
     swal
@@ -287,8 +286,8 @@ export default function NewsDetail({ id }: NewsDetailProps) {
           ) && (
             <Carousel
               responsive={responsive}
-              className="my-10 p-10"
-              itemClass="mr-3"
+              className="my-10 p-10 w-[50vw]" 
+              itemClass="carousel-item" // ใช้ class ใหม่
             >
               {newsDetail?.images.map((image: any, index: number) => (
                 <div
@@ -298,6 +297,11 @@ export default function NewsDetail({ id }: NewsDetailProps) {
                   <img
                     src={image.file_path.replace("/public", "")}
                     className="rounded-md"
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      objectFit: "cover",
+                    }} // ปรับขนาดภาพให้พอดีกับ container
                   />
                 </div>
               ))}
