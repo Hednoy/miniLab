@@ -748,7 +748,29 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 margin: [0, 0, 20, 0],
               },
               {
-                text: "แก้ไขครั้งที่ 00",
+                text: "แก้ไขครั้งที่ ",
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+              {
+                text: lab?.count_update || "",
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+              {
+                text: " (",
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+              {
+                text: convertToThaiFormat(
+                  format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
+                ),
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+              {
+                text: ")",
                 style: "tableKey",
                 margin: [0, 0, 20, 0],
               },
@@ -1265,7 +1287,30 @@ export async function PDFlab2(id: number): Promise<Buffer> {
         text: [
           { text: "FM 02-007(A)", style: "tableKey", margin: [0, 0, 20, 0] },
           {
-            text: "แก้ไขครั้งที่ 00",
+            text: "แก้ไขครั้งที่ ",
+            style: "tableKey",
+            margin: [0, 0, 20, 0],
+          },
+          {
+            text: lab?.count_update || "",
+            style: "tableKey",
+            margin: [0, 0, 20, 0],
+          },
+
+          {
+            text: " (",
+            style: "tableKey",
+            margin: [0, 0, 20, 0],
+          },
+          {
+            text: convertToThaiFormat(
+              format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
+            ),
+            style: "tableKey",
+            margin: [0, 0, 20, 0],
+          },
+          {
+            text: ")",
             style: "tableKey",
             margin: [0, 0, 20, 0],
           },
@@ -1588,7 +1633,30 @@ export async function PDFlab2(id: number): Promise<Buffer> {
               margin: [0, 0, 20, 0],
             },
             {
-              text: "แก้ไขครั้งที่ 00",
+              text: "แก้ไขครั้งที่ ",
+              style: "tableKey",
+              margin: [0, 0, 20, 0],
+            },
+            {
+              text: lab?.count_update || "",
+              style: "tableKey",
+              margin: [0, 0, 20, 0],
+            },
+
+            {
+              text: " (",
+              style: "tableKey",
+              margin: [0, 0, 20, 0],
+            },
+            {
+              text: convertToThaiFormat(
+                format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
+              ),
+              style: "tableKey",
+              margin: [0, 0, 20, 0],
+            },
+            {
+              text: ")",
               style: "tableKey",
               margin: [0, 0, 20, 0],
             },
@@ -2359,7 +2427,30 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 margin: [0, 0, 20, 0],
               },
               {
-                text: "แก้ไขครั้งที่ 00",
+                text: "แก้ไขครั้งที่ ",
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+              {
+                text: lab?.count_update || "",
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+
+              {
+                text: " (",
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+              {
+                text: convertToThaiFormat(
+                  format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
+                ),
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+              {
+                text: ")",
                 style: "tableKey",
                 margin: [0, 0, 20, 0],
               },

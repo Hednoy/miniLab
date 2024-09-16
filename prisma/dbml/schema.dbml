@@ -281,7 +281,7 @@ Table tb_lab {
   approve_by_id Int
   approve_date DateTime [default: `now()`]
   created_at DateTime [default: `now()`, not null]
-  result Boolean [not null, default: false]
+  result Int [not null, default: 0]
   report_by_id Int
   report_date DateTime [default: `now()`]
   report_time String [default: '00:00']

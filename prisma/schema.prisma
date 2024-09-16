@@ -340,7 +340,7 @@ model Lab {
   approve_by_id      Int?
   approve_date       DateTime?       @default(now())
   created_at         DateTime        @default(now())
-  result             Boolean         @default(false)
+  result             Int             @default(0)
   report_by_id       Int?
   report_date        DateTime?       @default(now())
   report_time        String?         @default("00:00")
