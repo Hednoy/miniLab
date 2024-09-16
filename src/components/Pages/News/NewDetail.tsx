@@ -14,6 +14,9 @@ import { Datepicker, Select } from "flowbite-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
+import { FaCalendarAlt } from "react-icons/fa";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 
 type NewsDetailProps = {
   id: number;
@@ -191,6 +194,26 @@ export default function NewsDetail({ id }: NewsDetailProps) {
 
   const { mutate: deleteNewsById, isPending } = useDeleteNewsById();
 
+  const responsive = {
+    superLargeDesktop: {
+      breakpoint: { max: 4000, min: 3000 },
+      items: 5,
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 4,
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 768 },
+      items: 3,
+    },
+    mobile: {
+      breakpoint: { max: 768, min: 0 },
+      items: 1,
+    },
+  };
+  
+
   async function DeleteNews(id: any) {
     swal
       .fire({
@@ -257,27 +280,29 @@ export default function NewsDetail({ id }: NewsDetailProps) {
         </h1>
 
         <p className="mb-4 text-gray">{newsDetail?.description}</p>
-
         {newsDetail?.images &&
           newsDetail?.images.length > 0 &&
-          newsDetail?.images.map((image: any, index: number) => {
-            if (
-              image.file_path.split(".")[1] === "png" ||
-              image.file_path.split(".")[1] === "jpg"
-            ) {
-              return (
-                <div className="relative w-full pt-[100%]" key={index}>
-                  <Image
+          newsDetail?.images.some((image: any) =>
+            ["jpg", "jpeg", "png"].includes(image.file_path.split(".").pop())
+          ) && (
+            <Carousel
+              responsive={responsive}
+              className="my-10 p-10"
+              itemClass="mr-3"
+            >
+              {newsDetail?.images.map((image: any, index: number) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-center rounded-md p-3 shadow-lg"
+                >
+                  <img
                     src={image.file_path.replace("/public", "")}
-                    alt={image.file_name}
-                    objectFit="cover"
-                    fill
-                    className="left-0 top-0 h-full w-full rounded-2xl object-cover"
+                    className="rounded-md"
                   />
                 </div>
-              );
-            }
-          })}
+              ))}
+            </Carousel>
+          )}
 
         <div className="flex w-full">
           {newsDetail?.images &&

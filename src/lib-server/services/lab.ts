@@ -121,8 +121,25 @@ export const getLabList = async (
     const lowerTerm = term.toLowerCase();
     if (lowerTerm.startsWith("ชาย")) return "Male";
     if (lowerTerm.startsWith("หญิง")) return "Female";
+    if (lowerTerm.startsWith("ไม่") || lowerTerm.startsWith("ไม่ระ") || lowerTerm.startsWith("ไม่ระบุ")) return "Unkhow";
     return term;
   };
+  const nameParts = searchTerm ? searchTerm.split(" ") : [];
+  const patientConditions = [];
+
+  if (nameParts.length === 1) {
+    patientConditions.push(
+      { first_name: { contains: nameParts[0] } },
+      { last_name: { contains: nameParts[0] } }
+    );
+  } else if (nameParts.length > 1) {
+    patientConditions.push({
+      AND: [
+        { first_name: { contains: nameParts[0] } },
+        { last_name: { contains: nameParts[1] } },
+      ],
+    });
+  }
 
   const where: Prisma.LabWhereInput = {
     OR: [
@@ -130,11 +147,7 @@ export const getLabList = async (
       { detection_method: { contains: searchTerm } },
       {
         Patient: {
-          OR: [
-            { title: { contains: searchTerm } },
-            { first_name: { contains: searchTerm } },
-            { last_name: { contains: searchTerm } },
-          ],
+          OR: patientConditions,
         },
       },
       { InspectionType: { OR: [{ name: { contains: searchTerm } }] } },
@@ -142,7 +155,6 @@ export const getLabList = async (
       {
         TestType: {
           OR: [
-            // { prefix_name: { contains: searchTerm } },
             { subfix_name: { contains: searchTerm } },
           ],
         },
@@ -157,8 +169,8 @@ export const getLabList = async (
     ...(test_type_id && { test_type_id }),
   };
 
-  // console.log('Search Term:', searchTerm);
-  // console.log('Where Condition:', where);
+  console.log('Search Term:', searchTerm);
+  console.log('Where Condition:', where);
 
   const totalCount = await prisma.lab.count({ where });
 

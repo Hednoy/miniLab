@@ -83,3 +83,13 @@ body {
 .bt-text {
   @apply bg-transparent text-primary;
 }
+
+.carousel-image {
+  width: 100%;
+  height: 300px; /* Adjust the height as needed */
+  object-fit: cover; /* Ensures the image covers the entire area without distortion */
+}
+.scrollable-dropdown {
+  max-height: 200px; /* Adjust the height as needed */
+  overflow-y: auto;
+}
