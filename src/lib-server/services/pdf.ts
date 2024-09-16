@@ -10,6 +10,7 @@ import { LabTestPDFData } from "@/types/models/LabTest";
 import { convertDateToString, convertDateToStringWithTime } from "@/utils";
 import fs from 'fs';
 import path from 'path';
+import Patient from '../../components/Pages/Patient/Patient';
 
 pdfMake.vfs = pdfFonts;
 pdfMake.fonts = {
@@ -29,6 +30,22 @@ const template: TDocumentDefinitions = {
     font: "THSarabun",
   },
 };
+
+export const dateFormatter = (lab) => {
+    const invalidDates = ["0001-01-01", "00:00:00.000", "00:00:00", "0001-01-01 "];
+
+    const isInvalid = (date :string) => invalidDates.includes(date) || date === null || date === undefined;
+
+    if (!isInvalid(lab.updated_at)) return lab.updated_at;
+    if (!isInvalid(lab.approve_date)) return lab.approve_date;
+    if (!isInvalid(lab.created_at)) return lab.created_at;
+    if (!isInvalid(lab.report_date)) return lab.report_date;
+    if (!isInvalid(lab.Patient?.collected_date)) return lab.Patient.collected_date;
+    if (!isInvalid(lab.Patient?.received_date)) return lab.Patient.received_date;
+
+    return ""; // Return empty string if all are invalid
+  };
+  
 
 export async function PDFlab1(id: number): Promise<Buffer> {
   const lab = await prisma.lab.findUnique({
@@ -51,6 +68,7 @@ export async function PDFlab1(id: number): Promise<Buffer> {
       Pathogens: true,
     },
   });
+
 
   const labtestPdf: LabTestPDFData = {};
 
@@ -173,9 +191,9 @@ export async function PDFlab1(id: number): Promise<Buffer> {
                       { text: "Collect Date : ", style: "tableKey" },
                       {
                         text:
-                          convertDateToString(
+                          dateFormatter(convertDateToString(
                             lab?.Patient?.collected_date ?? null
-                          ) +
+                          )) +
                           " " +
                           lab?.Patient?.collected_time,
                         style: "tableValue",
@@ -184,9 +202,9 @@ export async function PDFlab1(id: number): Promise<Buffer> {
                       { text: "Received Date : ", style: "tableKey" },
                       {
                         text:
-                          convertDateToString(
+                          dateFormatter(convertDateToString(
                             lab?.Patient?.received_date ?? null
-                          ) +
+                          )) +
                           " " +
                           lab?.Patient?.received_time,
                         style: "tableValue",
@@ -194,7 +212,7 @@ export async function PDFlab1(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Report Date : ", style: "tableKey" },
                       {
-                        text: convertDateToStringWithTime(lab?.report_date),
+                        text: dateFormatter(convertDateToStringWithTime(lab?.report_date)),
                         style: "tableValue",
                       },
                       "\n",
@@ -382,6 +400,10 @@ export async function PDFlab2(id: number): Promise<Buffer> {
       remark: labTest?.remark,
     };
   });
+
+  console.log("labTestList",labTestList)
+  console.log("lab",lab)
+
   const reportBy = await prisma.officer.findUnique({
     where: { id: lab?.report_by_id || 0 },
   });
@@ -483,9 +505,9 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Register Date : ", style: "tableKey" },
                       {
-                        text: convertDateToString(
+                        text: dateFormatter(convertDateToString(
                           lab?.Patient?.collected_date ?? null
-                        ),
+                        )),
                         style: "tableValue",
                       },
                       "\n",
@@ -638,7 +660,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
               },
               {
                 text:
-                  convertDateToString(lab?.report_date ?? null) +
+                  dateFormatter(convertDateToString(lab?.report_date ?? null)) +
                   " " +
                   lab?.report_time,
                 style: "tableValue",
@@ -797,9 +819,9 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Date of Birth (DOB) : ", style: "tableKey" },
                       {
-                        text: convertDateToString(
+                        text: dateFormatter(convertDateToString(
                           lab?.Patient?.date_of_birth ?? null
-                        ),
+                        )),
                         style: "tableValue",
                       },
                       "\n",
@@ -830,23 +852,23 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Collected Date : ", style: "tableKey" },
                       {
-                        text: convertDateToString(
+                        text: dateFormatter(convertDateToString(
                           lab?.Patient?.collected_date ?? null
-                        ),
+                        )),
                         style: "tableValue",
                       },
                       "\n",
                       { text: "Received Date : ", style: "tableKey" },
                       {
-                        text: convertDateToString(
+                        text: dateFormatter(convertDateToString(
                           lab?.Patient?.received_date ?? null
-                        ),
+                        )),
                         style: "tableValue",
                       },
                       "\n",
                       { text: "Reported Date : ", style: "tableKey" },
                       {
-                        text: convertDateToString(lab?.report_date ?? null),
+                        text: dateFormatter(convertDateToString(lab?.report_date ?? null)),
                         style: "tableValue",
                       },
                       "\n",
@@ -1247,9 +1269,9 @@ const mergeLabTestTemplate = () => {
                   { text: "Collected Date: ", style: "tableKey" },
                   {
                     text:
-                      convertDateToString(
+                      dateFormatter(convertDateToString(
                         lab?.Patient?.collected_date ?? null
-                      ) +
+                      )) +
                       " " +
                       lab?.Patient?.collected_time,
                     style: "tableValue",
@@ -1267,7 +1289,7 @@ const mergeLabTestTemplate = () => {
                   { text: "Recevied Date : ", style: "tableKey" },
                   {
                     text:
-                      convertDateToString(lab?.Patient?.received_date ?? null) +
+                      dateFormatter(convertDateToString(lab?.Patient?.received_date ?? null)) +
                       " " +
                       lab?.Patient?.received_time,
                     style: "tableValue",
@@ -1351,7 +1373,7 @@ const mergeLabTestTemplate = () => {
                   },
                   {
                     text:
-                      convertDateToString(lab?.report_date ?? null) +
+                      dateFormatter(convertDateToString(lab?.report_date ?? null)) +
                       " " +
                       lab?.report_time,
                     style: "tableValue",
@@ -1380,7 +1402,7 @@ const mergeLabTestTemplate = () => {
                   },
                   {
                     text:
-                      convertDateToString(lab?.approve_date ?? null) +
+                      dateFormatter(convertDateToString(lab?.approve_date ?? null)) +
                       " " +
                       lab?.approve_time,
                     style: "tableValue",
@@ -1587,9 +1609,9 @@ const mergeLabTestTemplate = () => {
                     "\n",
                     { text: "Date of Birth (DOB) : ", style: "tableKey" },
                     {
-                      text: convertDateToString(
+                      text: dateFormatter(convertDateToString(
                         lab?.Patient?.date_of_birth ?? null
-                      ),
+                      )),
                       style: "tableValue",
                     },
                     "\n",
@@ -1617,17 +1639,17 @@ const mergeLabTestTemplate = () => {
                     "\n",
                     { text: "Corrected Date: ", style: "tableKey" },
                     {
-                      text: convertDateToString(
+                      text: dateFormatter(convertDateToString(
                         lab?.Patient?.collected_date ?? null
-                      ),
+                      )),
                       style: "tableValue",
                     },
                     "\n",
                     { text: "Received Date: ", style: "tableKey" },
                     {
-                      text: convertDateToString(
+                      text: dateFormatter(convertDateToString(
                         lab?.Patient?.received_date ?? null
-                      ),
+                      )),
                       style: "tableValue",
                     },
                     "\n",
@@ -1930,9 +1952,9 @@ const mergeLabTestTemplate = () => {
                 text: [
                   { text: "Reported Date : ", style: "tableKey" },
                   {
-                    text: convertDateToString(
+                    text: dateFormatter(convertDateToString(
                       lab?.Patient?.received_date ?? null
-                    ),
+                    )),
                     style: "tableValue",
                   },
                   "\n",
@@ -1942,7 +1964,7 @@ const mergeLabTestTemplate = () => {
                     style: "tableValue",
                   },
                   {
-                    text: convertDateToString(lab?.approve_date ?? null),
+                    text: dateFormatter(convertDateToString(lab?.approve_date ?? null)),
                     style: "tableValue",
                   },
                 ],
@@ -2175,7 +2197,7 @@ const mergeLabTestTemplate = () => {
                       { text: "Date: ", style: "tableKey" },
                       {
                         text:
-                          convertDateToString(lab?.report_date ?? null) +
+                          dateFormatter(convertDateToString(lab?.report_date ?? null)) +
                           " " +
                           lab?.report_time,
                         style: "tableValue",
@@ -2206,7 +2228,7 @@ const mergeLabTestTemplate = () => {
                       { text: "Date: ", style: "tableKey" },
                       {
                         text:
-                          convertDateToString(lab?.approve_date ?? null) +
+                          dateFormatter(convertDateToString(lab?.approve_date ?? null)) +
                           " " +
                           lab?.approve_time,
                         style: "tableValue",
@@ -2433,9 +2455,9 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                       { text: "Collect Date : ", style: "tableKey" },
                       {
                         text:
-                          convertDateToString(
+                          dateFormatter(convertDateToString(
                             lab?.Patient?.collected_date ?? null
-                          ) +
+                          )) +
                           " " +
                           lab?.Patient?.collected_time,
                         style: "tableValue",
@@ -2444,9 +2466,9 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                       { text: "Received Date : ", style: "tableKey" },
                       {
                         text:
-                          convertDateToString(
+                          dateFormatter(convertDateToString(
                             lab?.Patient?.received_date ?? null
-                          ) +
+                          )) +
                           " " +
                           lab?.Patient?.received_time,
                         style: "tableValue",
@@ -2454,9 +2476,9 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Report Date : ", style: "tableKey" },
                       {
-                        text: convertDateToStringWithTime(
+                        text: dateFormatter(convertDateToStringWithTime(
                           lab?.report_date ?? null
-                        ),
+                        )),
                         style: "tableValue",
                       },
                       "\n",
@@ -2729,9 +2751,9 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                       { text: "Collect Date : ", style: "tableKey" },
                       {
                         text:
-                          convertDateToString(
+                          dateFormatter(convertDateToString(
                             lab?.Patient?.collected_date ?? null
-                          ) +
+                          )) +
                           " " +
                           lab?.Patient?.collected_time,
                         style: "tableValue",
@@ -2740,9 +2762,9 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                       { text: "Received Date : ", style: "tableKey" },
                       {
                         text:
-                          convertDateToString(
+                          dateFormatter(convertDateToString(
                             lab?.Patient?.received_date ?? null
-                          ) +
+                          )) +
                           " " +
                           lab?.Patient?.received_time,
                         style: "tableValue",
@@ -2750,9 +2772,9 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Report Date : ", style: "tableKey" },
                       {
-                        text: convertDateToStringWithTime(
+                        text: dateFormatter(convertDateToStringWithTime(
                           lab?.report_date ?? null
-                        ),
+                        )),
                         style: "tableValue",
                       },
                       "\n",
