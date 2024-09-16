@@ -340,11 +340,12 @@ model Lab {
   approve_by_id      Int?
   approve_date       DateTime?       @default(now())
   created_at         DateTime        @default(now())
-  result             Int             @default(0)
+  result             Boolean         @default(false)
   report_by_id       Int?
   report_date        DateTime?       @default(now())
   report_time        String?         @default("00:00")
   approve_time       String?         @default("00:00")
+  count_update       Int?            @default(1)
   Attachment         Attachment[]
   AttachmentLab      AttachmentLab[]
   Hospital           Hospital?       @relation(fields: [hospital_id], references: [id])
@@ -538,7 +539,7 @@ model Officer {
   id           Int          @id @default(autoincrement())
   citizen_id   String?
   title_name   String?
-  first_name   String?
+  first_name   String
   last_name    String?
   mobile_phone String?
   email        String?

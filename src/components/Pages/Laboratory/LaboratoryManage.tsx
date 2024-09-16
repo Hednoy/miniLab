@@ -25,7 +25,7 @@ import {
 } from "@/types/models/Lab";
 import { LabTestCreateData } from "@/types/models/LabTest";
 import { TestTypeForDD } from "@/types/models/TestType";
-import { convertToThaiFormatTime } from "@/utils";
+import { convertToThaiFormat, convertToThaiFormatTime } from "@/utils";
 import { faDownload, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TimePicker } from "antd";
@@ -38,6 +38,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useWatch } from "react-hook-form";
 import * as yup from "yup";
+import { useSession } from 'next-auth/react'; // Assuming you are using next-auth for session management
+import { update } from "@/lib-server/services/users";
 
 type LaboratoryManageProps = {
   id: number;
@@ -71,6 +73,8 @@ function LaboratoryManageComponent({
     result: useRef<any>(),
     date: useRef<any>(),
   };
+  const { data: session } = useSession();
+  const userId = session?.user?.id ?? null;
 
   const { data: machinesData } = useMachines({});
   const { data: inspectionTypes } = useInspectionTypes({});
@@ -117,9 +121,14 @@ function LaboratoryManageComponent({
             result: yup.string(),
           })
         ),
+        updated_at: yup.string().required("กรุณาระบุวันที่แก้ไข"),
+        count_update: yup.number().required("กรุณาระบุจำนวนการแก้่ไข"),
+        update_by_id: yup.number().required("").default(userId),
       })
     ),
   });
+
+  console.log("Form values:", getValues());
 
   const watchFields = watch("test_type_id");
   const { data: pathogensDataType } = usePathogensByTestTypeId(watchFields);
@@ -133,33 +142,36 @@ function LaboratoryManageComponent({
       !labData.some((lab) => lab.case_no === patient.case_no)
   );
   useEffect(() => {
-    if(!id)
-{const caseNo = getValues("case_no");
-    const findPatient = patientsData.find((e) => e.case_no === caseNo);
-    if (!findPatient || !findPatient.Lab || !findPatient.Lab[0]) {
-      clearErrors("machine_id");
-      setValue("machine_id", "กรุณาเลือก");
-      setValue("detection_method", "กรุณาเลือก");
-      return;
+    if (!id) {
+      const caseNo = getValues("case_no");
+      const findPatient = patientsData.find((e) => e.case_no === caseNo);
+      if (!findPatient || !findPatient.Lab || !findPatient.Lab[0]) {
+        clearErrors("machine_id");
+        setValue("machine_id", "กรุณาเลือก");
+        setValue("detection_method", "กรุณาเลือก");
+        return;
+      }
+      // Only set the timeout if data is found
+      setTimeout(() => {
+        setValue("machine_id", findPatient.Lab[0].machine_id);
+        setValue("detection_method", findPatient.Lab[0].detection_method);
+      }, 5000);
     }
-    // Only set the timeout if data is found
-    setTimeout(() => {
-      setValue("machine_id", findPatient.Lab[0].machine_id);
-      setValue("detection_method", findPatient.Lab[0].detection_method);
-    }, 5000);}    
   }, [watch("case_no")]);
 
   useEffect(() => {
-    if(!id){const caseNo = getValues("case_no");
-    const findPatient = patientsData.find((e) => e.case_no === caseNo);
-    if (!findPatient || !findPatient.Lab || !findPatient.Lab[0]) {
-      clearErrors("detection_method");
-      setValue("detection_method", "กรุณาเลือก");
-      return;
+    if (!id) {
+      const caseNo = getValues("case_no");
+      const findPatient = patientsData.find((e) => e.case_no === caseNo);
+      if (!findPatient || !findPatient.Lab || !findPatient.Lab[0]) {
+        clearErrors("detection_method");
+        setValue("detection_method", "กรุณาเลือก");
+        return;
+      }
+      setTimeout(() => {
+        setValue("detection_method", findPatient.Lab[0].detection_method);
+      }, 5000);
     }
-    setTimeout(() => {
-      setValue("detection_method", findPatient.Lab[0].detection_method);
-    }, 5000);}
   }, [watch("machine_id")]);
 
   const { fields, append, remove } = useFieldArray({
@@ -183,7 +195,7 @@ function LaboratoryManageComponent({
   const { push, back } = useRouter();
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [isCanAdd, setIsCanAdd] = useState(true); // State for disabling button
+  const [isCanAdd, setIsCanAdd] = useState(true);
 
   const [formFields, setFormFields] = useState(
     labsData?.lab_tests || [{ pathogens_id: 0, result: "", remark: "" }]
@@ -255,33 +267,32 @@ function LaboratoryManageComponent({
     }
   }, [watch("machine_id"), formFields?.length, machinesData]);
 
-
   const detectionMethod = watch("detection_method");
-  
-  useEffect(() => {
-  if (!detectionMethod || detectionMethod === "กรุณาเลือก") {
-    clearErrors("test_type_id");
-    setValue("test_type_id", "กรุณาเลือก");
-    return;
-  }
-  const detectionMethodSelected = _.find(detectionMethodData, {
-    name: detectionMethod,
-  });
-  if (detectionMethodSelected) {
-    setTimeout(() => {
-      setValue("test_type_id", detectionMethodSelected.id);
-    }, 5000);
-  }
-}, [watch("detection_method")]);
 
-const result = watch("result");
   useEffect(() => {
-  if (result === 0) {
-    clearErrors("result");
-    setValue("result", "กรุณาเลือก");
-    return;
-  }
-}, [watch("result")]);
+    if (!detectionMethod || detectionMethod === "กรุณาเลือก") {
+      clearErrors("test_type_id");
+      setValue("test_type_id", "กรุณาเลือก");
+      return;
+    }
+    const detectionMethodSelected = _.find(detectionMethodData, {
+      name: detectionMethod,
+    });
+    if (detectionMethodSelected) {
+      setTimeout(() => {
+        setValue("test_type_id", detectionMethodSelected.id);
+      }, 5000);
+    }
+  }, [watch("detection_method")]);
+
+  const result = watch("result");
+  useEffect(() => {
+    if (result === 0) {
+      clearErrors("result");
+      setValue("result", "กรุณาเลือก");
+      return;
+    }
+  }, [watch("result")]);
 
   async function onSubmit(labData: LabCreateFormData) {
     const lab: any = labData.lab_tests;
@@ -526,7 +537,7 @@ const result = watch("result");
               render={({ field }) => (
                 <CustomSelect
                   {...register("test_type_id")}
-                  disabled 
+                  disabled
                   mainKeyId="id"
                   mainKey="subfix_name"
                   value={field.value}
@@ -678,7 +689,7 @@ const result = watch("result");
                   <div className="rounded-[20px] bg-secondary p-2 text-sm">
                     {file.file_name ? file.file_name : file.old_file_name}
                   </div>
-                   <button
+                  <button
                     type="button"
                     className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary"
                     onClick={() => {
@@ -878,6 +889,54 @@ const result = watch("result");
                   {String(errors.comment.message)}
                 </p>
               )}
+            </div>
+          </div>
+
+          <div className="col-span-2 w-full">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-3 md:col-span-1">
+                <Label htmlFor="" value={`แก้ไขครั้งที่`} />
+                <Controller
+                  name="editForm"
+                  control={control}
+                  render={({ field }) => (
+                    <TextInput
+                      disabled={state}
+                      {...register("editForm")}
+                      id="editForm"
+                      type="number"
+                      defaultValue={1}
+                      value={field.value}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        trigger("editForm");
+                      }}
+                    />
+                  )}
+                />
+              </div>
+                <div className="col-span-3 md:col-span-1">
+                <Label htmlFor="updated_at" value={`วันที่แก้ไข`} />
+                <Controller
+                  name="updated_at"
+                  control={control}
+                  render={({ field }) => (
+                  <CustomDatePicker
+                    disabled={state}
+                    {...register("updated_at")}
+                    onChange={field.onChange}
+                    value={new Date()}
+                  />
+                  )}
+                />
+                </div>
+              <div className="col-span-3 text-start md:col-span-1">
+                {errors.comment && (
+                  <p className=" text-red-500">
+                    {String(errors.comment.message)}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
 

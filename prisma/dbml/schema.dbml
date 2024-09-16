@@ -281,11 +281,12 @@ Table tb_lab {
   approve_by_id Int
   approve_date DateTime [default: `now()`]
   created_at DateTime [default: `now()`, not null]
-  result Int [not null, default: 0]
+  result Boolean [not null, default: false]
   report_by_id Int
   report_date DateTime [default: `now()`]
   report_time String [default: '00:00']
   approve_time String [default: '00:00']
+  count_update Int [default: 1]
   Attachment tb_attachment [not null]
   AttachmentLab tb_attachment_lab [not null]
   Hospital tb_hospital
@@ -440,7 +441,7 @@ Table tb_officer {
   id Int [pk, increment]
   citizen_id String
   title_name String
-  first_name String
+  first_name String [not null]
   last_name String
   mobile_phone String
   email String

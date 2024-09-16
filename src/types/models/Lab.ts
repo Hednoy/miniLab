@@ -1,3 +1,4 @@
+import { update } from './../../lib-server/services/users';
 import { inspect } from "util";
 import { SortDirection } from "..";
 import {
@@ -57,6 +58,8 @@ export type LabCreateFormData = {
   report_date: Date | null;
   report_time: string | null;
   result: number;
+  count_update: number;
+  updated_at: Date | null;
 
   lab_tests: LabTestCreateData[];
   lab_attachments: LabAttachments[];
