@@ -93,6 +93,7 @@ export const getLab = async (id: number): Promise<LabGetByID> => {
     machine: lab.Machine,
     inspection_type: lab.InspectionType,
     updated_at: lab.updated_at,
+    count_update: lab.count_update || 0,
   };
 
   return resp;
@@ -173,8 +174,8 @@ export const getLabList = async (
     ...(test_type_id && { test_type_id }),
   };
 
-  console.log('Search Term:', searchTerm);
-  console.log('Where Condition:', where);
+  // console.log('Search Term:', searchTerm);
+  // console.log('Where Condition:', where);
 
   const totalCount = await prisma.lab.count({ where });
 
@@ -293,10 +294,13 @@ export const updateLab = async (
       status: data.status,
       approve_by_id: data.approve_by_id,
       approve_date: data.approve_date,
+      approve_time: data.approve_time,
       report_by_id: data.report_by_id,
       report_date: data.report_date,
       report_time: data.report_time,
       result: data.result,
+      count_update: data.count_update,
+      test_type_id: data.test_type_id,
     },
   });
 

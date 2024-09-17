@@ -38,7 +38,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useWatch } from "react-hook-form";
 import * as yup from "yup";
-import { useSession } from 'next-auth/react'; // Assuming you are using next-auth for session management
+import { useSession } from "next-auth/react"; // Assuming you are using next-auth for session management
 import { update } from "@/lib-server/services/users";
 
 type LaboratoryManageProps = {
@@ -111,6 +111,7 @@ function LaboratoryManageComponent({
         inspection_type_id: yup.number().required("กรุณาเลือกชนิดสิ่งส่งตรวจ"),
         approve_by_id: yup.number().required("กรุณาเลือกผู้อนุมัติ"),
         approve_date: yup.string().required("กรุณาเลือกวันที่อนุมัติ"),
+        approve_time: yup.string().required("กรุณาเลือกเวลาที่อนุมัติ"),
         report_by_id: yup.number().required("กรุณาเลือกผู้อนุมัติ"),
         report_date: yup.string().required("กรุณาเลือกวันที่รายงาน"),
         report_time: yup.string().required("กรุณาเลือกเวลาที่รายงาน"),
@@ -341,6 +342,9 @@ function LaboratoryManageComponent({
     const report_time = dayjs(labData.report_time).format("HH:mm");
     labData.report_time = report_time;
 
+    const approve_time = dayjs(labData.approve_time).format("HH:mm");
+    labData.approve_time = approve_time;
+
     const fileList: any[] = [];
     if (file.length > 0) {
       file.map((resp, index) => {
@@ -356,7 +360,7 @@ function LaboratoryManageComponent({
       labData.lab_attachments = fileList;
     }
 
-    labData.count_update = (labData.count_update || 0) + 1;
+    labData.count_update = labData.count_update;
     labData.updated_by = userId;
 
     if (isNaN(id)) {
@@ -911,27 +915,26 @@ function LaboratoryManageComponent({
                       value={field.value || ""}
                       onChange={(e) => {
                         field.onChange(e);
-                        trigger("count_update");
                       }}
                     />
                   )}
                 />
               </div>
-                <div className="col-span-3 md:col-span-1">
+              <div className="col-span-3 md:col-span-1">
                 <Label htmlFor="updated_at" value={`วันที่แก้ไข`} />
                 <Controller
                   name="updated_at"
                   control={control}
                   render={({ field }) => (
-                  <CustomDatePicker
-                    disabled={state}
-                    {...register("updated_at")}
-                    onChange={field.onChange}
-                    value={new Date()}
-                  />
+                    <CustomDatePicker
+                      disabled={state}
+                      {...register("updated_at")}
+                      onChange={field.onChange}
+                      value={new Date()}
+                    />
                   )}
                 />
-                </div>
+              </div>
               <div className="col-span-3 text-start md:col-span-1">
                 {errors.comment && (
                   <p className=" text-red-500">
@@ -1009,7 +1012,7 @@ function LaboratoryManageComponent({
                     <TimePicker
                       disabled={state}
                       placeholder="เวลา"
-                      defaultValue={dayjs("00:00", "HH:mm")}
+                      // defaultValue={dayjs("00:00", "HH:mm")}
                       value={field.value ? dayjs(field.value, "HH:mm") : null}
                       format={"HH:mm"}
                       onChange={field.onChange}
@@ -1094,7 +1097,7 @@ function LaboratoryManageComponent({
                     <TimePicker
                       placeholder="เวลา"
                       disabled={state}
-                      defaultValue={dayjs("00:00", "HH:mm")}
+                      // defaultValue={dayjs("00:00", "HH:mm")}
                       value={field.value ? dayjs(field.value, "HH:mm") : null}
                       format={"HH:mm"}
                       onChange={field.onChange}
