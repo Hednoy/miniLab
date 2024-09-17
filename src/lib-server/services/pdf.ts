@@ -757,23 +757,6 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 style: "tableKey",
                 margin: [0, 0, 20, 0],
               },
-              {
-                text: " (",
-                style: "tableKey",
-                margin: [0, 0, 20, 0],
-              },
-              {
-                text: convertToThaiFormat(
-                  format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
-                ),
-                style: "tableKey",
-                margin: [0, 0, 20, 0],
-              },
-              {
-                text: ")",
-                style: "tableKey",
-                margin: [0, 0, 20, 0],
-              },
               "\n",
             ],
           },
@@ -1296,24 +1279,6 @@ export async function PDFlab2(id: number): Promise<Buffer> {
             style: "tableKey",
             margin: [0, 0, 20, 0],
           },
-
-          {
-            text: " (",
-            style: "tableKey",
-            margin: [0, 0, 20, 0],
-          },
-          {
-            text: convertToThaiFormat(
-              format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
-            ),
-            style: "tableKey",
-            margin: [0, 0, 20, 0],
-          },
-          {
-            text: ")",
-            style: "tableKey",
-            margin: [0, 0, 20, 0],
-          },
         ],
       },
       {
@@ -1330,7 +1295,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 text: "24/56 ม.3 ถนนพหลโยธิน แขวงอนุสาวรีย์ เขตบางเขน กรุงเทพฯ 10220 \nโทรศัพท์ 0 2972 9606, E-MAIL: LABIUDCBKK@GMAIL.COM",
               },
             ],
-            margin: [10, 0, 0, 0],
+            margin: [30, 0, 0, 0],
           },
         ],
       },
@@ -1639,24 +1604,6 @@ export async function PDFlab2(id: number): Promise<Buffer> {
             },
             {
               text: lab?.count_update || "",
-              style: "tableKey",
-              margin: [0, 0, 20, 0],
-            },
-
-            {
-              text: " (",
-              style: "tableKey",
-              margin: [0, 0, 20, 0],
-            },
-            {
-              text: convertToThaiFormat(
-                format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
-              ),
-              style: "tableKey",
-              margin: [0, 0, 20, 0],
-            },
-            {
-              text: ")",
               style: "tableKey",
               margin: [0, 0, 20, 0],
             },
@@ -2433,24 +2380,6 @@ export async function PDFlab2(id: number): Promise<Buffer> {
               },
               {
                 text: lab?.count_update || "",
-                style: "tableKey",
-                margin: [0, 0, 20, 0],
-              },
-
-              {
-                text: " (",
-                style: "tableKey",
-                margin: [0, 0, 20, 0],
-              },
-              {
-                text: convertToThaiFormat(
-                  format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
-                ),
-                style: "tableKey",
-                margin: [0, 0, 20, 0],
-              },
-              {
-                text: ")",
                 style: "tableKey",
                 margin: [0, 0, 20, 0],
               },
