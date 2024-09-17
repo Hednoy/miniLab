@@ -31,21 +31,25 @@ const template: TDocumentDefinitions = {
   },
 };
 
-export const dateFormatter = (lab: any) => {
-  const invalidDates = ["0001-01-01", "00:00:00.000", "00:00:00", "0001-01-01 "];
+export const dateFormatter = (dateString: string | null | undefined) => { 
+  if (dateString == null) {
+    return "";
+  }
+  const invalidDates = [
+    "0001-01-01 00:00:00.000",
+    "00:00:00",
+    "0001-01-01 00:00:00.000",
+    "0001-01-01 00:00:00"
+  ];
 
-  const isInvalid = (date: string) => invalidDates.includes(date) || date === null || date === undefined;
+  // Check if the dateString matches any of the invalid date formats
+  if (invalidDates.includes(dateString)) {
+    return "";
 
-  if (!isInvalid(lab.updated_at)) return lab.updated_at;
-  if (!isInvalid(lab.approve_date)) return lab.approve_date;
-  if (!isInvalid(lab.created_at)) return lab.created_at;
-  if (!isInvalid(lab.report_date)) return lab.report_date;
-  if (!isInvalid(lab.Patient?.collected_date)) return lab.Patient.collected_date;
-  if (!isInvalid(lab.Patient?.received_date)) return lab.Patient.received_date;
-
-  return ""; // Return empty string if all are invalid
+  }
+  return dateString.slice(0, 10) ;
+  // return 'dateString.toString().slice(0, 10)sdewdew'
 };
-
 
 export async function PDFlab1(id: number): Promise<Buffer> {
   const lab = await prisma.lab.findUnique({
@@ -401,8 +405,8 @@ export async function PDFlab2(id: number): Promise<Buffer> {
     };
   });
 
-  console.log("labTestList", labTestList)
-  console.log("lab", lab)
+  // console.log("labTestList", labTestList)
+  // console.log("lab", dateFormatter(lab))
 
   const reportBy = await prisma.officer.findUnique({
     where: { id: lab?.report_by_id || 0 },
