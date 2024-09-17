@@ -62,6 +62,7 @@ export type LabCreateFormData = {
   result: number;
   count_update: number;
   updated_at: Date | null;
+  updated_by: number | null;
 
   lab_tests: LabTestCreateData[];
   lab_attachments: LabAttachments[];
