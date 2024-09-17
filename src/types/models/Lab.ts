@@ -1,3 +1,4 @@
+import { update } from './../../lib-server/services/users';
 import { inspect } from "util";
 import { SortDirection } from "..";
 import {
@@ -35,6 +36,8 @@ export type LabCreateData = Pick<
   | "report_time"
   | "result"
   | "approve_time"
+  | "count_update"
+  | "updated_at"
 >;
 
 // both create and update
@@ -57,6 +60,8 @@ export type LabCreateFormData = {
   report_date: Date | null;
   report_time: string | null;
   result: number;
+  count_update: number;
+  updated_at: Date | null;
 
   lab_tests: LabTestCreateData[];
   lab_attachments: LabAttachments[];
@@ -102,6 +107,8 @@ export type LabUpdateData = Partial<
     | "report_date"
     | "report_time"
     | "result"
+    | "count_update"
+    | "updated_at"
   >
 >;
 
@@ -150,6 +157,7 @@ export type LabGetByID = {
   inspection_type: InspectionType | null;
   machine: Machine;
   updated_at: Date | null;
+  count_update: number;
 
   lab_tests: LabTestCreateData[];
   lab_attachments: LabAttachments[];
@@ -178,6 +186,8 @@ export type LabForReport = {
   date_of_report: string;
   approver: string;
   date_of_approve: string;
+  updated_at: Date | null;
+  count_update: number;
 };
 
 export type LabSearchData = {

@@ -8,8 +8,10 @@ import { Lab } from "@prisma/client";
 import ApiError from "../error";
 import { LabTestPDFData } from "@/types/models/LabTest";
 import { convertDateToString, convertDateToStringWithTime } from "@/utils";
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
+import { convertToThaiFormat } from "@/utils";
+import { format } from "date-fns";
 import Patient from '../../components/Pages/Patient/Patient';
 
 pdfMake.vfs = pdfFonts;
@@ -84,8 +86,8 @@ export async function PDFlab1(id: number): Promise<Buffer> {
     };
   });
 
-  const logoPath = path.resolve('public/images/logo.png');
-  const logoBase64 = fs.readFileSync(logoPath, 'base64');
+  const logoPath = path.resolve("public/images/logo.png");
+  const logoBase64 = fs.readFileSync(logoPath, "base64");
   const logoDataUrl = `data:image/png;base64,${logoBase64}`;
 
   if (lab) {
@@ -422,8 +424,8 @@ export async function PDFlab2(id: number): Promise<Buffer> {
     ? `${approveBy.first_name || ""} ${approveBy.last_name || ""}`
     : "Unknown";
 
-  const logoPath = path.resolve('public/images/logo.png');
-  const logoBase64 = fs.readFileSync(logoPath, 'base64');
+  const logoPath = path.resolve("public/images/logo.png");
+  const logoBase64 = fs.readFileSync(logoPath, "base64");
   const logoDataUrl = `data:image/png;base64,${logoBase64}`;
 
   if (lab?.Machine.name == "FM 02-001(C) ใบรายงานผล COVID-19 (ระบบ MP)") {
@@ -438,7 +440,6 @@ export async function PDFlab2(id: number): Promise<Buffer> {
       };
     }),
       (template.content = [
-
         {
           alignment: "right",
           absolutePosition: { x: 30, y: 0 },
@@ -760,7 +761,29 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 margin: [0, 0, 20, 0],
               },
               {
-                text: "แก้ไขครั้งที่ 00",
+                text: "แก้ไขครั้งที่ ",
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+              {
+                text: lab?.count_update || "",
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+              {
+                text: " (",
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+              {
+                text: convertToThaiFormat(
+                  format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
+                ),
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+              {
+                text: ")",
                 style: "tableKey",
                 margin: [0, 0, 20, 0],
               },
@@ -1055,8 +1078,16 @@ export async function PDFlab2(id: number): Promise<Buffer> {
       rp23?: number;
       rp27?: number;
       rp36?: number;
+      rp27?: number;
+      rp36?: number;
     };
 
+    type LabTemplateItem = {
+      name: string;
+      rp23: number | null;
+      rp27: number | null;
+      rp36: number | null;
+    };
     type LabTemplateItem = {
       name: string;
       rp23: number | null;
@@ -1186,6 +1217,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
     };
 
     const labtestPdf = mergeLabTestTemplate();
+    const labtestPdf = mergeLabTestTemplate();
 
     template.pageMargins = [20, 20, 20, 20];
     template.background = (currentPage, pageSize) => ({
@@ -1202,7 +1234,30 @@ export async function PDFlab2(id: number): Promise<Buffer> {
         text: [
           { text: "FM 02-007(A)", style: "tableKey", margin: [0, 0, 20, 0] },
           {
-            text: "แก้ไขครั้งที่ 00",
+            text: "แก้ไขครั้งที่ ",
+            style: "tableKey",
+            margin: [0, 0, 20, 0],
+          },
+          {
+            text: lab?.count_update || "",
+            style: "tableKey",
+            margin: [0, 0, 20, 0],
+          },
+
+          {
+            text: " (",
+            style: "tableKey",
+            margin: [0, 0, 20, 0],
+          },
+          {
+            text: convertToThaiFormat(
+              format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
+            ),
+            style: "tableKey",
+            margin: [0, 0, 20, 0],
+          },
+          {
+            text: ")",
             style: "tableKey",
             margin: [0, 0, 20, 0],
           },
@@ -1325,11 +1380,13 @@ export async function PDFlab2(id: number): Promise<Buffer> {
               { text: "Result", alignment: "center", style: "tableSecVal" },
               { text: "Ct.value", alignment: "center", style: "tableSecVal" },
             ],
-            ...(labtestPdf ? Object.values(labtestPdf).map((pathogen) => [
-              { text: pathogen?.name, style: "tableSecVal" },
-              { text: pathogen?.result, style: "tableSecVal" },
-              { text: pathogen?.remark, style: "tableSecVal" },
-            ]) : []),
+            ...(labtestPdf
+              ? Object.values(labtestPdf).map((pathogen) => [
+                  { text: pathogen?.name, style: "tableSecVal" },
+                  { text: pathogen?.result, style: "tableSecVal" },
+                  { text: pathogen?.remark, style: "tableSecVal" },
+                ])
+              : []),
           ],
         },
         layout: {
@@ -1509,7 +1566,30 @@ export async function PDFlab2(id: number): Promise<Buffer> {
               margin: [0, 0, 20, 0],
             },
             {
-              text: "แก้ไขครั้งที่ 00",
+              text: "แก้ไขครั้งที่ ",
+              style: "tableKey",
+              margin: [0, 0, 20, 0],
+            },
+            {
+              text: lab?.count_update || "",
+              style: "tableKey",
+              margin: [0, 0, 20, 0],
+            },
+
+            {
+              text: " (",
+              style: "tableKey",
+              margin: [0, 0, 20, 0],
+            },
+            {
+              text: convertToThaiFormat(
+                format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
+              ),
+              style: "tableKey",
+              margin: [0, 0, 20, 0],
+            },
+            {
+              text: ")",
               style: "tableKey",
               margin: [0, 0, 20, 0],
             },
@@ -2064,7 +2144,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Sex : ", style: "tableKey" },
                       { text: lab?.Patient?.gender, style: "tableValue" },
-                      // { text: lab?.Patient?.gender === 'male' ? 'ชาย' : 'หญิง', style: "tableValue" },
+                      // { text: lab?.Patient?.gender === "male" ? "ชาย" : "หญิง", style: "tableValue" },
                     ],
                     margin: [0, 5, 0, 5],
                   },
@@ -2256,7 +2336,30 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 margin: [0, 0, 20, 0],
               },
               {
-                text: "แก้ไขครั้งที่ 00",
+                text: "แก้ไขครั้งที่ ",
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+              {
+                text: lab?.count_update || "",
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+
+              {
+                text: " (",
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+              {
+                text: convertToThaiFormat(
+                  format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
+                ),
+                style: "tableKey",
+                margin: [0, 0, 20, 0],
+              },
+              {
+                text: ")",
                 style: "tableKey",
                 margin: [0, 0, 20, 0],
               },
@@ -2348,8 +2451,8 @@ export async function PDFLAB(id: number): Promise<Buffer> {
     ? `${approveBy.first_name || ""} ${approveBy.last_name || ""}`
     : "Unknown";
 
-  const logoPath = path.resolve('public/images/logo.png');
-  const logoBase64 = fs.readFileSync(logoPath, 'base64');
+  const logoPath = path.resolve("public/images/logo.png");
+  const logoBase64 = fs.readFileSync(logoPath, "base64");
   const logoDataUrl = `data:image/png;base64,${logoBase64}`;
 
   if (lab?.Machine?.name !== "FM 02-000(A)") {
