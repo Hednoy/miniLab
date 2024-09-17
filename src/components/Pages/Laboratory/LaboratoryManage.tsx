@@ -107,7 +107,7 @@ function LaboratoryManageComponent({
         case_no: yup.string().required("Lab Number"),
         machine_id: yup.number().required("กรุณาเลือกแบบฟอร์ม"),
         detection_method: yup.string().required("กรุณาเลือกหลักการตรวจ"),
-        // result: yup.boolean().required("กรุณาเลือกผลตรวจ"),
+        result: yup.number().required("กรุณาเลือกผลตรวจ"),
         inspection_type_id: yup.number().required("กรุณาเลือกชนิดสิ่งส่งตรวจ"),
         approve_by_id: yup.number().required("กรุณาเลือกผู้อนุมัติ"),
         approve_date: yup.string().required("กรุณาเลือกวันที่อนุมัติ"),
@@ -122,13 +122,12 @@ function LaboratoryManageComponent({
           })
         ),
         updated_at: yup.string().required("กรุณาระบุวันที่แก้ไข"),
-        count_update: yup.number().required("กรุณาระบุจำนวนการแก้่ไข"),
-        update_by_id: yup.number().required("").default(userId),
+        count_update: yup.number().required("กรุณาระบุจำนวนการแก้ไข"),
       })
     ),
   });
 
-  console.log("Form values:", getValues());
+  // console.log("Form values:", getValues());
 
   const watchFields = watch("test_type_id");
   const { data: pathogensDataType } = usePathogensByTestTypeId(watchFields);
@@ -147,8 +146,8 @@ function LaboratoryManageComponent({
       const findPatient = patientsData.find((e) => e.case_no === caseNo);
       if (!findPatient || !findPatient.Lab || !findPatient.Lab[0]) {
         clearErrors("machine_id");
-        setValue("machine_id", "กรุณาเลือก");
-        setValue("detection_method", "กรุณาเลือก");
+        setValue("machine_id", null);
+        setValue("detection_method", null);
         return;
       }
       // Only set the timeout if data is found
@@ -165,7 +164,7 @@ function LaboratoryManageComponent({
       const findPatient = patientsData.find((e) => e.case_no === caseNo);
       if (!findPatient || !findPatient.Lab || !findPatient.Lab[0]) {
         clearErrors("detection_method");
-        setValue("detection_method", "กรุณาเลือก");
+        setValue("detection_method", null);
         return;
       }
       setTimeout(() => {
@@ -218,6 +217,7 @@ function LaboratoryManageComponent({
   };
 
   async function SubmitForm() {
+    // console.log("SubmitForm");
     let isValid = false;
     isValid = await trigger([
       "case_no",
@@ -355,6 +355,9 @@ function LaboratoryManageComponent({
       });
       labData.lab_attachments = fileList;
     }
+
+    labData.count_update = (labData.count_update || 0) + 1;
+    labData.updated_by = userId;
 
     if (isNaN(id)) {
       createLab(labData, {
@@ -897,19 +900,18 @@ function LaboratoryManageComponent({
               <div className="col-span-3 md:col-span-1">
                 <Label htmlFor="" value={`แก้ไขครั้งที่`} />
                 <Controller
-                  name="editForm"
+                  name="count_update"
                   control={control}
                   render={({ field }) => (
                     <TextInput
                       disabled={state}
-                      {...register("editForm")}
-                      id="editForm"
+                      {...register("count_update")}
+                      id="count_update"
                       type="number"
-                      defaultValue={1}
-                      value={field.value}
+                      value={field.value || ""}
                       onChange={(e) => {
                         field.onChange(e);
-                        trigger("editForm");
+                        trigger("count_update");
                       }}
                     />
                   )}
@@ -1142,7 +1144,7 @@ function LaboratoryManageComponent({
             className={`rounded-[5px] bg-secondary px-4 py-2 text-sm font-semibold !no-underline md:col-span-1`}
             onClick={() => setCurrentStep(currentStep - 1)}
           >
-            ยกเลิก
+            ย้อนกลับ
           </button>
           {!state && (
             <button
