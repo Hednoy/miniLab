@@ -178,7 +178,7 @@ export async function PDFlab1(id: number): Promise<Buffer> {
                               new Date(lab?.Patient?.collected_date ?? ""),
                               "dd/MM/yyyy"
                             )
-                          ) + " " + (lab?.Patient?.collected_time === "00:00:00" ? "" : lab?.Patient?.collected_time),
+                          ) + " " + (lab?.Patient?.collected_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.collected_time),
                         style: "tableValue"
                       },
                       "\n",
@@ -191,7 +191,7 @@ export async function PDFlab1(id: number): Promise<Buffer> {
                               new Date(lab?.Patient?.received_date ?? ""),
                               "dd/MM/yyyy"
                             )
-                          ) + " " + (lab?.Patient?.received_time === "00:00:00" ? "" : lab?.Patient?.received_time),
+                          ) + " " + (lab?.Patient?.received_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.received_time),
                         style: "tableValue"
                       },
                       "\n",
@@ -658,7 +658,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       new Date(lab?.report_date ?? ""),
                       "dd/MM/yyyy"
                     )
-                  ) + " " + (lab?.report_time === "00:00:00" ? "" : lab?.report_time),
+                  ) + " " + (lab?.report_time === "00:00:00" || "00:00:00.000" ? "" : lab?.report_time),
                 style: "tableValue"
               },
               "\n",
@@ -1392,7 +1392,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                           new Date(lab?.Patient?.collected_date ?? ""),
                           "dd/MM/yyyy"
                         )
-                      ) + " " + (lab?.Patient?.collected_time === "00:00:00" ? "" : lab?.Patient?.collected_time),
+                      ) + " " + (lab?.Patient?.collected_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.collected_time),
                     style: "tableValue"
                   },
                 ],
@@ -1414,7 +1414,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                           new Date(lab?.Patient?.received_date ?? ""),
                           "dd/MM/yyyy"
                         )
-                      ) + " " + (lab?.Patient?.received_time === "00:00:00" ? "" : lab?.Patient?.received_time),
+                      ) + " " + (lab?.Patient?.received_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.received_time),
                     style: "tableValue"
                   },
                 ],
@@ -1505,7 +1505,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                           new Date(lab?.report_date ?? ""),
                           "dd/MM/yyyy"
                         )
-                      ) + " " + (lab?.report_time === "00:00:00" ? "" : lab?.report_time),
+                      ) + " " + (lab?.report_time === "00:00:00" || "00:00:00.000" ? "" : lab?.report_time),
                     style: "tableValue"
                   },
                 ],
@@ -1539,7 +1539,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                           new Date(lab?.approve_date ?? ""),
                           "dd/MM/yyyy"
                         )
-                      ) + " " + (lab?.approve_time === "00:00:00" ? "" : lab?.approve_time),
+                      ) + " " + (lab?.approve_time === "00:00:00" || "00:00:00.000" ? "" : lab?.approve_time),
                     style: "tableValue"
                   },
                 ],
@@ -1841,7 +1841,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                     "\n",
                     { text: "Time :", style: "tableValue" },
                     {
-                      text: lab?.Patient?.received_time === "00:00:00" ? "" : lab?.Patient?.received_time,
+                      text: lab?.Patient?.received_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.received_time,
                       style: "tableValue",
                     },
                   ],
@@ -2270,7 +2270,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Receive Time : ", style: "tableKey" },
                       {
-                        text: lab?.Patient?.received_time === "00:00:00" ? "" : lab?.Patient?.received_time,
+                        text: lab?.Patient?.received_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.received_time,
                         style: "tableValue",
                       },
                     ],
@@ -2332,7 +2332,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 style: "tableKey",
               },
             ],
-            absolutePosition: { x: 25, y: 315 },
+            absolutePosition: { x: 25, y: (lab?.result?.toString().length === 1 ? 290 : 315) },
           },
           {
             style: "tableExample",
@@ -2382,7 +2382,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                               new Date(lab?.report_date ?? ""),
                               "dd/MM/yyyy"
                             )
-                          ) + " " + (lab?.report_time === "00:00:00" ? "" : lab?.report_time),
+                          ) + " " + (lab?.report_time === "00:00:00" || "00:00:00.000" ? "" : lab?.report_time),
                         style: "tableValue"
                       },
                     ],
@@ -2417,7 +2417,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                               new Date(lab?.approve_date ?? ""),
                               "dd/MM/yyyy"
                             )
-                          ) + " " + (lab?.approve_time === "00:00:00" ? "" : lab?.approve_time),
+                          ) + " " + (lab?.approve_time === "00:00:00" || "00:00:00.000" ? "" : lab?.approve_time),
                         style: "tableValue"
                       },
                     ],
@@ -2667,7 +2667,7 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                               new Date(lab?.Patient?.collected_date ?? ""),
                               "dd/MM/yyyy"
                             )
-                          ) + " " + (lab?.Patient?.collected_time === "00:00:00" ? "" : lab?.Patient?.collected_time),
+                          ) + " " + (lab?.Patient?.collected_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.collected_time),
                         style: "tableValue"
                       },
                       "\n",
@@ -2680,7 +2680,7 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                               new Date(lab?.Patient?.received_date ?? ""),
                               "dd/MM/yyyy"
                             )
-                          ) + " " + (lab?.Patient?.received_time === "00:00:00" ? "" : lab?.Patient?.received_time),
+                          ) + " " + (lab?.Patient?.received_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.received_time),
                         style: "tableValue"
                       },
                       "\n",
@@ -2972,7 +2972,7 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                               new Date(lab?.Patient?.collected_date ?? ""),
                               "dd/MM/yyyy"
                             )
-                          ) + " " + (lab?.Patient?.collected_time === "00:00:00" ? "" : lab?.Patient?.collected_time),
+                          ) + " " + (lab?.Patient?.collected_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.collected_time),
                         style: "tableValue"
                       },
                       "\n",
@@ -2985,7 +2985,7 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                               new Date(lab?.Patient?.received_date ?? ""),
                               "dd/MM/yyyy"
                             )
-                          ) + " " + (lab?.Patient?.received_time === "00:00:00" ? "" : lab?.Patient?.received_time),
+                          ) + " " + (lab?.Patient?.received_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.received_time),
                         style: "tableValue"
                       },
                       "\n",

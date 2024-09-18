@@ -346,58 +346,58 @@ const Dashboard: FC = () => {
             />
             </div>
 
-          <div className="flex-1">
+            <div className="flex-1 min-w-[200px]">
             <Label htmlFor={`pathogens_id`} value={`Pathogens`} />
             <Controller
               name={`pathogens_id`}
               control={control}
               render={({ field }) => (
-                <CustomSelect
-                  {...register(`pathogens_id`)}
-                  mainKeyId="id"
-                  mainKey="name"
-                  value={field.value}
-                  option={pathogensDataType}
-                  onChange={(val) => {
-                    field.onChange(val);
-                    handlePathogensChange(val);
-                  }}
-                />
+              <CustomSelect
+                {...register(`pathogens_id`)}
+                mainKeyId="id"
+                mainKey="name"
+                value={field.value}
+                option={pathogensDataType}
+                onChange={(val) => {
+                field.onChange(val);
+                handlePathogensChange(val);
+                }}
+              />
               )}
             />
             <div className="mt-4 text-start">
               {errors?.[`pathogens_id`] && (
-                <p className="text-red-500">
-                  {String(errors?.[`pathogens_id`]?.message)}
-                </p>
+              <p className="text-red-500">
+                {String(errors?.[`pathogens_id`]?.message)}
+              </p>
               )}
             </div>
-          </div>
+            </div>
 
-          <div className="flex-1">
+            <div className="flex-1 min-w-[200px]">
             <Label htmlFor={`startDate`} value={`วันที่เริ่มต้น`} />
             <CustomDatePicker
               ref={refs.dateStart}
               onChange={(selectDate: string) => setStartDate(selectDate)}
               value={startDate ? new Date(startDate) : null}
               placeholder={format(
-                new Date(new Date().getFullYear(), month - 1, 1),
-                "dd-MM-Y"
+              new Date(new Date().getFullYear(), month - 1, 1),
+              "dd-MM-Y"
               )}
             />
-          </div>
-          <div className="flex-1">
+            </div>
+            <div className="flex-1 min-w-[200px]">
             <Label htmlFor={`endDate`} value={`วันที่สิ้นสุด`} />
             <CustomDatePicker
               ref={refs.dateEnd}
               onChange={(selectDate: string) => setEndDate(selectDate)}
               value={endDate ? new Date(endDate) : null}
               placeholder={format(
-                new Date(new Date().getFullYear(), month, 0),
-                "dd-MM-Y"
+              new Date(new Date().getFullYear(), month, 0),
+              "dd-MM-Y"
               )}
             />
-          </div>
+            </div>
         </div>
 
         <ResponsiveContainer width="100%" height={containerHeight}>
@@ -408,12 +408,12 @@ const Dashboard: FC = () => {
               nameKey="name"
               cx="50%"
               cy="50%"
-              innerRadius={100}
-              outerRadius={140}
+              innerRadius={window.innerWidth < 768 ? 30 : 100}
+              outerRadius={window.innerWidth < 768 ? 50 : 140}
               paddingAngle={2}
               labelLine={true}
               label={({ name, percentage }) =>
-                `${name} (${percentage.toFixed(1)}%)`
+              `${name} (${percentage.toFixed(1)}%)`
               }
             >
               {chartData.map((entry, index) => (

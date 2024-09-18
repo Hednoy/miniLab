@@ -324,6 +324,8 @@ export const getLabListForReport = async (
       date_of_report: convertDateToString(lab?.report_date || null),
       approver: "",
       date_of_approve: convertDateToString(lab?.approve_date || null),
+      updated_at: lab?.updated_at || null,
+      count_update: lab?.count_update || 0,
     });
   });
 
@@ -353,12 +355,40 @@ export const getLabList = async (
     sortDirection,
     dateStart,
     dateEnd,
+    test_type_id,
   } = labGetData;
 
   // Log the received parameters
   // console.log("Received labGetData:", labGetData);
 
   const search = filterSearchTerm(searchTerm);
+
+  const translateGender = (term: string) => {
+    const lowerTerm = term.toLowerCase();
+    if (lowerTerm.startsWith("ชาย")) return "Male";
+    if (lowerTerm.startsWith("หญิง")) return "Female";
+    if (lowerTerm.startsWith("ไม่") || lowerTerm.startsWith("ไม่ระ") || lowerTerm.startsWith("ไม่ระบุ")) return "Unkhow";
+    return term;
+  };
+  const nameParts = search ? search.split(" ") : [];
+  const patientConditions = [];
+
+  if (nameParts.length === 1) {
+    patientConditions.push(
+      { first_name: { contains: nameParts[0] } },
+      { last_name: { contains: nameParts[0] } }
+    );
+  } else if (nameParts.length > 1 && nameParts.length < 3) {
+    patientConditions.push({
+      AND: [
+        // { title : { contains: nameParts[0] } },
+        { first_name: { contains: nameParts[0] } },
+        { last_name: { contains: nameParts[1] } },
+      ],
+    });
+  } else {
+    patientConditions.push({ title: { contains: nameParts[0]}}, { first_name: { contains: nameParts[1] } }, { last_name: { contains: nameParts[2] } });
+  }
 
   let where: Prisma.LabWhereInput = {};
 
@@ -374,7 +404,20 @@ export const getLabList = async (
         {
           detection_method: { contains: search },
         },
+        {
+          Patient: {
+            OR: patientConditions,
+          },
+        },
+        {
+          TestType: {
+            OR: [
+              { subfix_name: { contains: searchTerm } },
+            ],
+          },
+        },
       ],
+      ...(test_type_id && { test_type_id }),
     };
   }
 
@@ -629,7 +672,7 @@ export const getLabChartPathogensData = async (
             lt: endDate,
           },
           result: {
-            in: ["Detected", "Positive"],
+            in: ["Detected", "Positive", "Indeterminate", "Borderline"],
           },
         },
       });
@@ -662,7 +705,7 @@ export const getLabChartPathogensData = async (
             lt: endDate,
           },
           result: {
-            in: ["Detected", "Positive"],
+            in: ["Detected", "Positive", "Indeterminate", "Borderline"],
           },
         },
       });
@@ -683,7 +726,7 @@ export const getLabChartPathogensData = async (
         lt: endDate,
       },
       result: {
-        in: ["Detected", "Positive"],
+        in: ["Detected", "Positive", "Indeterminate", "Borderline"],
       },
     },
   });
