@@ -286,25 +286,31 @@ export default function NewsDetail({ id }: NewsDetailProps) {
           ) && (
             <Carousel
               responsive={responsive}
-              className="my-10 p-10 w-[50vw] rounded border-4 border-primary" 
-              itemClass="carousel-item" // ใช้ class ใหม่
+              className="my-10 w-[50vw] rounded border-4 border-primary p-10"
+              itemClass="carousel-item"
             >
-              {newsDetail?.images.map((image: any, index: number) => (
-                <div
-                  key={index}
-                  className="flex flex-col items-center rounded-md p-3 shadow-lg"
-                >
-                  <img
-                    src={image.file_path.replace("/public", "")}
-                    className="rounded-md"
-                    style={{
-                      width: "100%",
-                      height: "auto",
-                      objectFit: "cover",
-                    }} // ปรับขนาดภาพให้พอดีกับ container
-                  />
-                </div>
-              ))}
+              {newsDetail?.images
+                .filter((image: any) =>
+                  ["jpg", "jpeg", "png"].includes(
+                    image.file_path.split(".").pop()
+                  )
+                )
+                .map((image: any, index: number) => (
+                  <div
+                    key={index}
+                    className="flex flex-col items-center rounded-md p-3 shadow-lg"
+                  >
+                    <img
+                      src={image.file_path.replace("/public", "")}
+                      className="rounded-md"
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                        objectFit: "cover",
+                      }}
+                    />
+                  </div>
+                ))}
             </Carousel>
           )}
 

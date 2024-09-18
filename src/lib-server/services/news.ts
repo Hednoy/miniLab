@@ -9,6 +9,9 @@ import {
 } from "@/types/models/News";
 import { PaginatedResponse, SortDirection } from "@/types";
 import { filterSearchTerm } from "@/utils";
+import path from "path";
+import fs from "fs";
+import _ from "lodash";
 
 //
 export const getNews = async (id: number): Promise<News> => {
@@ -156,7 +159,12 @@ export const updateNews = async (
 };
 
 export const deleteNews = async (id: number): Promise<News> => {
-  const _news = await prisma.news.findUnique({ where: { id } });
+  const _news = await prisma.news.findUnique({
+    where: { id },
+    include: {
+      images: true,
+    },
+  });
   if (!_news) throw new ApiError(`News with id: ${id} not found.`, 404);
 
   const news = await prisma.news.delete({
@@ -164,6 +172,33 @@ export const deleteNews = async (id: number): Promise<News> => {
   });
 
   if (!news) throw new ApiError(`News with id: ${id} not found.`, 404);
+
+  // Delete associated images from the file system
+  console.log(_news.images);
+  if (_news.images) {
+    for (const image of _news.images) {
+      // สร้างพาธใหม่โดยเริ่มจาก 'public' แล้วเพิ่ม file_path ที่ปรับแก้
+      const filePath = path.resolve('public', image.file_path.replace('/public/', ''));
+
+      console.log(`Generated file path: ${filePath}`);
+
+      try {
+        // ตรวจสอบว่าไฟล์มีอยู่จริง
+        await fs.promises.access(filePath);
+        // ลบไฟล์ออก
+        await fs.promises.unlink(filePath);
+        console.log(`Successfully deleted file at path: ${filePath}`);
+      } catch (err) {
+        console.error(`Error caught in try-catch:`, err); // ตรวจสอบ error ที่เกิดขึ้น
+        if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+          console.warn(`File not found at path: ${filePath}`);
+        } else {
+          console.error(`Failed to delete file at path: ${filePath}`, err);
+        }
+      }
+    }
+
+  }
 
   return news;
 };

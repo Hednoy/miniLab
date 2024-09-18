@@ -79,7 +79,7 @@ function NewsManageComponent({ id, data }: NewsManageProps): JSX.Element {
       setFile((file: any) => [...file, ...uploadedFiles]);
     }
   };
-  
+
   const { mutate: createLog } = useCreateLogAction();
 
   async function onSubmit(newsData: NewsCreateFormData) {
@@ -300,12 +300,27 @@ function NewsManageComponent({ id, data }: NewsManageProps): JSX.Element {
                           console.error("File is not available");
                           return;
                         }
+                        let filePath = file.file_path || file.path;
+                        if (!filePath) {
+                          console.error("File path is not available");
+                          return;
+                        }
+
+                        // Remove 'public' from the file path if it exists
+                        filePath = filePath.replace(/^\/?public\//, "/");
+
                         const link = document.createElement("a");
-                        const filePath = file.file_path || file.path;
-                        link.href = filePath.startsWith("http")
+                        const completeURL = filePath.startsWith("http")
                           ? filePath
-                          : `${window.location.origin}/${filePath}`;
-                        link.download = file.file_name || file.old_file_name;
+                          : `${window.location.origin}${filePath}`;
+                        console.log(filePath);
+                        console.log("Downloading file from URL:", completeURL); // Debugging log
+
+                        link.href = completeURL;
+                        link.download =
+                          file.file_name ||
+                          file.old_file_name ||
+                          "file_download";
                         link.target = "_blank";
                         document.body.appendChild(link);
                         link.click();
@@ -317,14 +332,17 @@ function NewsManageComponent({ id, data }: NewsManageProps): JSX.Element {
                         className="h-3 w-3 text-white"
                       />
                     </button>
+
                     <button
                       type="button"
                       className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary-pink"
                       onClick={() =>
                         setFile((oldFile) => {
-                          return oldFile.filter(
-                            (value: any, i: any) => i !== index
-                          );
+                          if (!Array.isArray(oldFile)) {
+                            console.error("Old file list is not an array");
+                            return oldFile;
+                          }
+                          return oldFile.filter((_, i) => i !== index);
                         })
                       }
                     >
