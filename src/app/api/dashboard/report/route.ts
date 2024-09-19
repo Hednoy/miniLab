@@ -26,7 +26,7 @@ const validateDashboardQueryParams = (params: QueryParamsType): LabsGetData => {
   const result = dashboardSchema.safeParse(params);
   if (!result.success) throw ApiError.fromZodError(result.error);
 
-  return result.data as LabTestsGetData;
+  return result.data as LabsGetData;
 };
 
 // Function to convert array to CSV format

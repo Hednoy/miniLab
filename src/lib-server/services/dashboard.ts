@@ -1,4 +1,4 @@
-import { number } from 'zod';
+import { number } from "zod";
 import prisma from "@/lib-server/prisma";
 import { LabTest, Prisma } from "@prisma/client";
 import ApiError from "../error";
@@ -370,7 +370,12 @@ export const getLabList = async (
     const lowerTerm = term.toLowerCase();
     if (lowerTerm.startsWith("ชาย")) return "Male";
     if (lowerTerm.startsWith("หญิง")) return "Female";
-    if (lowerTerm.startsWith("ไม่") || lowerTerm.startsWith("ไม่ระ") || lowerTerm.startsWith("ไม่ระบุ")) return "Unkhow";
+    if (
+      lowerTerm.startsWith("ไม่") ||
+      lowerTerm.startsWith("ไม่ระ") ||
+      lowerTerm.startsWith("ไม่ระบุ")
+    )
+      return "Unkhow";
     return term;
   };
   const nameParts = search ? search.split(" ") : [];
@@ -390,7 +395,11 @@ export const getLabList = async (
       ],
     });
   } else {
-    patientConditions.push({ title: { contains: nameParts[0]}}, { first_name: { contains: nameParts[1] } }, { last_name: { contains: nameParts[2] } });
+    patientConditions.push(
+      { title: { contains: nameParts[0] } },
+      { first_name: { contains: nameParts[1] } },
+      { last_name: { contains: nameParts[2] } }
+    );
   }
 
   let where: Prisma.LabWhereInput = {};
@@ -413,11 +422,7 @@ export const getLabList = async (
           },
         },
         {
-          TestType: {
-            OR: [
-              { subfix_name: { contains: searchTerm } },
-            ],
-          },
+          TestType: { subfix_name: { contains: searchTerm } },
         },
       ],
       ...(test_type_id && { test_type_id }),

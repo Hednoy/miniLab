@@ -183,7 +183,7 @@ const Address: FC<AddressProps> = () => {
               undefined
             }
             placeholder="อำเภอ"
-            disabled={_amphuresOptions?.items?.length === 0 ?? true}
+            disabled={_amphuresOptions?.items?.length === 0}
           />
         </div>
       </div>
@@ -220,7 +220,7 @@ const Address: FC<AddressProps> = () => {
               undefined
             }
             placeholder="ตำบล"
-            disabled={tambonsOptions?.items?.length === 0 ?? true}
+            disabled={tambonsOptions?.items?.length === 0}
           />
         </div>
       </div>
@@ -256,7 +256,7 @@ const Address: FC<AddressProps> = () => {
               undefined
             }
             placeholder="รหัสไปรษณีย์"
-            disabled={tambonsOptions?.items?.length == 0 ?? true}
+            disabled={tambonsOptions?.items?.length == 0}
           />
         </div>
       </div>

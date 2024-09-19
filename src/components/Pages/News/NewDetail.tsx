@@ -213,12 +213,13 @@ export default function NewsDetail({ id }: NewsDetailProps) {
     },
   };
   // Filter only image files (jpg, jpeg, png)
-  const imageFiles = newsDetail?.images?.filter((image: any) =>
-    ["jpg", "jpeg", "png"].includes(
-      image.file_path.split(".").pop().toLowerCase()
-    )
-  ) || [];
-  
+  const imageFiles =
+    newsDetail?.images?.filter((image: any) =>
+      ["jpg", "jpeg", "png"].includes(
+        image.file_path.split(".").pop().toLowerCase()
+      )
+    ) || [];
+
   async function DeleteNews(id: any) {
     swal
       .fire({

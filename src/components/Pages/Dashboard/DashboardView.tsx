@@ -38,7 +38,7 @@ const DashboardView: FC = () => {
     testTypeId: testParam ?? "",
     result: resultParam ?? "",
   });
-console.log("filter", filter);
+  // console.log("filter", filter);
   const { data: testtypeAll } = useTestTypeAll();
   const [sorting, setSorting] = React.useState<SortingState>([
     { desc: true, id: "created_at" },

@@ -80,7 +80,11 @@ export const getPatientList = async (
       { last_name: { contains: nameParts[2] } }
     );
   } else {
-    patientConditions.push({ title: { contains: nameParts[0] } }, { first_name: { contains: nameParts[1] } }, { last_name: { contains: nameParts[2] } });
+    patientConditions.push(
+      { title: { contains: nameParts[0] } },
+      { first_name: { contains: nameParts[1] } },
+      { last_name: { contains: nameParts[2] } }
+    );
   }
 
   const where: Prisma.PatientWhereInput = {
@@ -98,12 +102,12 @@ export const getPatientList = async (
       { hospital: { name: { contains: searchTerm } } },
       ...(dateSearch
         ? [
-          {
-            received_date: {
-              gte: dateSearch,
+            {
+              received_date: {
+                gte: dateSearch,
+              },
             },
-          },
-        ]
+          ]
         : []),
       ...patientConditions,
     ],

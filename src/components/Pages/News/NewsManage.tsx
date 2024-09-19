@@ -93,9 +93,9 @@ function NewsManageComponent({ id, data }: NewsManageProps): JSX.Element {
         });
       });
     }
-    
+
     newsData.images = fileList;
-    
+
     if (isNaN(id)) {
       createNews(newsData, {
         onSuccess: () => {

@@ -1,4 +1,4 @@
-import { update } from './../../lib-server/services/users';
+import { update } from "./../../lib-server/services/users";
 import { inspect } from "util";
 import { SortDirection } from "..";
 import {

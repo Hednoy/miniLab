@@ -360,7 +360,6 @@ function LaboratoryManageComponent({
       labData.lab_attachments = fileList;
     }
 
-    labData.count_update = labData.count_update;
     labData.updated_by = userId;
 
     if (isNaN(id)) {

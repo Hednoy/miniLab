@@ -11,7 +11,7 @@ const GET = async (
     const filePath = "/public/file/" + params.id;
     // Construct the file path and verify if the image exists on the server
     const imagePath = path.join(process.cwd(), filePath);
-    
+
     if (!fs.existsSync(imagePath)) {
       return new Response("Image file not found", {
         status: 404,
@@ -20,7 +20,8 @@ const GET = async (
     }
 
     // Use mime-types to determine the correct Content-Type
-    const contentType = mime.contentType(path.extname(imagePath)) || "application/octet-stream";
+    const contentType =
+      mime.contentType(path.extname(imagePath)) || "application/octet-stream";
 
     // Read the image file into a buffer
     const imageBuffer = fs.readFileSync(imagePath);

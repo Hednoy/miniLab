@@ -171,41 +171,57 @@ export async function PDFlab1(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Collect Date : ", style: "tableKey" },
                       {
-                        text: lab?.Patient?.collected_date?.toString() === "1900-01-01 00:00:00.000"
-                          ? ""
-                          : convertToThaiFormat(
-                            format(
-                              new Date(lab?.Patient?.collected_date ?? ""),
-                              "dd/MM/yyyy"
-                            )
-                          ) + " " + (lab?.Patient?.collected_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.collected_time),
-                        style: "tableValue"
+                        text:
+                          lab?.Patient?.collected_date?.toString() ===
+                          "1900-01-01 00:00:00.000"
+                            ? ""
+                            : convertToThaiFormat(
+                                format(
+                                  new Date(lab?.Patient?.collected_date ?? ""),
+                                  "dd/MM/yyyy"
+                                )
+                              ) +
+                              " " +
+                              (lab?.Patient?.collected_time === "00:00:00" ||
+                              lab?.Patient?.collected_time === "00:00:00.000"
+                                ? ""
+                                : lab?.Patient?.collected_time),
+                        style: "tableValue",
                       },
                       "\n",
                       { text: "Received Date : ", style: "tableKey" },
                       {
-                        text: lab?.Patient?.received_date?.toString() === "1900-01-01 00:00:00.000"
-                          ? ""
-                          : convertToThaiFormat(
-                            format(
-                              new Date(lab?.Patient?.received_date ?? ""),
-                              "dd/MM/yyyy"
-                            )
-                          ) + " " + (lab?.Patient?.received_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.received_time),
-                        style: "tableValue"
+                        text:
+                          lab?.Patient?.received_date?.toString() ===
+                          "1900-01-01 00:00:00.000"
+                            ? ""
+                            : convertToThaiFormat(
+                                format(
+                                  new Date(lab?.Patient?.received_date ?? ""),
+                                  "dd/MM/yyyy"
+                                )
+                              ) +
+                              " " +
+                              (lab?.Patient?.received_time === "00:00:00" ||
+                              lab?.Patient?.received_time === "00:00:00.000"
+                                ? ""
+                                : lab?.Patient?.received_time),
+                        style: "tableValue",
                       },
                       "\n",
                       { text: "Report Date : ", style: "tableKey" },
                       {
-                        text: lab?.report_date?.toString() === "1900-01-01 00:00:00.000"
-                          ? ""
-                          : convertToThaiFormat(
-                            format(
-                              new Date(lab?.Patient?.received_date ?? ""),
-                              "dd/MM/yyyy"
-                            )
-                          ),
-                        style: "tableValue"
+                        text:
+                          lab?.report_date?.toString() ===
+                          "1900-01-01 00:00:00.000"
+                            ? ""
+                            : convertToThaiFormat(
+                                format(
+                                  new Date(lab?.Patient?.received_date ?? ""),
+                                  "dd/MM/yyyy"
+                                )
+                              ),
+                        style: "tableValue",
                       },
                       "\n",
                     ],
@@ -492,15 +508,17 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Register Date : ", style: "tableKey" },
                       {
-                        text: lab?.Patient?.received_date?.toString() === "1900-01-01 00:00:00.000"
-                          ? ""
-                          : convertToThaiFormat(
-                            format(
-                              new Date(lab?.Patient?.received_date ?? ""),
-                              "dd/MM/yyyy"
-                            )
-                          ),
-                        style: "tableValue"
+                        text:
+                          lab?.Patient?.received_date?.toString() ===
+                          "1900-01-01 00:00:00.000"
+                            ? ""
+                            : convertToThaiFormat(
+                                format(
+                                  new Date(lab?.Patient?.received_date ?? ""),
+                                  "dd/MM/yyyy"
+                                )
+                              ),
+                        style: "tableValue",
                       },
                       "\n",
                     ],
@@ -651,15 +669,18 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 margin: [10, 0, 0, 0],
               },
               {
-                text: lab?.report_date?.toString() === "1900-01-01 00:00:00.000"
-                  ? ""
-                  : convertToThaiFormat(
-                    format(
-                      new Date(lab?.report_date ?? ""),
-                      "dd/MM/yyyy"
-                    )
-                  ) + " " + (lab?.report_time === "00:00:00" || "00:00:00.000" ? "" : lab?.report_time),
-                style: "tableValue"
+                text:
+                  lab?.report_date?.toString() === "1900-01-01 00:00:00.000"
+                    ? ""
+                    : convertToThaiFormat(
+                        format(new Date(lab?.report_date ?? ""), "dd/MM/yyyy")
+                      ) +
+                      " " +
+                      (lab?.report_time === "00:00:00" ||
+                      lab?.report_time === "00:00:00.000"
+                        ? ""
+                        : lab?.report_time),
+                style: "tableValue",
               },
               "\n",
             ],
@@ -766,12 +787,12 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 margin: [0, 0, 20, 0],
               },
               {
-                text: "(" + convertToThaiFormat(
-                  format(
-                    new Date(lab?.updated_at ?? ""),
-                    "dd/MM/yyyy"
-                  )
-                ) + ")",
+                text:
+                  "(" +
+                  convertToThaiFormat(
+                    format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
+                  ) +
+                  ")",
                 style: "tableValue",
               },
               "\n",
@@ -869,41 +890,47 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Collected Date : ", style: "tableKey" },
                       {
-                        text: lab?.Patient?.collected_date?.toString() === "1900-01-01 00:00:00.000"
-                          ? ""
-                          : convertToThaiFormat(
-                            format(
-                              new Date(lab?.Patient?.collected_date ?? ""),
-                              "dd/MM/yyyy"
-                            )
-                          ),
-                        style: "tableValue"
+                        text:
+                          lab?.Patient?.collected_date?.toString() ===
+                          "1900-01-01 00:00:00.000"
+                            ? ""
+                            : convertToThaiFormat(
+                                format(
+                                  new Date(lab?.Patient?.collected_date ?? ""),
+                                  "dd/MM/yyyy"
+                                )
+                              ),
+                        style: "tableValue",
                       },
                       "\n",
                       { text: "Received Date : ", style: "tableKey" },
                       {
-                        text: lab?.Patient?.received_date?.toString() === "1900-01-01 00:00:00.000"
-                          ? ""
-                          : convertToThaiFormat(
-                            format(
-                              new Date(lab?.Patient?.received_date ?? ""),
-                              "dd/MM/yyyy"
-                            )
-                          ),
-                        style: "tableValue"
+                        text:
+                          lab?.Patient?.received_date?.toString() ===
+                          "1900-01-01 00:00:00.000"
+                            ? ""
+                            : convertToThaiFormat(
+                                format(
+                                  new Date(lab?.Patient?.received_date ?? ""),
+                                  "dd/MM/yyyy"
+                                )
+                              ),
+                        style: "tableValue",
                       },
                       "\n",
                       { text: "Reported Date : ", style: "tableKey" },
                       {
-                        text: lab?.report_date?.toString() === "1900-01-01 00:00:00.000"
-                          ? ""
-                          : convertToThaiFormat(
-                            format(
-                              new Date(lab?.report_date ?? ""),
-                              "dd/MM/yyyy"
-                            )
-                          ),
-                        style: "tableValue"
+                        text:
+                          lab?.report_date?.toString() ===
+                          "1900-01-01 00:00:00.000"
+                            ? ""
+                            : convertToThaiFormat(
+                                format(
+                                  new Date(lab?.report_date ?? ""),
+                                  "dd/MM/yyyy"
+                                )
+                              ),
+                        style: "tableValue",
                       },
                       "\n",
                     ],
@@ -1311,12 +1338,12 @@ export async function PDFlab2(id: number): Promise<Buffer> {
             margin: [0, 0, 20, 0],
           },
           {
-            text: "(" + convertToThaiFormat(
-              format(
-                new Date(lab?.updated_at ?? ""),
-                "dd/MM/yyyy"
-              )
-            ) + ")",
+            text:
+              "(" +
+              convertToThaiFormat(
+                format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
+              ) +
+              ")",
             style: "tableValue",
           },
         ],
@@ -1385,15 +1412,22 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                   "\n",
                   { text: "Collected Date: ", style: "tableKey" },
                   {
-                    text: lab?.Patient?.collected_date?.toString() === "1900-01-01 00:00:00.000"
-                      ? ""
-                      : convertToThaiFormat(
-                        format(
-                          new Date(lab?.Patient?.collected_date ?? ""),
-                          "dd/MM/yyyy"
-                        )
-                      ) + " " + (lab?.Patient?.collected_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.collected_time),
-                    style: "tableValue"
+                    text:
+                      lab?.Patient?.collected_date?.toString() ===
+                      "1900-01-01 00:00:00.000"
+                        ? ""
+                        : convertToThaiFormat(
+                            format(
+                              new Date(lab?.Patient?.collected_date ?? ""),
+                              "dd/MM/yyyy"
+                            )
+                          ) +
+                          " " +
+                          (lab?.Patient?.collected_time === "00:00:00" ||
+                          lab?.Patient?.collected_time === "00:00:00.000"
+                            ? ""
+                            : lab?.Patient?.collected_time),
+                    style: "tableValue",
                   },
                 ],
                 alignment: "right",
@@ -1407,15 +1441,22 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                   "\n",
                   { text: "Recevied Date : ", style: "tableKey" },
                   {
-                    text: lab?.Patient?.received_date?.toString() === "1900-01-01 00:00:00.000"
-                      ? ""
-                      : convertToThaiFormat(
-                        format(
-                          new Date(lab?.Patient?.received_date ?? ""),
-                          "dd/MM/yyyy"
-                        )
-                      ) + " " + (lab?.Patient?.received_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.received_time),
-                    style: "tableValue"
+                    text:
+                      lab?.Patient?.received_date?.toString() ===
+                      "1900-01-01 00:00:00.000"
+                        ? ""
+                        : convertToThaiFormat(
+                            format(
+                              new Date(lab?.Patient?.received_date ?? ""),
+                              "dd/MM/yyyy"
+                            )
+                          ) +
+                          " " +
+                          (lab?.Patient?.received_time === "00:00:00" ||
+                          lab?.Patient?.received_time === "00:00:00.000"
+                            ? ""
+                            : lab?.Patient?.received_time),
+                    style: "tableValue",
                   },
                 ],
                 margin: [10, 5, 0, 10],
@@ -1446,10 +1487,10 @@ export async function PDFlab2(id: number): Promise<Buffer> {
             ],
             ...(labtestPdf
               ? Object.values(labtestPdf).map((pathogen) => [
-                { text: pathogen?.name, style: "tableSecVal" },
-                { text: pathogen?.result, style: "tableSecVal" },
-                { text: pathogen?.remark, style: "tableSecVal" },
-              ])
+                  { text: pathogen?.name, style: "tableSecVal" },
+                  { text: pathogen?.result, style: "tableSecVal" },
+                  { text: pathogen?.remark, style: "tableSecVal" },
+                ])
               : []),
           ],
         },
@@ -1498,15 +1539,21 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                     style: "tableKey",
                   },
                   {
-                    text: lab?.report_date?.toString() === "1900-01-01 00:00:00.000"
-                      ? ""
-                      : convertToThaiFormat(
-                        format(
-                          new Date(lab?.report_date ?? ""),
-                          "dd/MM/yyyy"
-                        )
-                      ) + " " + (lab?.report_time === "00:00:00" || "00:00:00.000" ? "" : lab?.report_time),
-                    style: "tableValue"
+                    text:
+                      lab?.report_date?.toString() === "1900-01-01 00:00:00.000"
+                        ? ""
+                        : convertToThaiFormat(
+                            format(
+                              new Date(lab?.report_date ?? ""),
+                              "dd/MM/yyyy"
+                            )
+                          ) +
+                          " " +
+                          (lab?.report_time === "00:00:00" ||
+                          lab?.report_time === "00:00:00.000"
+                            ? ""
+                            : lab?.report_time),
+                    style: "tableValue",
                   },
                 ],
                 alignment: "center",
@@ -1532,15 +1579,22 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                     style: "tableKey",
                   },
                   {
-                    text: lab?.approve_date?.toString() === "1900-01-01 00:00:00.000"
-                      ? ""
-                      : convertToThaiFormat(
-                        format(
-                          new Date(lab?.approve_date ?? ""),
-                          "dd/MM/yyyy"
-                        )
-                      ) + " " + (lab?.approve_time === "00:00:00" || "00:00:00.000" ? "" : lab?.approve_time),
-                    style: "tableValue"
+                    text:
+                      lab?.approve_date?.toString() ===
+                      "1900-01-01 00:00:00.000"
+                        ? ""
+                        : convertToThaiFormat(
+                            format(
+                              new Date(lab?.approve_date ?? ""),
+                              "dd/MM/yyyy"
+                            )
+                          ) +
+                          " " +
+                          (lab?.approve_time === "00:00:00" ||
+                          lab?.approve_time === "00:00:00.000"
+                            ? ""
+                            : lab?.approve_time),
+                    style: "tableValue",
                   },
                 ],
                 alignment: "center",
@@ -1655,12 +1709,12 @@ export async function PDFlab2(id: number): Promise<Buffer> {
               margin: [0, 0, 20, 0],
             },
             {
-              text: "(" + convertToThaiFormat(
-                format(
-                  new Date(lab?.updated_at ?? ""),
-                  "dd/MM/yyyy"
-                )
-              ) + ")",
+              text:
+                "(" +
+                convertToThaiFormat(
+                  format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
+                ) +
+                ")",
               style: "tableValue",
             },
             "\n",
@@ -1796,28 +1850,32 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                     "\n",
                     { text: "Corrected Date: ", style: "tableKey" },
                     {
-                      text: lab?.Patient?.collected_date?.toString() === "1900-01-01 00:00:00.000"
-                        ? ""
-                        : convertToThaiFormat(
-                          format(
-                            new Date(lab?.Patient?.collected_date ?? ""),
-                            "dd/MM/yyyy"
-                          )
-                        ),
-                      style: "tableValue"
+                      text:
+                        lab?.Patient?.collected_date?.toString() ===
+                        "1900-01-01 00:00:00.000"
+                          ? ""
+                          : convertToThaiFormat(
+                              format(
+                                new Date(lab?.Patient?.collected_date ?? ""),
+                                "dd/MM/yyyy"
+                              )
+                            ),
+                      style: "tableValue",
                     },
                     "\n",
                     { text: "Received Date: ", style: "tableKey" },
                     {
-                      text: lab?.Patient?.received_date?.toString() === "1900-01-01 00:00:00.000"
-                        ? ""
-                        : convertToThaiFormat(
-                          format(
-                            new Date(lab?.Patient?.received_date ?? ""),
-                            "dd/MM/yyyy"
-                          )
-                        ),
-                      style: "tableValue"
+                      text:
+                        lab?.Patient?.received_date?.toString() ===
+                        "1900-01-01 00:00:00.000"
+                          ? ""
+                          : convertToThaiFormat(
+                              format(
+                                new Date(lab?.Patient?.received_date ?? ""),
+                                "dd/MM/yyyy"
+                              )
+                            ),
+                      style: "tableValue",
                     },
                     "\n",
                   ],
@@ -1841,7 +1899,11 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                     "\n",
                     { text: "Time :", style: "tableValue" },
                     {
-                      text: lab?.Patient?.received_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.received_time,
+                      text:
+                        lab?.Patient?.received_time === "00:00:00" ||
+                        lab?.Patient?.received_time === "00:00:00.000"
+                          ? ""
+                          : lab?.Patient?.received_time,
                       style: "tableValue",
                     },
                   ],
@@ -2119,15 +2181,17 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 text: [
                   { text: "Reported Date : ", style: "tableKey" },
                   {
-                    text: lab?.Patient?.received_date?.toString() === "1900-01-01 00:00:00.000"
-                      ? ""
-                      : convertToThaiFormat(
-                        format(
-                          new Date(lab?.Patient?.received_date ?? ""),
-                          "dd/MM/yyyy"
-                        )
-                      ),
-                    style: "tableValue"
+                    text:
+                      lab?.Patient?.received_date?.toString() ===
+                      "1900-01-01 00:00:00.000"
+                        ? ""
+                        : convertToThaiFormat(
+                            format(
+                              new Date(lab?.Patient?.received_date ?? ""),
+                              "dd/MM/yyyy"
+                            )
+                          ),
+                    style: "tableValue",
                   },
                   "\n",
                   { text: "Approved Date: ", style: "tableKey" },
@@ -2136,15 +2200,17 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                     style: "tableValue",
                   },
                   {
-                    text: lab?.approve_date?.toString() === "1900-01-01 00:00:00.000"
-                      ? ""
-                      : convertToThaiFormat(
-                        format(
-                          new Date(lab?.approve_date ?? ""),
-                          "dd/MM/yyyy"
-                        )
-                      ),
-                    style: "tableValue"
+                    text:
+                      lab?.approve_date?.toString() ===
+                      "1900-01-01 00:00:00.000"
+                        ? ""
+                        : convertToThaiFormat(
+                            format(
+                              new Date(lab?.approve_date ?? ""),
+                              "dd/MM/yyyy"
+                            )
+                          ),
+                    style: "tableValue",
                   },
                 ],
                 alignment: "right",
@@ -2239,7 +2305,10 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Sex : ", style: "tableKey" },
                       // { text: lab?.Patient?.gender, style: "tableValue" },
-                      { text: lab?.Patient?.gender === "male" ? "ชาย" : "หญิง", style: "tableValue" },
+                      {
+                        text: lab?.Patient?.gender === "male" ? "ชาย" : "หญิง",
+                        style: "tableValue",
+                      },
                     ],
                     margin: [0, 5, 0, 5],
                   },
@@ -2270,7 +2339,11 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Receive Time : ", style: "tableKey" },
                       {
-                        text: lab?.Patient?.received_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.received_time,
+                        text:
+                          lab?.Patient?.received_time === "00:00:00" ||
+                          lab?.Patient?.received_time === "00:00:00.000"
+                            ? ""
+                            : lab?.Patient?.received_time,
                         style: "tableValue",
                       },
                     ],
@@ -2332,7 +2405,10 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 style: "tableKey",
               },
             ],
-            absolutePosition: { x: 25, y: (lab?.result?.toString().length === 1 ? 290 : 315) },
+            absolutePosition: {
+              x: 25,
+              y: lab?.result?.toString().length === 1 ? 290 : 315,
+            },
           },
           {
             style: "tableExample",
@@ -2375,15 +2451,22 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Date: ", style: "tableKey" },
                       {
-                        text: lab?.report_date?.toString() === "1900-01-01 00:00:00.000"
-                          ? ""
-                          : convertToThaiFormat(
-                            format(
-                              new Date(lab?.report_date ?? ""),
-                              "dd/MM/yyyy"
-                            )
-                          ) + " " + (lab?.report_time === "00:00:00" || "00:00:00.000" ? "" : lab?.report_time),
-                        style: "tableValue"
+                        text:
+                          lab?.report_date?.toString() ===
+                          "1900-01-01 00:00:00.000"
+                            ? ""
+                            : convertToThaiFormat(
+                                format(
+                                  new Date(lab?.report_date ?? ""),
+                                  "dd/MM/yyyy"
+                                )
+                              ) +
+                              " " +
+                              (lab?.report_time === "00:00:00" ||
+                              lab?.report_time === "00:00:00.000"
+                                ? ""
+                                : lab?.report_time),
+                        style: "tableValue",
                       },
                     ],
                     margin: [40, 0, 0, 0],
@@ -2410,15 +2493,22 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Date: ", style: "tableKey" },
                       {
-                        text: lab?.approve_date?.toString() === "1900-01-01 00:00:00.000"
-                          ? ""
-                          : convertToThaiFormat(
-                            format(
-                              new Date(lab?.approve_date ?? ""),
-                              "dd/MM/yyyy"
-                            )
-                          ) + " " + (lab?.approve_time === "00:00:00" || "00:00:00.000" ? "" : lab?.approve_time),
-                        style: "tableValue"
+                        text:
+                          lab?.approve_date?.toString() ===
+                          "1900-01-01 00:00:00.000"
+                            ? ""
+                            : convertToThaiFormat(
+                                format(
+                                  new Date(lab?.approve_date ?? ""),
+                                  "dd/MM/yyyy"
+                                )
+                              ) +
+                              " " +
+                              (lab?.approve_time === "00:00:00" ||
+                              lab?.approve_time === "00:00:00.000"
+                                ? ""
+                                : lab?.approve_time),
+                        style: "tableValue",
                       },
                     ],
                     margin: [60, 0, 0, 0],
@@ -2454,12 +2544,12 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 margin: [0, 0, 20, 0],
               },
               {
-                text: "(" + convertToThaiFormat(
-                  format(
-                    new Date(lab?.updated_at ?? ""),
-                    "dd/MM/yyyy"
-                  )
-                ) + ")",
+                text:
+                  "(" +
+                  convertToThaiFormat(
+                    format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
+                  ) +
+                  ")",
                 style: "tableValue",
               },
               "\n",
@@ -2660,41 +2750,56 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Collect Date : ", style: "tableKey" },
                       {
-                        text: lab?.Patient?.collected_date?.toString() === "1900-01-01 00:00:00.000"
-                          ? ""
-                          : convertToThaiFormat(
-                            format(
-                              new Date(lab?.Patient?.collected_date ?? ""),
-                              "dd/MM/yyyy"
-                            )
-                          ) + " " + (lab?.Patient?.collected_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.collected_time),
-                        style: "tableValue"
+                        text:
+                          lab?.Patient?.collected_date?.toString() ===
+                          "1900-01-01 00:00:00.000"
+                            ? ""
+                            : convertToThaiFormat(
+                                format(
+                                  new Date(lab?.Patient?.collected_date ?? ""),
+                                  "dd/MM/yyyy"
+                                )
+                              ) +
+                              " " +
+                              (lab?.Patient?.collected_time === "00:00:00" ||
+                              lab?.Patient?.collected_time === "00:00:00.000"
+                                ? ""
+                                : lab?.Patient?.collected_time),
                       },
                       "\n",
                       { text: "Received Date : ", style: "tableKey" },
                       {
-                        text: lab?.Patient?.received_date?.toString() === "1900-01-01 00:00:00.000"
-                          ? ""
-                          : convertToThaiFormat(
-                            format(
-                              new Date(lab?.Patient?.received_date ?? ""),
-                              "dd/MM/yyyy"
-                            )
-                          ) + " " + (lab?.Patient?.received_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.received_time),
-                        style: "tableValue"
+                        text:
+                          lab?.Patient?.received_date?.toString() ===
+                          "1900-01-01 00:00:00.000"
+                            ? ""
+                            : convertToThaiFormat(
+                                format(
+                                  new Date(lab?.Patient?.received_date ?? ""),
+                                  "dd/MM/yyyy"
+                                )
+                              ) +
+                              " " +
+                              (lab?.Patient?.received_time === "00:00:00" ||
+                              lab?.Patient?.received_time === "00:00:00.000"
+                                ? ""
+                                : lab?.Patient?.received_time),
+                        style: "tableValue",
                       },
                       "\n",
                       { text: "Report Date : ", style: "tableKey" },
                       {
-                        text: lab?.report_date?.toString() === "1900-01-01 00:00:00.000"
-                          ? ""
-                          : convertToThaiFormat(
-                            format(
-                              new Date(lab?.report_date ?? ""),
-                              "dd/MM/yyyy"
-                            )
-                          ),
-                        style: "tableValue"
+                        text:
+                          lab?.report_date?.toString() ===
+                          "1900-01-01 00:00:00.000"
+                            ? ""
+                            : convertToThaiFormat(
+                                format(
+                                  new Date(lab?.report_date ?? ""),
+                                  "dd/MM/yyyy"
+                                )
+                              ),
+                        style: "tableValue",
                       },
                       "\n",
                     ],
@@ -2965,41 +3070,57 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Collect Date : ", style: "tableKey" },
                       {
-                        text: lab?.Patient?.collected_date?.toString() === "1900-01-01 00:00:00.000"
-                          ? ""
-                          : convertToThaiFormat(
-                            format(
-                              new Date(lab?.Patient?.collected_date ?? ""),
-                              "dd/MM/yyyy"
-                            )
-                          ) + " " + (lab?.Patient?.collected_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.collected_time),
-                        style: "tableValue"
+                        text:
+                          lab?.Patient?.collected_date?.toString() ===
+                          "1900-01-01 00:00:00.000"
+                            ? ""
+                            : convertToThaiFormat(
+                                format(
+                                  new Date(lab?.Patient?.collected_date ?? ""),
+                                  "dd/MM/yyyy"
+                                )
+                              ) +
+                              " " +
+                              (lab?.Patient?.collected_time === "00:00:00" ||
+                              lab?.Patient?.collected_time === "00:00:00.000"
+                                ? ""
+                                : lab?.Patient?.collected_time),
+                        style: "tableValue",
                       },
                       "\n",
                       { text: "Received Date : ", style: "tableKey" },
                       {
-                        text: lab?.Patient?.received_date?.toString() === "1900-01-01 00:00:00.000"
-                          ? ""
-                          : convertToThaiFormat(
-                            format(
-                              new Date(lab?.Patient?.received_date ?? ""),
-                              "dd/MM/yyyy"
-                            )
-                          ) + " " + (lab?.Patient?.received_time === "00:00:00" || "00:00:00.000" ? "" : lab?.Patient?.received_time),
-                        style: "tableValue"
+                        text:
+                          lab?.Patient?.received_date?.toString() ===
+                          "1900-01-01 00:00:00.000"
+                            ? ""
+                            : convertToThaiFormat(
+                                format(
+                                  new Date(lab?.Patient?.received_date ?? ""),
+                                  "dd/MM/yyyy"
+                                )
+                              ) +
+                              " " +
+                              (lab?.Patient?.received_time === "00:00:00" ||
+                              lab?.Patient?.received_time === "00:00:00.000"
+                                ? ""
+                                : lab?.Patient?.received_time),
+                        style: "tableValue",
                       },
                       "\n",
                       { text: "Report Date : ", style: "tableKey" },
                       {
-                        text: lab?.report_date?.toString() === "1900-01-01 00:00:00.000"
-                          ? ""
-                          : convertToThaiFormat(
-                            format(
-                              new Date(lab?.report_date ?? ""),
-                              "dd/MM/yyyy"
-                            )
-                          ),
-                        style: "tableValue"
+                        text:
+                          lab?.report_date?.toString() ===
+                          "1900-01-01 00:00:00.000"
+                            ? ""
+                            : convertToThaiFormat(
+                                format(
+                                  new Date(lab?.report_date ?? ""),
+                                  "dd/MM/yyyy"
+                                )
+                              ),
+                        style: "tableValue",
                       },
                       "\n",
                     ],
