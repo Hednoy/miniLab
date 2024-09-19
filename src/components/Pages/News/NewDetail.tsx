@@ -289,7 +289,7 @@ export default function NewsDetail({ id }: NewsDetailProps) {
         {imageFiles.length > 0 && (
           <Carousel
             responsive={responsive}
-            className="my-10 w-[50vw] rounded border-4 border-primary p-10"
+            className="my-10 w-[75vw] rounded border-4 border-primary p-10"
             itemClass="carousel-item"
           >
             {imageFiles.map((image: any, index: number) => (
