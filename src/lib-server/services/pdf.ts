@@ -2379,9 +2379,9 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 ],
                 ...Object.keys(labtestPdf).map((key) => [
                   { text: labtestPdf[key]?.name, style: "tableSecVal" },
-                  { text: labtestPdf[key]?.result, style: "tableSecVal" },
-                  { text: lab?.detection_method, style: "tableSecVal" },
+                  { text: labtestPdf[key]?.result + " (" + labtestPdf[key]?.remark + ")", style: "tableSecVal" },
                   { text: "", style: "tableSecVal" },
+                  { text: lab?.TestType?.subfix_name, style: "tableSecVal" },
                 ]),
               ],
             },

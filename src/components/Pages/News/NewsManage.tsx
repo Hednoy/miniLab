@@ -297,37 +297,12 @@ function NewsManageComponent({ id, data }: NewsManageProps): JSX.Element {
                     <button
                       type="button"
                       className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary"
-                      onClick={() => {
-                        if (!file) {
-                          console.error("File is not available");
-                          return;
-                        }
-                        let filePath = file.file_path || file.path;
-                        if (!filePath) {
-                          console.error("File path is not available");
-                          return;
-                        }
-
-                        // Remove 'public' from the file path if it exists
-                        filePath = filePath.replace(/^\/?public\//, "/");
-
-                        const link = document.createElement("a");
-                        const completeURL = filePath.startsWith("http")
-                          ? filePath
-                          : `${window.location.origin}${filePath}`;
-                        // console.log(filePath);
-                        // console.log("Downloading file from URL:", completeURL); // Debugging log
-
-                        link.href = completeURL;
-                        link.download =
-                          file.file_name ||
-                          file.old_file_name ||
-                          "file_download";
-                        link.target = "_blank";
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                      }}
+                      onClick={() =>
+                        window.open(
+                          `/api/new-images/` + file.file_path,
+                          "_blank"
+                        )
+                      }
                     >
                       <FontAwesomeIcon
                         icon={faDownload}
