@@ -22,14 +22,14 @@ const POST = async (request: NextRequest) => {
 
     // write the file to the file system
     const path = "./public/file/" + newFileName;
-    const pathForDB = "/public/file/" + newFileName;
+    const pathForDB = newFileName;
     writeFile(path, buffer)
       .then((f) => {})
       .catch((e) => {
         throw e;
       });
 
-    console.log("file", file, buffer);
+    // console.log("file", file, buffer);
 
     return Response.json({
       old_file_name: oldFileName,

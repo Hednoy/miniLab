@@ -28,6 +28,7 @@ const QueryKeys = {
   DASHBOARD_PATHOGENS: "dashboard-pathogens",
   DASHBOARD_REPORT: "dashboard-report",
   NEWS: "news",
+  NEWS_IMAGES: "new-images",
   NEWS_TYPE: "news-type",
   PATHOGENTS: "pathogens",
   MACHINE: "machine",

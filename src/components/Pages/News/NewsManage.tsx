@@ -92,9 +92,10 @@ function NewsManageComponent({ id, data }: NewsManageProps): JSX.Element {
           file_path: resp.path ? resp.path : resp.file_path,
         });
       });
-      newsData.images = fileList;
     }
-
+    
+    newsData.images = fileList;
+    
     if (isNaN(id)) {
       createNews(newsData, {
         onSuccess: () => {
@@ -119,6 +120,7 @@ function NewsManageComponent({ id, data }: NewsManageProps): JSX.Element {
         id: id,
         ...newsData,
       };
+      // console.log(newsData);
 
       updateNews(updateNewsData, {
         onSuccess: () => {
@@ -260,7 +262,7 @@ function NewsManageComponent({ id, data }: NewsManageProps): JSX.Element {
           <input
             type="file"
             ref={fileRef}
-            accept="image/png, image/jpeg, application/pdf"
+            accept="image/png, image/jpeg, image/jpg ,application/pdf"
             onChange={handleFile}
             multiple // Add this to allow multiple file selection
             style={{ display: "none" }}
@@ -269,7 +271,7 @@ function NewsManageComponent({ id, data }: NewsManageProps): JSX.Element {
             <div className="mb-2 flex items-center gap-2">
               <Label htmlFor="file" value={`เลือกไฟล์`} />
               <p className="text-[12px] text-lightgray">
-                (สามารถรองรับไฟล์เอกสาร .pdf และไฟล์รูปภาพ .jpg / .png)
+                (สามารถรองรับไฟล์เอกสาร .pdf และไฟล์รูปภาพ .jpg / .jpeg / .png)
               </p>
             </div>
             <button
@@ -313,8 +315,8 @@ function NewsManageComponent({ id, data }: NewsManageProps): JSX.Element {
                         const completeURL = filePath.startsWith("http")
                           ? filePath
                           : `${window.location.origin}${filePath}`;
-                        console.log(filePath);
-                        console.log("Downloading file from URL:", completeURL); // Debugging log
+                        // console.log(filePath);
+                        // console.log("Downloading file from URL:", completeURL); // Debugging log
 
                         link.href = completeURL;
                         link.download =

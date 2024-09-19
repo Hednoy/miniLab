@@ -212,7 +212,13 @@ export default function NewsDetail({ id }: NewsDetailProps) {
       items: 1,
     },
   };
-
+  // Filter only image files (jpg, jpeg, png)
+  const imageFiles = newsDetail?.images?.filter((image: any) =>
+    ["jpg", "jpeg", "png"].includes(
+      image.file_path.split(".").pop().toLowerCase()
+    )
+  ) || [];
+  
   async function DeleteNews(id: any) {
     swal
       .fire({
@@ -279,40 +285,31 @@ export default function NewsDetail({ id }: NewsDetailProps) {
         </h1>
 
         <p className="mb-4 text-gray">{newsDetail?.description}</p>
-        {newsDetail?.images &&
-          newsDetail?.images.length > 0 &&
-          newsDetail?.images.some((image: any) =>
-            ["jpg", "jpeg", "png"].includes(image.file_path.split(".").pop())
-          ) && (
-            <Carousel
-              responsive={responsive}
-              className="my-10 w-[50vw] rounded border-4 border-primary p-10"
-              itemClass="carousel-item"
-            >
-              {newsDetail?.images
-                .filter((image: any) =>
-                  ["jpg", "jpeg", "png"].includes(
-                    image.file_path.split(".").pop()
-                  )
-                )
-                .map((image: any, index: number) => (
-                  <div
-                    key={index}
-                    className="flex flex-col items-center rounded-md p-3 shadow-lg"
-                  >
-                    <img
-                      src={image.file_path.replace("/public", "")}
-                      className="rounded-md"
-                      style={{
-                        width: "100%",
-                        height: "auto",
-                        objectFit: "cover",
-                      }}
-                    />
-                  </div>
-                ))}
-            </Carousel>
-          )}
+        {imageFiles.length > 0 && (
+          <Carousel
+            responsive={responsive}
+            className="my-10 w-[50vw] rounded border-4 border-primary p-10"
+            itemClass="carousel-item"
+          >
+            {imageFiles.map((image: any, index: number) => (
+              <div
+                key={index}
+                className="flex flex-col items-center rounded-md p-3 shadow-lg"
+              >
+                <img
+                  src={`/api/new-images/${image.file_path}`}
+                  alt="Image"
+                  className="rounded-md"
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+            ))}
+          </Carousel>
+        )}
 
         <div className="flex w-full">
           {newsDetail?.images &&
@@ -326,16 +323,17 @@ export default function NewsDetail({ id }: NewsDetailProps) {
                     type="button"
                     onClick={() =>
                       window.open(
-                        image.file_path.replace("/public", ""),
+                        `/api/new-images/` + image.file_path,
                         "_blank"
                       )
                     }
                   >
-                    <FontAwesomeIcon icon={faFile} className="h-3 w-3" />{" "}
+                    <FontAwesomeIcon icon={faFile} className="h-3 w-3" />
                     {image.file_name}
                   </button>
                 );
               }
+              return null;
             })}
         </div>
       </div>

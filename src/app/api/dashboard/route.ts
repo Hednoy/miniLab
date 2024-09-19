@@ -21,7 +21,7 @@ const dashboardSchema = z.object({
     .or(z.literal("asc"))
     .or(z.literal("desc")),
   test_type_id: z.preprocess(stringToNumber, z.number().optional()),
-  result: z.string().optional().or(z.literal("")),
+  result: z.string().optional(),
 });
 
 const validateDashboardQueryParams = (params: QueryParamsType): LabsGetData => {

@@ -130,6 +130,7 @@ export type LabsGetData = Partial<{
   sortDirection: SortDirection;
   test_type_id: number;
   inspection_type_id: number;
+  result: number;
 }>;
 
 export type LabGetByID = {

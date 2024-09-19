@@ -88,7 +88,7 @@ const Laboratory: FC = () => {
     const printWindow = window.open(blobUrl);
     if (printWindow) {
       printWindow.onload = () => {
-        printWindow.print();
+        // printWindow.print();
       };
     } else {
       swal.fire({
@@ -106,7 +106,7 @@ const Laboratory: FC = () => {
     const printWindow = window.open(blobUrl);
     if (printWindow) {
       printWindow.onload = () => {
-        printWindow.print();
+        // printWindow.print();
       };
     } else {
       swal.fire({

@@ -1,3 +1,4 @@
+import { number } from 'zod';
 import prisma from "@/lib-server/prisma";
 import { LabTest, Prisma } from "@prisma/client";
 import ApiError from "../error";
@@ -342,6 +343,7 @@ type LabsGetData = Partial<{
   sortDirection: SortDirection;
   test_type_id: number;
   inspection_type_id: number;
+  result: number;
 }>;
 
 export const getLabList = async (
@@ -356,6 +358,7 @@ export const getLabList = async (
     dateStart,
     dateEnd,
     test_type_id,
+    result: resultlab,
   } = labGetData;
 
   // Log the received parameters
@@ -442,6 +445,10 @@ export const getLabList = async (
     where.created_at = {
       lte: new Date(dateEnd),
     };
+  }
+
+  if (resultlab) {
+    where.result = Number(resultlab);
   }
 
   const totalCount = await prisma.lab.count({ where });

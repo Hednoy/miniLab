@@ -100,6 +100,7 @@ export const Routes = {
     DASHBOARD_CHART_PATHOGENS: "/api/dashboard/chart/pathogens",
     DASHBOARD_REPORT: "/api/dashboard/report",
     NEWS: "/api/news",
+    NEWS_IMAGES: "/api/new-images",
     NEWS_TYPE: "/api/news-type",
     PATHOGENTS: "/api/pathogens",
     MACHINE: "/api/machine",
