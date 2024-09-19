@@ -126,6 +126,8 @@ export async function PDFlab1(id: number): Promise<Buffer> {
                       { text: "Name : ", style: "tableKey" },
                       {
                         text:
+                          lab?.Patient?.title +
+                          " " +
                           lab?.Patient?.first_name +
                           " " +
                           lab?.Patient?.last_name,
@@ -205,7 +207,7 @@ export async function PDFlab1(id: number): Promise<Buffer> {
                               (lab?.Patient?.received_time === "00:00:00" ||
                               lab?.Patient?.received_time === "00:00:00.000"
                                 ? ""
-                                : lab?.Patient?.received_time),
+                                : lab?.Patient?.received_time?.toString().split(".")[0]),
                         style: "tableValue",
                       },
                       "\n",
@@ -213,7 +215,8 @@ export async function PDFlab1(id: number): Promise<Buffer> {
                       {
                         text:
                           lab?.report_date?.toString() ===
-                          "1900-01-01 00:00:00.000"
+                          "1900-01-01 00:00:00.000" ||
+                          lab?.report_date?.toString() === "0001-01-01 00:00:00.000"
                             ? ""
                             : convertToThaiFormat(
                                 format(
@@ -494,6 +497,8 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       { text: "Name : ", style: "tableKey" },
                       {
                         text:
+                          lab?.Patient?.title +
+                          " " +
                           lab?.Patient?.first_name +
                           " " +
                           lab?.Patient?.last_name,
@@ -544,7 +549,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       { text: "", style: "tableValue" },
                       "\n",
                       { text: "ID : ", style: "tableKey" },
-                      { text: lab?.Patient?.id_card, style: "tableValue" },
+                      { text: lab?.Patient?.sat_id, style: "tableValue" },
                       "\n",
                     ],
                     margin: [10, 5, 0, 10],
@@ -677,9 +682,10 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       ) +
                       " " +
                       (lab?.report_time === "00:00:00" ||
-                      lab?.report_time === "00:00:00.000"
+                      lab?.report_time === "00:00:00.000" ||
+                      lab?.report_time === "00:00:00.000000"
                         ? ""
-                        : lab?.report_time),
+                        : lab?.report_time?.toString().split(".")[0]),
                 style: "tableValue",
               },
               "\n",
@@ -846,6 +852,8 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       { text: "Name : ", style: "tableKey" },
                       {
                         text:
+                          lab?.Patient?.title +
+                          " " +
                           lab?.Patient?.first_name +
                           " " +
                           lab?.Patient?.last_name,
@@ -922,7 +930,8 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       {
                         text:
                           lab?.report_date?.toString() ===
-                          "1900-01-01 00:00:00.000"
+                          "1900-01-01 00:00:00.000" ||
+                          lab?.report_date?.toString() === "0001-01-01 00:00:00.000"
                             ? ""
                             : convertToThaiFormat(
                                 format(
@@ -1391,7 +1400,11 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                   { text: "Name : ", style: "tableKey" },
                   {
                     text:
-                      lab?.Patient?.first_name + " " + lab?.Patient?.last_name,
+                      lab?.Patient?.title +
+                      " " +
+                      lab?.Patient?.first_name +
+                      " " +
+                      lab?.Patient?.last_name,
                     style: "tableValue",
                   },
                   "\n",
@@ -1455,7 +1468,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                           (lab?.Patient?.received_time === "00:00:00" ||
                           lab?.Patient?.received_time === "00:00:00.000"
                             ? ""
-                            : lab?.Patient?.received_time),
+                            : lab?.Patient?.received_time?.toString().split(".")[0]),
                     style: "tableValue",
                   },
                 ],
@@ -1550,9 +1563,10 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                           ) +
                           " " +
                           (lab?.report_time === "00:00:00" ||
-                          lab?.report_time === "00:00:00.000"
+                          lab?.report_time === "00:00:00.000" ||
+                          lab?.report_time === "00:00:00.000000"
                             ? ""
-                            : lab?.report_time),
+                            : lab?.report_time?.toString().split(".")[0]),
                     style: "tableValue",
                   },
                 ],
@@ -1591,9 +1605,10 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                           ) +
                           " " +
                           (lab?.approve_time === "00:00:00" ||
-                          lab?.approve_time === "00:00:00.000"
+                          lab?.approve_time === "00:00:00.000" ||
+                          lab?.approve_time === "00:00:00.000000"
                             ? ""
-                            : lab?.approve_time),
+                            : lab?.approve_time?.toString().split(".")[0]),
                     style: "tableValue",
                   },
                 ],
@@ -1809,6 +1824,8 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                     { text: "Name : ", style: "tableKey" },
                     {
                       text:
+                        lab?.Patient?.title +
+                        " " +
                         lab?.Patient?.first_name +
                         " " +
                         lab?.Patient?.last_name,
@@ -1903,7 +1920,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                         lab?.Patient?.received_time === "00:00:00" ||
                         lab?.Patient?.received_time === "00:00:00.000"
                           ? ""
-                          : lab?.Patient?.received_time,
+                          : lab?.Patient?.received_time?.toString().split(".")[0],
                       style: "tableValue",
                     },
                   ],
@@ -2294,6 +2311,8 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       { text: "Name : ", style: "tableKey" },
                       {
                         text:
+                          lab?.Patient?.title +
+                          " " +
                           lab?.Patient?.first_name +
                           " " +
                           lab?.Patient?.last_name,
@@ -2343,7 +2362,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                           lab?.Patient?.received_time === "00:00:00" ||
                           lab?.Patient?.received_time === "00:00:00.000"
                             ? ""
-                            : lab?.Patient?.received_time,
+                            : lab?.Patient?.received_time?.toString().split(".")[0],
                         style: "tableValue",
                       },
                     ],
@@ -2379,7 +2398,14 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 ],
                 ...Object.keys(labtestPdf).map((key) => [
                   { text: labtestPdf[key]?.name, style: "tableSecVal" },
-                  { text: labtestPdf[key]?.result + " (" + labtestPdf[key]?.remark + ")", style: "tableSecVal" },
+                  {
+                    text:
+                      labtestPdf[key]?.result +
+                      " (" +
+                      labtestPdf[key]?.remark +
+                      ")",
+                    style: "tableSecVal",
+                  },
                   { text: "", style: "tableSecVal" },
                   { text: lab?.TestType?.subfix_name, style: "tableSecVal" },
                 ]),
@@ -2453,7 +2479,8 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       {
                         text:
                           lab?.report_date?.toString() ===
-                          "1900-01-01 00:00:00.000"
+                          "1900-01-01 00:00:00.000" ||
+                          lab?.report_date?.toString() === "0001-01-01 00:00:00.000"
                             ? ""
                             : convertToThaiFormat(
                                 format(
@@ -2463,9 +2490,10 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                               ) +
                               " " +
                               (lab?.report_time === "00:00:00" ||
-                              lab?.report_time === "00:00:00.000"
+                              lab?.report_time === "00:00:00.000" ||
+                              lab?.report_time === "00:00:00.000000"
                                 ? ""
-                                : lab?.report_time),
+                                : lab?.report_time?.toString().split(".")[0]),
                         style: "tableValue",
                       },
                     ],
@@ -2495,7 +2523,8 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       {
                         text:
                           lab?.approve_date?.toString() ===
-                          "1900-01-01 00:00:00.000"
+                          "1900-01-01 00:00:00.000" ||
+                          lab?.approve_date?.toString() === "0001-01-01 00:00:00.000"
                             ? ""
                             : convertToThaiFormat(
                                 format(
@@ -2505,9 +2534,10 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                               ) +
                               " " +
                               (lab?.approve_time === "00:00:00" ||
-                              lab?.approve_time === "00:00:00.000"
+                              lab?.approve_time === "00:00:00.000" ||
+                              lab?.approve_time === "00:00:00.000000"
                                 ? ""
-                                : lab?.approve_time),
+                                : lab?.approve_time?.toString().split(".")[0]),
                         style: "tableValue",
                       },
                     ],
@@ -2634,11 +2664,11 @@ export async function PDFLAB(id: number): Promise<Buffer> {
 
   const reportByName = reportBy
     ? `${reportBy.first_name || ""} ${reportBy.last_name || ""}`
-    : "Unknown";
+    : "";
 
   const approveByName = approveBy
     ? `${approveBy.first_name || ""} ${approveBy.last_name || ""}`
-    : "Unknown";
+    : "";
 
   const logoPath = path.resolve("public/images/logo.png");
   const logoBase64 = fs.readFileSync(logoPath, "base64");
@@ -2705,6 +2735,8 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                       { text: "Name : ", style: "tableKey" },
                       {
                         text:
+                          lab?.Patient?.title +
+                          " " +
                           lab?.Patient?.first_name +
                           " " +
                           lab?.Patient?.last_name,
@@ -2730,7 +2762,7 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                     border: [false, true, false, true],
                     text: [
                       { text: "AGE : ", style: "tableKey" },
-                      { text: lab?.Patient?.age, style: "tableValue" },
+                      { text: lab?.Patient?.age || "", style: "tableValue" },
                       "\n",
                       { text: "SAT ID : ", style: "tableKey" },
                       { text: lab?.Patient?.sat_id, style: "tableValue" },
@@ -2783,7 +2815,7 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                               (lab?.Patient?.received_time === "00:00:00" ||
                               lab?.Patient?.received_time === "00:00:00.000"
                                 ? ""
-                                : lab?.Patient?.received_time),
+                                : lab?.Patient?.received_time?.toString().split(".")[0]),
                         style: "tableValue",
                       },
                       "\n",
@@ -2791,7 +2823,8 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                       {
                         text:
                           lab?.report_date?.toString() ===
-                          "1900-01-01 00:00:00.000"
+                          "1900-01-01 00:00:00.000" ||
+                          lab?.report_date?.toString() === "0001-01-01 00:00:00.000"
                             ? ""
                             : convertToThaiFormat(
                                 format(
@@ -3025,6 +3058,8 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                       { text: "Name : ", style: "tableKey" },
                       {
                         text:
+                          lab?.Patient?.title +
+                          " " +
                           lab?.Patient?.first_name +
                           " " +
                           lab?.Patient?.last_name,
@@ -3104,7 +3139,7 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                               (lab?.Patient?.received_time === "00:00:00" ||
                               lab?.Patient?.received_time === "00:00:00.000"
                                 ? ""
-                                : lab?.Patient?.received_time),
+                                : lab?.Patient?.received_time?.toString().split(".")[0]),
                         style: "tableValue",
                       },
                       "\n",
@@ -3112,7 +3147,8 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                       {
                         text:
                           lab?.report_date?.toString() ===
-                          "1900-01-01 00:00:00.000"
+                          "1900-01-01 00:00:00.000" ||
+                          lab?.report_date?.toString() === "0001-01-01 00:00:00.000"
                             ? ""
                             : convertToThaiFormat(
                                 format(

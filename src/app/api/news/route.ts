@@ -42,7 +42,13 @@ const GET = async (request: NextRequest) => {
     const urlSearchParams = new URLSearchParams(search);
     const params = Object.fromEntries(urlSearchParams.entries());
 
+    // Debugging: Log the params to verify the presence of news_type_id
+    console.log("Received params:", params);
+
     const parsedData = validateNewsSearchQueryParams(params);
+
+    // Debugging: Log the parsed data to verify the presence of news_type_id
+    console.log("Parsed data:", parsedData);
 
     const news = await getNewsList(parsedData);
 

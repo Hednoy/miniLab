@@ -57,7 +57,7 @@ export const getNewsList = async (
   if (newsGetData?.new_type_id) {
     where.type_id = newsGetData.new_type_id;
   }
-
+  console.log("where", newsGetData);
   const totalCount = await prisma.news.count({ where });
 
   let news = await prisma.news.findMany({
