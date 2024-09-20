@@ -237,7 +237,8 @@ function NewsManageComponent({ id, data }: NewsManageProps): JSX.Element {
                   id="type_id"
                   value={String(field.value)}
                   onChange={(e) => {
-                    const value = e.target.value === "0" ? undefined : e.target.value;
+                    const value =
+                      e.target.value === "0" ? undefined : e.target.value;
                     field.onChange(value);
                   }}
                 >

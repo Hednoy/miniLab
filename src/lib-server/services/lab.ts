@@ -170,7 +170,8 @@ export const getLabList = async (
         TestType: {
           OR: [
             { subfix_name: { contains: searchTerm } },
-            { prefix_name: { contains: searchTerm !== "Anti-SARS-CoV-2 NCP IgG" ? searchTerm : "555" } },
+            // { prefix_name: { contains: searchTerm !== "Anti-SARS-CoV-2 NCP IgG" ? searchTerm : "555" } },
+            { prefix_name: { contains: searchTerm } },
           ],
         },
       },

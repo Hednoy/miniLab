@@ -64,7 +64,7 @@ const SearchInformation: FC = () => {
     const printWindow = window.open(blobUrl);
     if (printWindow) {
       printWindow.onload = () => {
-        printWindow.print();
+        // printWindow.print();
       };
     } else {
       swal.fire({
@@ -82,7 +82,7 @@ const SearchInformation: FC = () => {
     const printWindow = window.open(blobUrl);
     if (printWindow) {
       printWindow.onload = () => {
-        printWindow.print();
+        // printWindow.print();
       };
     } else {
       swal.fire({
@@ -162,16 +162,27 @@ const SearchInformation: FC = () => {
         ),
       },
       {
-        header: "",
         accessorKey: "id",
+        header: "",
+        size: 50,
         cell: ({ row }) => {
           return (
             <div className="flex items-center gap-3 text-primary">
               <button
                 type="button"
-                onClick={() =>
-                  ExportPDF_ICN(row.original.id, row.original.case_no)
-                }
+                onClick={() => {
+                  if (row.original.Machine.name !== "แบบฟอร์มการรายงานผล ATK") {
+                    ExportPDF_FM(row.original.id, row.original.case_no);
+                    // alert("FM");
+                  } else if (
+                    row.original.Machine.name == "แบบฟอร์มการรายงานผล ATK"
+                  ) {
+                    ExportPDF_ICN(row.original.id, row.original.case_no);
+                    // alert("ICN");
+                  } else {
+                    alert("cannot export PDF.");
+                  }
+                }}
               >
                 <svg
                   width="16"
@@ -190,6 +201,7 @@ const SearchInformation: FC = () => {
                   />
                 </svg>
               </button>
+
               <button
                 type="button"
                 onClick={() => push("/laboratory/" + row.original.id)}

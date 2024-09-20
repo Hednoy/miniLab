@@ -66,15 +66,10 @@ export default function ManagementOfficerManage({
         username: yup.string().required("กรุณากรอกชื่อผู้ใช้งาน"),
         password: yup
           .string()
-
-          .when("id", (id: any, schema: any) => {
-            if (!id) {
-              return schema
-                .min(6, "อย่างน้อย 6 ตัวอักษร")
-                .required("กรุณากรอกรหัสผ่าน");
-            } else {
-              return schema;
-            }
+          .required("กรุณากรอกรหัสผ่าน")
+          .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/, {
+            message:
+              "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร ประกอบด้วยตัวอักษรพิมพ์ใหญ่/พิมพ์เล็ก ตัวเลข และอักขระพิเศษหนึ่งตัว",
           }),
       })
     ),
@@ -401,16 +396,17 @@ export default function ManagementOfficerManage({
               control={control}
               render={({ field }) => (
                 <TextInput
-                  {...register("password")}
+                  {...field}
                   id="password"
                   type="password"
-                  onChange={(val: any) => {
-                    field.onChange(val);
-                    trigger("password");
+                  onChange={(e) => {
+                    field.onChange(e.target.value);
+                    trigger("password"); // Ensure this triggers validation
                   }}
                 />
               )}
             />
+
             <div className="text-start">
               {errors.password && (
                 <p className=" text-red-500">{errors.password.message}</p>

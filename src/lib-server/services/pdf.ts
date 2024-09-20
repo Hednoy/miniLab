@@ -207,7 +207,9 @@ export async function PDFlab1(id: number): Promise<Buffer> {
                               (lab?.Patient?.received_time === "00:00:00" ||
                               lab?.Patient?.received_time === "00:00:00.000"
                                 ? ""
-                                : lab?.Patient?.received_time?.toString().split(".")[0]),
+                                : lab?.Patient?.received_time
+                                    ?.toString()
+                                    .split(".")[0]),
                         style: "tableValue",
                       },
                       "\n",
@@ -215,8 +217,9 @@ export async function PDFlab1(id: number): Promise<Buffer> {
                       {
                         text:
                           lab?.report_date?.toString() ===
-                          "1900-01-01 00:00:00.000" ||
-                          lab?.report_date?.toString() === "0001-01-01 00:00:00.000"
+                            "1900-01-01 00:00:00.000" ||
+                          lab?.report_date?.toString() ===
+                            "0001-01-01 00:00:00.000"
                             ? ""
                             : convertToThaiFormat(
                                 format(
@@ -930,8 +933,9 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       {
                         text:
                           lab?.report_date?.toString() ===
-                          "1900-01-01 00:00:00.000" ||
-                          lab?.report_date?.toString() === "0001-01-01 00:00:00.000"
+                            "1900-01-01 00:00:00.000" ||
+                          lab?.report_date?.toString() ===
+                            "0001-01-01 00:00:00.000"
                             ? ""
                             : convertToThaiFormat(
                                 format(
@@ -1198,7 +1202,10 @@ export async function PDFlab2(id: number): Promise<Buffer> {
         rp36: null,
       },
       { name: "Bordetella pertussis (BP)", rp23: 20, rp27: 21, rp36: 23 },
-      { name: "Chlamydophila pneumoniae", rp23: 21, rp27: 22, rp36: 19 },
+      ...(lab?.Patient?.collected_date &&
+      new Date(lab.Patient.collected_date) >= new Date("2024-01-01")
+        ? [{ name: "Chlamydophila pneumoniae", rp23: 21, rp27: 22, rp36: 19 }]
+        : []),
       { name: "Legionella pneumophila (LP)", rp23: 22, rp27: 23, rp36: 22 },
       { name: "Mycoplasma pneumoniae (MP)", rp23: 23, rp27: 24, rp36: 18 },
       { name: "Streptococcus pneumoniae", rp23: null, rp27: 26, rp36: 20 },
@@ -1284,10 +1291,19 @@ export async function PDFlab2(id: number): Promise<Buffer> {
           const testResult = labTestList.find(
             (t) => t.Pathogens.name === s.name
           );
+          const oblique = s.rp23 !== null && s.rp23 >= 20 && s.rp23 <= 23;
           return {
-            name: s.name,
-            result: testResult?.result ? testResult.result : "Not detected",
-            remark: testResult?.remark ? testResult.remark : "-",
+            name: oblique ? { text: s.name, italics: true } : s.name,
+            result: testResult?.result
+              ? oblique
+                ? { text: testResult.result, italics: true }
+                : testResult.result
+              : "Not detected",
+            remark: testResult?.remark
+              ? oblique
+                ? { text: testResult.remark, italics: true }
+                : testResult.remark
+              : "-",
           };
         });
       } else if (lab.TestType?.prefix_name === "Respiratory Pathogen 27") {
@@ -1295,10 +1311,19 @@ export async function PDFlab2(id: number): Promise<Buffer> {
           const testResult = labTestList.find(
             (t) => t.Pathogens.name === s.name
           );
+          const oblique = s.rp27 !== null && s.rp27 >= 21 && s.rp27 <= 27;
           return {
-            name: s.name,
-            result: testResult?.result ? testResult.result : "Not detected",
-            remark: testResult?.remark ? testResult.remark : "-",
+            name: oblique ? { text: s.name, italics: true } : s.name,
+            result: testResult?.result
+              ? oblique
+                ? { text: testResult.result, italics: true }
+                : testResult.result
+              : "Not detected",
+            remark: testResult?.remark
+              ? oblique
+                ? { text: testResult.remark, italics: true }
+                : testResult.remark
+              : "-",
           };
         });
       } else if (lab.TestType?.prefix_name === "Respiratory Pathogen 36") {
@@ -1306,10 +1331,19 @@ export async function PDFlab2(id: number): Promise<Buffer> {
           const testResult = labTestList.find(
             (t) => t.Pathogens.name === s.name
           );
+          const oblique = s.rp36 !== null && s.rp36 >= 17 && s.rp36 <= 36;
           return {
-            name: s.name,
-            result: testResult?.result ? testResult.result : "Not detected",
-            remark: testResult?.remark ? testResult.remark : "-",
+            name: oblique ? { text: s.name, italics: true } : s.name,
+            result: testResult?.result
+              ? oblique
+                ? { text: testResult.result, italics: true }
+                : testResult.result
+              : "Not detected",
+            remark: testResult?.remark
+              ? oblique
+                ? { text: testResult.remark, italics: true }
+                : testResult.remark
+              : "-",
           };
         });
       }
@@ -1468,7 +1502,9 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                           (lab?.Patient?.received_time === "00:00:00" ||
                           lab?.Patient?.received_time === "00:00:00.000"
                             ? ""
-                            : lab?.Patient?.received_time?.toString().split(".")[0]),
+                            : lab?.Patient?.received_time
+                                ?.toString()
+                                .split(".")[0]),
                     style: "tableValue",
                   },
                 ],
@@ -1920,7 +1956,9 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                         lab?.Patient?.received_time === "00:00:00" ||
                         lab?.Patient?.received_time === "00:00:00.000"
                           ? ""
-                          : lab?.Patient?.received_time?.toString().split(".")[0],
+                          : lab?.Patient?.received_time
+                              ?.toString()
+                              .split(".")[0],
                       style: "tableValue",
                     },
                   ],
@@ -2362,7 +2400,9 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                           lab?.Patient?.received_time === "00:00:00" ||
                           lab?.Patient?.received_time === "00:00:00.000"
                             ? ""
-                            : lab?.Patient?.received_time?.toString().split(".")[0],
+                            : lab?.Patient?.received_time
+                                ?.toString()
+                                .split(".")[0],
                         style: "tableValue",
                       },
                     ],
@@ -2399,14 +2439,30 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 ...Object.keys(labtestPdf).map((key) => [
                   { text: labtestPdf[key]?.name, style: "tableSecVal" },
                   {
-                    text:
-                      labtestPdf[key]?.result +
-                      " (" +
-                      labtestPdf[key]?.remark +
-                      ")",
+                    text: labtestPdf[key]?.result + labtestPdf[key]?.remark,
                     style: "tableSecVal",
                   },
-                  { text: "", style: "tableSecVal" },
+                  // { text: "", style: "tableSecVal" },
+                  {
+                    text: (() => {
+                      switch (labtestPdf[key]?.name) {
+                      case "Anti-SARS-Cov-2 Total":
+                        return "Non Reactive";
+                      case "Anti-SARS-Cov-2-IgG":
+                        return "Non Reactive";
+                      case "Anti-SARS-Cov-2-IgG QN":
+                        return "Non Reactive < 17.8 BAU/mL";
+                      case "Anti-SARS-Cov-2-IgM":
+                        return "Non Reactive";
+                      case "Anti-SARS-Cov-2 NCP IgG":
+                        return "Negative";
+                      case "Anti-SARS-Cov-2 NCP IgM":
+                        return "Negative";
+                      default:
+                        return "";
+                      }
+                    })(),
+                  },
                   { text: lab?.TestType?.subfix_name, style: "tableSecVal" },
                 ]),
               ],
@@ -2479,8 +2535,9 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       {
                         text:
                           lab?.report_date?.toString() ===
-                          "1900-01-01 00:00:00.000" ||
-                          lab?.report_date?.toString() === "0001-01-01 00:00:00.000"
+                            "1900-01-01 00:00:00.000" ||
+                          lab?.report_date?.toString() ===
+                            "0001-01-01 00:00:00.000"
                             ? ""
                             : convertToThaiFormat(
                                 format(
@@ -2523,8 +2580,9 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       {
                         text:
                           lab?.approve_date?.toString() ===
-                          "1900-01-01 00:00:00.000" ||
-                          lab?.approve_date?.toString() === "0001-01-01 00:00:00.000"
+                            "1900-01-01 00:00:00.000" ||
+                          lab?.approve_date?.toString() ===
+                            "0001-01-01 00:00:00.000"
                             ? ""
                             : convertToThaiFormat(
                                 format(
@@ -2815,7 +2873,9 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                               (lab?.Patient?.received_time === "00:00:00" ||
                               lab?.Patient?.received_time === "00:00:00.000"
                                 ? ""
-                                : lab?.Patient?.received_time?.toString().split(".")[0]),
+                                : lab?.Patient?.received_time
+                                    ?.toString()
+                                    .split(".")[0]),
                         style: "tableValue",
                       },
                       "\n",
@@ -2823,8 +2883,9 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                       {
                         text:
                           lab?.report_date?.toString() ===
-                          "1900-01-01 00:00:00.000" ||
-                          lab?.report_date?.toString() === "0001-01-01 00:00:00.000"
+                            "1900-01-01 00:00:00.000" ||
+                          lab?.report_date?.toString() ===
+                            "0001-01-01 00:00:00.000"
                             ? ""
                             : convertToThaiFormat(
                                 format(
@@ -3139,7 +3200,9 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                               (lab?.Patient?.received_time === "00:00:00" ||
                               lab?.Patient?.received_time === "00:00:00.000"
                                 ? ""
-                                : lab?.Patient?.received_time?.toString().split(".")[0]),
+                                : lab?.Patient?.received_time
+                                    ?.toString()
+                                    .split(".")[0]),
                         style: "tableValue",
                       },
                       "\n",
@@ -3147,8 +3210,9 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                       {
                         text:
                           lab?.report_date?.toString() ===
-                          "1900-01-01 00:00:00.000" ||
-                          lab?.report_date?.toString() === "0001-01-01 00:00:00.000"
+                            "1900-01-01 00:00:00.000" ||
+                          lab?.report_date?.toString() ===
+                            "0001-01-01 00:00:00.000"
                             ? ""
                             : convertToThaiFormat(
                                 format(
