@@ -81,41 +81,67 @@ const Laboratory: FC = () => {
       });
   }
 
+  // async function ExportPDF_ICN(id: number, case_no: string) {
+  //   const response = await fetch(`${Routes.API.LAB}/${id}/pdf-icn`);
+  //   const blob = await response.blob();
+  //   const blobUrl = window.URL.createObjectURL(blob);
+  //   const printWindow = window.open(blobUrl);
+  //   if (printWindow) {
+  //     printWindow.onload = () => {
+  //       // printWindow.print();
+  //     };
+  //   } else {
+  //     swal.fire({
+  //       title: "พบข้อผิดพลาด",
+  //       icon: "success",
+  //       iconHtml: customIcons.error,
+  //     });
+  //   }
+  // }
   async function ExportPDF_ICN(id: number, case_no: string) {
-    const response = await fetch(`${Routes.API.LAB}/${id}/pdf-icn`);
-    const blob = await response.blob();
-    const blobUrl = window.URL.createObjectURL(blob);
-    const printWindow = window.open(blobUrl);
+    const pdfUrl = `${Routes.API.LAB}/${id}/pdf-icn?case_no=${case_no}`;
+    const printWindow = window.open(pdfUrl);
     if (printWindow) {
-      printWindow.onload = () => {
-        // printWindow.print();
-      };
+      printWindow.document.title = `${case_no}.pdf`;
     } else {
       swal.fire({
         title: "พบข้อผิดพลาด",
-        icon: "success",
-        iconHtml: customIcons.error,
+        icon: "error",
       });
     }
   }
 
   async function ExportPDF_FM(id: number, case_no: string) {
-    const response = await fetch(`${Routes.API.LAB}/${id}/pdf-fm`);
-    const blob = await response.blob();
-    const blobUrl = window.URL.createObjectURL(blob);
-    const printWindow = window.open(blobUrl);
+    const pdfUrl = `${Routes.API.LAB}/${id}/pdf-fm?case_no=${case_no}`;
+
+    // Open PDF in a new tab
+    const printWindow = window.open(pdfUrl);
     if (printWindow) {
-      printWindow.onload = () => {
-        // printWindow.print();
-      };
+      printWindow.document.title = `${case_no}.pdf`;
     } else {
       swal.fire({
         title: "พบข้อผิดพลาด",
-        icon: "success",
-        iconHtml: customIcons.error,
+        icon: "error",
       });
     }
   }
+  // async function ExportPDF_FM(id: number, case_no: string) {
+  //   const response = await fetch(`${Routes.API.LAB}/${id}/pdf-fm`);
+  //   const blob = await response.blob();
+  //   const blobUrl = window.URL.createObjectURL(blob);
+  //   const printWindow = window.open(blobUrl);
+  //   if (printWindow) {
+  //     printWindow.onload = () => {
+  //       // printWindow.print();
+  //     };
+  //   } else {
+  //     swal.fire({
+  //       title: "พบข้อผิดพลาด",
+  //       icon: "success",
+  //       iconHtml: customIcons.error,
+  //     });
+  //   }
+  // }
 
   const columns = useMemo<ColumnDef<(typeof labsData)[0]>[]>(
     () => [

@@ -153,7 +153,13 @@ export async function PDFlab1(id: number): Promise<Buffer> {
                     border: [false, true, false, true],
                     text: [
                       { text: "AGE : ", style: "tableKey" },
-                      { text: lab?.Patient?.age, style: "tableValue" },
+                      {
+                        text:
+                          lab?.Patient?.age === 0
+                            ? ""
+                            : lab?.Patient?.age || "",
+                        style: "tableValue",
+                      },
                       "\n",
                       { text: "SAT ID : ", style: "tableKey" },
                       { text: lab?.Patient?.sat_id, style: "tableValue" },
@@ -383,7 +389,7 @@ export async function PDFlab1(id: number): Promise<Buffer> {
   });
 }
 
-export async function PDFlab2(id: number): Promise<Buffer> {
+export async function PDFlab2(id: number, case_no?: string): Promise<Buffer> {
   const lab = await prisma.lab.findUnique({
     where: { id },
     include: {
@@ -414,11 +420,11 @@ export async function PDFlab2(id: number): Promise<Buffer> {
       remark: labTest?.remark,
     };
   });
-  const reportBy = await prisma.officer.findUnique({
-    where: { id: lab?.report_by_id || 0 },
+  const reportBy = await prisma.officer.findFirst({
+    where: { member_id: lab?.report_by_id || 0 },
   });
-  const approveBy = await prisma.officer.findUnique({
-    where: { id: lab?.approve_by_id || 0 },
+  const approveBy = await prisma.officer.findFirst({
+    where: { member_id: lab?.approve_by_id || 0 },
   });
 
   const reportByName = reportBy
@@ -509,7 +515,13 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       },
                       "\n",
                       { text: "Age : ", style: "tableKey" },
-                      { text: lab?.Patient?.age, style: "tableValue" },
+                      {
+                        text:
+                          lab?.Patient?.age === 0
+                            ? ""
+                            : lab?.Patient?.age || "",
+                        style: "tableValue",
+                      },
                       "\n",
                       { text: "Organization : ", style: "tableKey" },
                       { text: lab?.Hospital?.name, style: "tableValue" },
@@ -865,12 +877,14 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Date of Birth (DOB) : ", style: "tableKey" },
                       {
-                        text: convertToThaiFormat(
-                          format(
-                            new Date(lab?.Patient?.date_of_birth ?? ""),
-                            "dd/MM/yyyy"
-                          )
-                        ),
+                        text: lab?.Patient?.date_of_birth
+                          ? convertToThaiFormat(
+                              format(
+                                new Date(lab.Patient.date_of_birth),
+                                "dd/MM/yyyy"
+                              )
+                            )
+                          : "",
                         style: "tableValue",
                       },
                       "\n",
@@ -894,7 +908,10 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       "\n",
                       { text: "Age : ", style: "tableKey" },
                       {
-                        text: lab?.Patient?.age || null,
+                        text:
+                          lab?.Patient?.age === 0
+                            ? ""
+                            : lab?.Patient?.age || "",
                         style: "tableValue",
                       },
                       { text: " Years", style: "tableKey" },
@@ -1393,7 +1410,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
       },
       {
         columns: [
-          { image: logoDataUrl, width: 100, height: 75 },
+          { image: logoDataUrl, width: 80, height: 75 },
           {
             text: [
               {
@@ -1454,7 +1471,11 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                 border: [false, true, false, true],
                 text: [
                   { text: "AGE : ", style: "tableKey" },
-                  { text: lab?.Patient?.age, style: "tableValue" },
+                  {
+                    text:
+                      lab?.Patient?.age === 0 ? "" : lab?.Patient?.age || "",
+                    style: "tableValue",
+                  },
                   { text: " Years", style: "tableKey" },
                   "\n",
                   { text: "Collected Date: ", style: "tableKey" },
@@ -1663,17 +1684,6 @@ export async function PDFlab2(id: number): Promise<Buffer> {
       tableValue: { fontSize: 8 },
       tableSecVal: { fontSize: 8, bold: true, margin: [0, 2, 0, 2] },
     };
-
-    return new Promise((resolve, reject) => {
-      try {
-        const doc = pdfMake.createPdf(template);
-        doc.getBuffer(async function (buffer) {
-          resolve(buffer);
-        });
-      } catch (e) {
-        reject("Error pdfMake.createPdf()");
-      }
-    });
   } else if (lab?.Machine.name === "FM 02-000(A) แบบฟอร์มการรายงานผล IGRA") {
     const lab = await prisma.lab.findUnique({
       where: { id },
@@ -1870,12 +1880,14 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                     "\n",
                     { text: "Date of Birth (DOB) : ", style: "tableKey" },
                     {
-                      text: convertToThaiFormat(
-                        format(
-                          new Date(lab?.Patient?.date_of_birth ?? ""),
-                          "dd/MM/yyyy"
-                        )
-                      ),
+                      text: lab?.Patient?.date_of_birth
+                        ? convertToThaiFormat(
+                            format(
+                              new Date(lab.Patient.date_of_birth),
+                              "dd/MM/yyyy"
+                            )
+                          )
+                        : "",
                       style: "tableValue",
                     },
                     "\n",
@@ -2358,7 +2370,13 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       },
                       "\n",
                       { text: "Age : ", style: "tableKey" },
-                      { text: lab?.Patient?.age, style: "tableValue" },
+                      {
+                        text:
+                          lab?.Patient?.age === 0
+                            ? ""
+                            : lab?.Patient?.age || "",
+                        style: "tableValue",
+                      },
                       "\n",
                       { text: "Sex : ", style: "tableKey" },
                       // { text: lab?.Patient?.gender, style: "tableValue" },
@@ -2397,12 +2415,22 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                       { text: "Receive Time : ", style: "tableKey" },
                       {
                         text:
-                          lab?.Patient?.received_time === "00:00:00" ||
-                          lab?.Patient?.received_time === "00:00:00.000"
+                          lab?.Patient?.received_date?.toString() ===
+                          "1900-01-01 00:00:00.000"
                             ? ""
-                            : lab?.Patient?.received_time
-                                ?.toString()
-                                .split(".")[0],
+                            : convertToThaiFormat(
+                                format(
+                                  new Date(lab?.Patient?.received_date ?? ""),
+                                  "dd/MM/yyyy"
+                                )
+                              ) +
+                              " " +
+                              (lab?.Patient?.received_time === "00:00:00" ||
+                              lab?.Patient?.received_time === "00:00:00.000"
+                                ? ""
+                                : lab?.Patient?.received_time
+                                    ?.toString()
+                                    .split(".")[0]),
                         style: "tableValue",
                       },
                     ],
@@ -2446,20 +2474,20 @@ export async function PDFlab2(id: number): Promise<Buffer> {
                   {
                     text: (() => {
                       switch (labtestPdf[key]?.name) {
-                      case "Anti-SARS-Cov-2 Total":
-                        return "Non Reactive";
-                      case "Anti-SARS-Cov-2-IgG":
-                        return "Non Reactive";
-                      case "Anti-SARS-Cov-2-IgG QN":
-                        return "Non Reactive < 17.8 BAU/mL";
-                      case "Anti-SARS-Cov-2-IgM":
-                        return "Non Reactive";
-                      case "Anti-SARS-Cov-2 NCP IgG":
-                        return "Negative";
-                      case "Anti-SARS-Cov-2 NCP IgM":
-                        return "Negative";
-                      default:
-                        return "";
+                        case "Anti-SARS-Cov-2 Total":
+                          return "Non Reactive";
+                        case "Anti-SARS-Cov-2-IgG":
+                          return "Non Reactive";
+                        case "Anti-SARS-Cov-2-IgG QN":
+                          return "Non Reactive < 17.8 BAU/mL";
+                        case "Anti-SARS-Cov-2-IgM":
+                          return "Non Reactive";
+                        case "Anti-SARS-Cov-2 NCP IgG":
+                          return "Negative";
+                        case "Anti-SARS-Cov-2 NCP IgM":
+                          return "Negative";
+                        default:
+                          return "";
                       }
                     })(),
                   },
@@ -2669,6 +2697,19 @@ export async function PDFlab2(id: number): Promise<Buffer> {
       },
     };
   }
+  // return new Promise((resolve, reject) => {
+  //   try {
+  //     const doc = pdfMake.createPdf(template);
+  //     const caseNo = lab?.case_no || "default_case_no";
+  //     console.log(caseNo);
+  //     doc.getBuffer(async function (buffer) {
+  //       resolve(buffer);
+  //     });
+  //     doc.download(`${caseNo}.pdf`);
+  //   } catch (e) {
+  //     reject("Error pdfMake.createPdf()");
+  //   }
+  // });
   return new Promise((resolve, reject) => {
     try {
       const doc = pdfMake.createPdf(template);
@@ -2681,7 +2722,7 @@ export async function PDFlab2(id: number): Promise<Buffer> {
   });
 }
 
-export async function PDFLAB(id: number): Promise<Buffer> {
+export async function PDFLAB(id: number, case_no?: string): Promise<Buffer> {
   const lab = await prisma.lab.findUnique({
     where: { id },
     include: {
@@ -2820,7 +2861,13 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                     border: [false, true, false, true],
                     text: [
                       { text: "AGE : ", style: "tableKey" },
-                      { text: lab?.Patient?.age || "", style: "tableValue" },
+                      {
+                        text:
+                          lab?.Patient?.age === 0
+                            ? ""
+                            : lab?.Patient?.age || "",
+                        style: "tableValue",
+                      },
                       "\n",
                       { text: "SAT ID : ", style: "tableKey" },
                       { text: lab?.Patient?.sat_id, style: "tableValue" },
@@ -3146,7 +3193,13 @@ export async function PDFLAB(id: number): Promise<Buffer> {
                     border: [false, true, false, true],
                     text: [
                       { text: "AGE : ", style: "tableKey" },
-                      { text: lab?.Patient?.age, style: "tableValue" },
+                      {
+                        text:
+                          lab?.Patient?.age === 0
+                            ? ""
+                            : lab?.Patient?.age || "",
+                        style: "tableValue",
+                      },
                       "\n",
                       { text: "SAT ID : ", style: "tableKey" },
                       { text: lab?.Patient?.sat_id, style: "tableValue" },
