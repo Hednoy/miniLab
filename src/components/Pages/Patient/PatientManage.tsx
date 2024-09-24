@@ -5,6 +5,7 @@ import { Routes } from "@/lib-client/constants";
 import { useHospitalAll } from "@/lib-client/react-query/hospital";
 import { useInspectionTypes } from "@/lib-client/react-query/inspection-type";
 import { useCreateLogAction } from "@/lib-client/react-query/log";
+import { useOfficers } from "@/lib-client/react-query/officer";
 import { usePatientById } from "@/lib-client/react-query/patient";
 import { useCreatePatient } from "@/lib-client/react-query/patient/useCreatePatient";
 import { useUpdatePatient } from "@/lib-client/react-query/patient/useUpdatePatient";
@@ -14,10 +15,11 @@ import {
 } from "@/types/models/Patient";
 import { convertToThaiFormatTime, digitsOnly } from "@/utils";
 import { Patient } from "@prisma/client";
-import { TimePicker } from "antd";
+import { Input, TimePicker } from "antd";
 import { format } from "date-fns";
 import dayjs from "dayjs";
 import { Checkbox, Label, Select, TextInput } from "flowbite-react";
+import { request } from "http";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -43,6 +45,7 @@ function PatientManageComponent({ id, data }: PatientManageProps): JSX.Element {
   const { data: inspectionTypeAll } = useInspectionTypes({
     page: 1,
   });
+  const { data: officerAll } = useOfficers({});
 
   const { mutate: createPatient } = useCreatePatient();
   const { mutate: updatePatient } = useUpdatePatient();
@@ -94,6 +97,9 @@ function PatientManageComponent({ id, data }: PatientManageProps): JSX.Element {
           .min(1, "กรุณาเลือกวัน Received Date")
           .required("กรุณาเลือกวัน Received Date"),
         phone_no: yup.string().nullable(),
+        request_by_id: yup.number(),
+        order_by_id: yup.number(),
+        received_by_id: yup.number().required("กรุณาเลือกผู้รับตรวจ"),
       })
     ),
   });
@@ -173,6 +179,17 @@ function PatientManageComponent({ id, data }: PatientManageProps): JSX.Element {
   useEffect(() => {
     setValue("is_anonymous", isAnonymous);
   }, [isAnonymous]);
+
+  const [hospitalId, setHospitalId] = useState<string | undefined>("");
+  const [orderById, setOrderById] = useState("");
+  const [requestById, setRequestById] = useState("");
+
+  useEffect(() => {
+    if (hospitalId) {
+      setOrderById(`${hospitalId}`);
+      setRequestById(`${hospitalId}`);
+    }
+  }, [hospitalId]);
 
   return (
     <>
@@ -462,23 +479,54 @@ function PatientManageComponent({ id, data }: PatientManageProps): JSX.Element {
               name="hospital_id"
               control={control}
               render={({ field }) => (
-                <Select
-                  {...register("hospital_id")}
-                  id="hospital_id"
-                  value={String(field.value)}
-                  onChange={(e) => {
-                    field.onChange(
-                      e.target.value === "0" ? undefined : e.target.value
-                    );
-                  }}
-                >
-                  <option value="0">กรุณาเลือกหน่วยงาน</option>
-                  {hospitalAll.map((item: any, index: number) => (
-                    <option value={item.id} key={index}>
-                      {item.name}
-                    </option>
-                  ))}
-                </Select>
+                // <Select
+                //   {...register("hospital_id")}
+                //   id="hospital_id"
+                //   value={String(field.value)}
+                //   onChange={(e) => {
+                //     field.onChange(
+                //       e.target.value === "0" ? undefined : e.target.value
+                //     );
+                //   }}
+                // >
+                //   <option value="0">กรุณาเลือกหน่วยงาน</option>
+                //   {hospitalAll.map((item: any, index: number) => (
+                //     <option value={item.id} key={index}>
+                //       {item.name}
+                //     </option>
+                //   ))}
+                // </Select>
+                <>
+                  <Select
+                    {...register("hospital_id")}
+                    id="hospital_id"
+                    value={String(hospitalId)}
+                    onChange={(e) => {
+                      setHospitalId(
+                        e.target.value === "0" ? undefined : e.target.value
+                      );
+                    }}
+                  >
+                    <option value="0">กรุณาเลือกหน่วยงาน</option>
+                    {hospitalAll.map((item: any, index: number) => (
+                      <option value={item.id} key={index}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </Select>
+                  <Input
+                    type="hidden"
+                    {...register("order_by_id")}
+                    value={orderById}
+                    readOnly
+                  />
+                  <Input
+                    type="hidden"
+                    {...register("request_by_id")}
+                    value={requestById}
+                    readOnly
+                  />
+                </>
               )}
             />
             <div className="text-start">
@@ -729,6 +777,45 @@ function PatientManageComponent({ id, data }: PatientManageProps): JSX.Element {
               {errors.received_time && (
                 <p className=" text-red-500">
                   {String(errors.received_time.message)}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="col-span-2">
+            <div className="block">
+              <Label
+                htmlFor="inspection_type_id"
+                value={`Received By (ผู้รับตรวจ)`}
+              />
+            </div>
+            <Controller
+              name="received_by_id"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...register("received_by_id")}
+                  id="received_by_id"
+                  value={String(field.value)}
+                  onChange={(e) => {
+                    field.onChange(
+                      e.target.value === "0" ? undefined : e.target.value
+                    );
+                  }}
+                >
+                  <option value="0">กรุณาเลือกผู้รับตรวจ</option>
+                  {officerAll.map((item: any, index: number) => (
+                    <option value={item.id} key={index}>
+                      {item.title_name} {item.first_name} {item.last_name}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            />
+            <div className="text-start">
+              {errors.received_by_id && (
+                <p className=" text-red-500">
+                  {String(errors.received_by_id.message)}
                 </p>
               )}
             </div>

@@ -27,7 +27,7 @@ export const getPatientList = async (
 ): Promise<PaginatedResponse<Patient>> => {
   const {
     page = 1,
-    limit = 999,
+    limit = 9999,
     sort = "updated_at",
     searchTerm = "",
     sortDirection = "desc",

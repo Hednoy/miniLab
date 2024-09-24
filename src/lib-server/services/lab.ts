@@ -166,9 +166,7 @@ export const getLabList = async (
       },
       {
         Patient: {
-          OR: [
-            { hn: { contains: searchTerm } },
-          ],
+          OR: [{ hn: { contains: searchTerm } }],
         },
       },
       { InspectionType: { OR: [{ name: { contains: searchTerm } }] } },

@@ -31,6 +31,9 @@ export type PatientCreateData = Pick<
   | "received_date"
   | "received_time"
   | "title"
+  | "order_by_id"
+  | "request_by_id"
+  | "received_by_id"
 >;
 
 // both create and update
@@ -63,6 +66,9 @@ export type PatientUpdateData = Partial<
     | "collected_time"
     | "received_date"
     | "received_time"
+    | "order_by_id"
+    | "request_by_id"
+    | "received_by_id"
   >
 >;
 

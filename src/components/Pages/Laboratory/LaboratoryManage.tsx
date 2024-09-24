@@ -141,6 +141,7 @@ function LaboratoryManageComponent({
       Array.isArray(labData) &&
       !labData.some((lab) => lab.case_no === patient.case_no)
   );
+  console.log("filteredPatientsData", filteredPatientsData);
   useEffect(() => {
     if (!id) {
       const caseNo = getValues("case_no");
@@ -988,7 +989,7 @@ function LaboratoryManageComponent({
                       {...register("report_date")}
                       ref={refs.date}
                       onChange={field.onChange}
-                      value={field.value || null}
+                      value={field.value ? new Date(field.value) : null}
                     />
                   )}
                 />
@@ -1073,7 +1074,7 @@ function LaboratoryManageComponent({
                       {...register("approve_date")}
                       ref={refs.date}
                       onChange={field.onChange}
-                      value={field.value || null}
+                      value={field.value ? new Date(field.value) : null}
                     />
                   )}
                 />

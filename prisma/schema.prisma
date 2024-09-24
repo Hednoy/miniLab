@@ -101,59 +101,66 @@ model AttachmentLog {
 }
 
 model Patient {
-  id                                     Int            @id @default(autoincrement())
-  hn                                     String
-  an                                     String
-  hospital_id                            Int
-  case_no                                String
-  first_name                             String
-  last_name                              String
-  gender                                 String
-  age                                    Int
-  id_card                                String
-  passport                               String?
-  phone_no                               String
-  visit_type                             String
-  sat_id                                 String
-  test_type_id                           Int?
-  is_anonymous                           Boolean        @default(false)
-  date_of_birth                          DateTime?
-  date_of_send                           DateTime?
-  collected_date                         DateTime?
-  received_date                          DateTime?
-  updated_by                             Int?
-  updated_at                             DateTime?
-  deleted_by                             Int?
-  deleted_at                             DateTime?
-  inspection_type_id                     Int
-  collected_time                         String?        @default("00:00")
-  received_time                          String?        @default("00:00")
-  title                                  String?
-  received_by_id                         Int?
-  request_by_id                          Int?
-  order_by_id                            Int?
-  Lab                                    Lab[]
-  hospital                               Hospital       @relation(fields: [hospital_id], references: [id], onDelete: NoAction)
-  InspectionType                         InspectionType @relation(fields: [inspection_type_id], references: [id], onDelete: NoAction)
-  tb_hospital_tb_patient_idTotb_hospital Hospital       @relation("tb_patient_idTotb_hospital", fields: [id], references: [id], map: "tb_patient_order_by_id_fkey")
+  id                                                 Int            @id @default(autoincrement())
+  hn                                                 String
+  an                                                 String
+  hospital_id                                        Int
+  case_no                                            String
+  first_name                                         String
+  last_name                                          String
+  gender                                             String
+  age                                                Int
+  id_card                                            String
+  passport                                           String?
+  phone_no                                           String
+  visit_type                                         String
+  sat_id                                             String
+  test_type_id                                       Int?
+  is_anonymous                                       Boolean        @default(false)
+  date_of_birth                                      DateTime?
+  date_of_send                                       DateTime?
+  collected_date                                     DateTime?
+  received_date                                      DateTime?
+  updated_by                                         Int?
+  updated_at                                         DateTime?
+  deleted_by                                         Int?
+  deleted_at                                         DateTime?
+  inspection_type_id                                 Int
+  collected_time                                     String?        @default("00:00")
+  received_time                                      String?        @default("00:00")
+  title                                              String?
+  received_by_id                                     Int?
+  request_by_id                                      Int?
+  order_by_id                                        Int?
+  Lab                                                Lab[]
+  hospital                                           Hospital       @relation(fields: [hospital_id], references: [id], onDelete: NoAction)
+  InspectionType                                     InspectionType @relation(fields: [inspection_type_id], references: [id], onDelete: NoAction)
+  tb_hospital_tb_patient_order_by_idTotb_hospital    Hospital?      @relation("tb_patient_order_by_idTotb_hospital", fields: [order_by_id], references: [id], onDelete: Restrict)
+  tb_hospital_tb_patient_received_by_idTotb_hospital Hospital?      @relation("tb_patient_received_by_idTotb_hospital", fields: [received_by_id], references: [id], onDelete: Restrict)
+  tb_hospital_tb_patient_request_by_idTotb_hospital  Hospital?      @relation("tb_patient_request_by_idTotb_hospital", fields: [request_by_id], references: [id], onDelete: Restrict)
 
   @@index([hospital_id], map: "tb_patient_hospital_id_fkey")
   @@index([inspection_type_id], map: "tb_patient_inspection_type_id_fkey")
+  @@index([order_by_id], map: "tb_patient_order_by_id_fkey_idx")
+  @@index([received_by_id], map: "tb_patient_received_by_id_fkey_idx")
+  @@index([request_by_id], map: "tb_patient_request_by_id_fkey_idx")
   @@map("tb_patient")
 }
 
 model Hospital {
-  id                                    Int       @id @default(autoincrement())
-  name                                  String
-  address                               String
-  phone_no                              String
-  updated_by                            Int?
-  updated_at                            DateTime?
-  deleted_by                            Int?
-  deleted_at                            DateTime?
-  Lab                                   Lab[]
-  Patient                               Patient[]
-  tb_patient_tb_patient_idTotb_hospital Patient?  @relation("tb_patient_idTotb_hospital")
+  id                                                Int       @id @default(autoincrement())
+  name                                              String
+  address                                           String
+  phone_no                                          String
+  updated_by                                        Int?
+  updated_at                                        DateTime?
+  deleted_by                                        Int?
+  deleted_at                                        DateTime?
+  Lab                                               Lab[]
+  Patient                                           Patient[]
+  tb_patient_tb_patient_order_by_idTotb_hospital    Patient[] @relation("tb_patient_order_by_idTotb_hospital")
+  tb_patient_tb_patient_received_by_idTotb_hospital Patient[] @relation("tb_patient_received_by_idTotb_hospital")
+  tb_patient_tb_patient_request_by_idTotb_hospital  Patient[] @relation("tb_patient_request_by_idTotb_hospital")
 
   @@map("tb_hospital")
 }
