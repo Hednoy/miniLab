@@ -104,9 +104,13 @@ Table tb_patient {
   collected_time String [default: '00:00']
   received_time String [default: '00:00']
   title String
+  received_by_id Int
+  request_by_id Int
+  order_by_id Int
   Lab tb_lab [not null]
   hospital tb_hospital [not null]
   InspectionType tb_inspection_type [not null]
+  tb_hospital_tb_patient_idTotb_hospital tb_hospital [not null]
 }
 
 Table tb_hospital {
@@ -120,6 +124,7 @@ Table tb_hospital {
   deleted_at DateTime
   Lab tb_lab [not null]
   Patient tb_patient [not null]
+  tb_patient_tb_patient_idTotb_hospital tb_patient
 }
 
 Table tb_test_type {
@@ -441,7 +446,7 @@ Table tb_officer {
   id Int [pk, increment]
   citizen_id String
   title_name String
-  first_name String [not null]
+  first_name String
   last_name String
   mobile_phone String
   email String
@@ -575,6 +580,8 @@ Ref: tbl_attachment_log.attachment_id > tb_attachment.id [delete: No Action]
 Ref: tb_patient.hospital_id > tb_hospital.id [delete: No Action]
 
 Ref: tb_patient.inspection_type_id > tb_inspection_type.id [delete: No Action]
+
+Ref: tb_patient.id > tb_hospital.id [delete: No Action]
 
 Ref: tb_pathogens.machine_id > tb_machine.id
 

@@ -102,9 +102,9 @@ const Laboratory: FC = () => {
     const pdfUrl = `${Routes.API.LAB}/${id}/pdf-icn?case_no=${case_no}`;
     const printWindow = window.open(pdfUrl);
     if (printWindow) {
-          setTimeout(() => {
-            printWindow.document.title = `${case_no}`;
-        }, 1000);
+      setTimeout(() => {
+        printWindow.document.title = `${case_no}`;
+      }, 1000);
     } else {
       swal.fire({
         title: "พบข้อผิดพลาด",
@@ -117,16 +117,16 @@ const Laboratory: FC = () => {
     const pdfUrl = `${Routes.API.LAB}/${id}/pdf-fm?case_no=${case_no}`;
     const printWindow = window.open(pdfUrl);
     if (printWindow) {
-        setTimeout(() => {
-            printWindow.document.title = `${case_no}`;
-        }, 1000);
+      setTimeout(() => {
+        printWindow.document.title = `${case_no}`;
+      }, 1000);
     } else {
-        swal.fire({
-            title: "พบข้อผิดพลาด",
-            icon: "error",
-        });
+      swal.fire({
+        title: "พบข้อผิดพลาด",
+        icon: "error",
+      });
     }
-}
+  }
 
   // async function ExportPDF_FM(id: number, case_no: string) {
   //   const response = await fetch(`${Routes.API.LAB}/${id}/pdf-fm`);

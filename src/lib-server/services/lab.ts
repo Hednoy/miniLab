@@ -164,6 +164,13 @@ export const getLabList = async (
           OR: patientConditions,
         },
       },
+      {
+        Patient: {
+          OR: [
+            { hn: { contains: searchTerm } },
+          ],
+        },
+      },
       { InspectionType: { OR: [{ name: { contains: searchTerm } }] } },
       { Machine: { OR: [{ name: { contains: searchTerm } }] } },
       {

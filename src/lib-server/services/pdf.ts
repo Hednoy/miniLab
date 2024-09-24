@@ -1,3 +1,4 @@
+import { Hospital } from "@prisma/client";
 import prisma from "@/lib-server/prisma";
 import pdfMake from "pdfmake/build/pdfmake.js";
 import pdfFonts from "../vfs_fonts";
@@ -434,6 +435,20 @@ export async function PDFlab2(id: number, case_no?: string): Promise<Buffer> {
     ? `${approveBy.title_name || ""} ${approveBy.first_name || ""} ${approveBy.last_name || ""}`
     : "";
 
+  const receiveBy = await prisma.hospital.findFirst({
+    where: { id: lab?.Patient?.received_by_id || 0 },
+  });
+  const requestby = await prisma.hospital.findFirst({
+    where: { id: lab?.Patient?.request_by_id || 0 },
+  });
+  const orderby = await prisma.hospital.findFirst({
+    where: { id: lab?.Patient?.request_by_id || 0 },
+  });
+
+  const receiveByName = receiveBy ? `${receiveBy.name || ""}` : "";
+  const requestbyName = requestby ? `${requestby.name || ""}` : "";
+  const orderbyName = orderby ? `${orderby.name || ""}` : "";
+
   const logoPath = path.resolve("public/images/logo.png");
   const logoBase64 = fs.readFileSync(logoPath, "base64");
   const logoDataUrl = `data:image/png;base64,${logoBase64}`;
@@ -473,7 +488,7 @@ export async function PDFlab2(id: number, case_no?: string): Promise<Buffer> {
                   },
                   "\n\n",
                   {
-                    text: "24/56 Phahonyothin Rd, Anusawari, Bang-khen. Bangkok 10770 \nTel +66 2972 9606, +66 96 0966075, E-mail: labiudcbkk@gmail.com",
+                    text: "24/56 Phahonyothin Rd, Anusawari, Bang-khen. Bangkok 10220 \nTel +66 2972 9606, +66 96 0966075, E-mail: labiudcbkk@gmail.com",
                   },
                 ],
                 margin: [10, 0, 0, 0],
@@ -2340,7 +2355,7 @@ export async function PDFlab2(id: number, case_no?: string): Promise<Buffer> {
                   },
                   "\n\n",
                   {
-                    text: "24/56 Phahonyothin Rd, Anusawari, Bang-khen. Bangkok 10770 \nTel +66 2972 9606, +66 96 0966075, E-mail: labiudcbkk@gmail.com",
+                    text: "24/56 Phahonyothin Rd, Anusawari, Bang-khen. Bangkok 10220 \nTel +66 2972 9606, +66 96 0966075, E-mail: labiudcbkk@gmail.com",
                   },
                 ],
                 margin: [10, 0, 0, 0],
@@ -2394,10 +2409,10 @@ export async function PDFlab2(id: number, case_no?: string): Promise<Buffer> {
                       { text: lab?.Patient?.hn, style: "tableValue" },
                       "\n",
                       { text: "Request By : ", style: "tableKey" },
-                      { text: reportByName, style: "tableValue" },
+                      { text: requestbyName, style: "tableValue" },
                       "\n",
                       { text: "Receive By : ", style: "tableKey" },
-                      { text: "", style: "tableValue" },
+                      { text: receiveByName, style: "tableValue" },
                       "\n",
                     ],
                     alignment: "right",
@@ -2407,7 +2422,7 @@ export async function PDFlab2(id: number, case_no?: string): Promise<Buffer> {
                     border: [false, true, false, true],
                     text: [
                       { text: "Order Department", style: "tableKey" },
-                      { text: "", style: "tableValue" },
+                      { text: orderbyName, style: "tableValue" },
                       "\n",
                       { text: "Visit Type : ", style: "tableKey" },
                       { text: lab?.Patient?.visit_type, style: "tableValue" },
@@ -2484,6 +2499,8 @@ export async function PDFlab2(id: number, case_no?: string): Promise<Buffer> {
                           return "Non Reactive";
                         case "Anti-SARS-Cov-2 NCP IgG":
                           return "Negative";
+                        case "Anti-SARS-Cov-2 IgG":
+                          return "Negative";
                         case "Anti-SARS-Cov-2 NCP IgM":
                           return "Negative";
                         default:
@@ -2499,11 +2516,11 @@ export async function PDFlab2(id: number, case_no?: string): Promise<Buffer> {
               fillColor: function (rowIndex, node, columnIndex) {
                 return rowIndex === 0 ? "#D7D7D7" : null;
               },
-              hLineStyle: function (i, node) {
-                if (i === 0 || i === 1 || i === node.table.body.length) {
-                  return null;
-                }
-                return { dash: { length: 5, space: 2 } };
+              hLineWidth: function (i, node) {
+                return 0;
+              },
+              vLineWidth: function (i, node) {
+                return 0;
               },
             },
           },

@@ -10,13 +10,15 @@ import { faArrowLeft, faFile } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { Datepicker, Select } from "flowbite-react";
+import { Select } from "flowbite-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useMemo, useState } from "react";
-import { FaCalendarAlt } from "react-icons/fa";
+import React, { useCallback, useMemo, useState } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import "react-multi-carousel/lib/styles.css";
+import Lightbox from "react-image-lightbox";
+import "react-image-lightbox/style.css";
 
 type NewsDetailProps = {
   id: number;
@@ -194,6 +196,20 @@ export default function NewsDetail({ id }: NewsDetailProps) {
 
   const { mutate: deleteNewsById, isPending } = useDeleteNewsById();
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [photoIndex, setPhotoIndex] = useState(0);
+
+  // Filter only image files (jpg, jpeg, png)
+  const imageFiles =
+    newsDetail?.images?.filter((image: any) =>
+      ["jpg", "jpeg", "png"].includes(
+        image.file_path.split(".").pop().toLowerCase()
+      )
+    ) || [];
+
+  const images = imageFiles.map(
+    (image) => `/api/new-images/${image.file_path}`
+  );
   const responsive = {
     superLargeDesktop: {
       breakpoint: { max: 4000, min: 3000 },
@@ -212,13 +228,25 @@ export default function NewsDetail({ id }: NewsDetailProps) {
       items: 1,
     },
   };
-  // Filter only image files (jpg, jpeg, png)
-  const imageFiles =
-    newsDetail?.images?.filter((image: any) =>
-      ["jpg", "jpeg", "png"].includes(
-        image.file_path.split(".").pop().toLowerCase()
-      )
-    ) || [];
+
+  const nextSrc = useMemo(
+    () => images[(photoIndex + 1) % images.length],
+    [photoIndex, images]
+  );
+  const prevSrc = useMemo(
+    () => images[(photoIndex + images.length - 1) % images.length],
+    [photoIndex, images]
+  );
+
+  const handleCloseRequest = useCallback(() => setIsOpen(false), [setIsOpen]);
+  const handleMovePrevRequest = useCallback(
+    () => setPhotoIndex((photoIndex + images.length - 1) % images.length),
+    [photoIndex, images, setPhotoIndex]
+  );
+  const handleMoveNextRequest = useCallback(
+    () => setPhotoIndex((photoIndex + 1) % images.length),
+    [photoIndex, images, setPhotoIndex]
+  );
 
   async function DeleteNews(id: any) {
     swal
@@ -286,31 +314,52 @@ export default function NewsDetail({ id }: NewsDetailProps) {
         </h1>
 
         <p className="mb-4 text-gray">{newsDetail?.description}</p>
-        {imageFiles.length > 0 && (
-          <Carousel
-            responsive={responsive}
-            className="my-10 w-[75vw] rounded border-4 border-primary p-10"
-            itemClass="carousel-item"
-          >
-            {imageFiles.map((image: any, index: number) => (
-              <div
-                key={index}
-                className="flex flex-col items-center rounded-md p-3 shadow-lg"
-              >
-                <img
-                  src={`/api/new-images/${image.file_path}`}
-                  alt="Image"
-                  className="rounded-md"
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                    objectFit: "cover",
+        <div className="my-10 w-[75vw]">
+          {imageFiles.length > 0 && (
+            <Carousel
+              responsive={responsive}
+              className="w-[75vw] rounded-lg border-4 border-primary pb-10 pt-10"
+              itemClass="carousel-item"
+              autoPlay={true}
+              autoPlaySpeed={2000}
+              infinite={true}
+            >
+              {imageFiles.map((image: any, index: number) => (
+                <div
+                  key={index}
+                  className="flex cursor-pointer flex-col items-center rounded-md p-3 shadow-lg transition-transform duration-300 ease-in-out hover:scale-105"
+                  onClick={() => {
+                    setPhotoIndex(index);
+                    setIsOpen(true);
                   }}
-                />
-              </div>
-            ))}
-          </Carousel>
-        )}
+                >
+                  <img
+                    src={`/api/new-images/${image.file_path}`}
+                    alt="Image"
+                    loading="lazy"
+                    className="rounded-md"
+                    style={{
+                      width: "100%",
+                      height: "200px",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+              ))}
+            </Carousel>
+          )}
+          {isOpen && (
+            <Lightbox
+              mainSrc={images[photoIndex]}
+              nextSrc={nextSrc}
+              prevSrc={prevSrc}
+              onCloseRequest={handleCloseRequest}
+              onMovePrevRequest={handleMovePrevRequest}
+              onMoveNextRequest={handleMoveNextRequest}
+              imageTitle={newsDetail?.images[photoIndex]?.file_name}
+            />
+          )}
+        </div>
 
         <div className="flex w-full">
           {newsDetail?.images &&
