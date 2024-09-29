@@ -1326,16 +1326,8 @@ export async function PDFlab2(id: number, case_no?: string): Promise<Buffer> {
           const oblique = s.rp23 !== null && s.rp23 >= 20 && s.rp23 <= 23;
           return {
             name: oblique ? { text: s.name, italics: true } : s.name,
-            result: testResult?.result
-              ? oblique
-                ? { text: testResult.result, italics: true }
-                : testResult.result
-              : "Not detected",
-            remark: testResult?.remark
-              ? oblique
-                ? { text: testResult.remark, italics: true }
-                : testResult.remark
-              : "-",
+            result: testResult?.result ? testResult.result : "Not detected",
+            remark: testResult?.remark ? testResult.remark : "-",
           };
         });
       } else if (lab.TestType?.prefix_name === "Respiratory Pathogen 27") {
@@ -1346,16 +1338,8 @@ export async function PDFlab2(id: number, case_no?: string): Promise<Buffer> {
           const oblique = s.rp27 !== null && s.rp27 >= 21 && s.rp27 <= 27;
           return {
             name: oblique ? { text: s.name, italics: true } : s.name,
-            result: testResult?.result
-              ? oblique
-                ? { text: testResult.result, italics: true }
-                : testResult.result
-              : "Not detected",
-            remark: testResult?.remark
-              ? oblique
-                ? { text: testResult.remark, italics: true }
-                : testResult.remark
-              : "-",
+            result: testResult?.result ? testResult.result : "Not detected",
+            remark: testResult?.remark ? testResult.remark : "-",
           };
         });
       } else if (lab.TestType?.prefix_name === "Respiratory Pathogen 36") {
@@ -1366,16 +1350,8 @@ export async function PDFlab2(id: number, case_no?: string): Promise<Buffer> {
           const oblique = s.rp36 !== null && s.rp36 >= 17 && s.rp36 <= 36;
           return {
             name: oblique ? { text: s.name, italics: true } : s.name,
-            result: testResult?.result
-              ? oblique
-                ? { text: testResult.result, italics: true }
-                : testResult.result
-              : "Not detected",
-            remark: testResult?.remark
-              ? oblique
-                ? { text: testResult.remark, italics: true }
-                : testResult.remark
-              : "-",
+            result: testResult?.result ? testResult.result : "Not detected",
+            remark: testResult?.remark ? testResult.remark : "-",
           };
         });
       }
@@ -2421,7 +2397,7 @@ export async function PDFlab2(id: number, case_no?: string): Promise<Buffer> {
                   {
                     border: [false, true, false, true],
                     text: [
-                      { text: "Order Department", style: "tableKey" },
+                      { text: "Order Department : ", style: "tableKey" },
                       { text: orderbyName, style: "tableValue" },
                       "\n",
                       { text: "Visit Type : ", style: "tableKey" },
