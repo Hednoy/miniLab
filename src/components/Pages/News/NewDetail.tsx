@@ -19,6 +19,7 @@ import "react-multi-carousel/lib/styles.css";
 import "react-multi-carousel/lib/styles.css";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
+import { Routes } from "@/lib-client/constants";
 
 type NewsDetailProps = {
   id: number;
@@ -282,6 +283,21 @@ export default function NewsDetail({ id }: NewsDetailProps) {
       });
   }
 
+  async function ExportFile(id: string, name: string) {
+    const fileUrl = `${Routes.API.NEWS_IMAGES}/${id}?name=${encodeURIComponent(name)}`;
+    const printWindow = window.open(fileUrl);
+    if (printWindow) {
+      setTimeout(() => {
+        printWindow.document.title = `${name}`;
+      }, 1000);
+    } else {
+      swal.fire({
+        title: "พบข้อผิดพลาด",
+        icon: "error",
+      });
+    }
+  }
+
   return (
     <div>
       <div className="mb-2 flex items-center justify-start">
@@ -334,7 +350,7 @@ export default function NewsDetail({ id }: NewsDetailProps) {
                   }}
                 >
                   <img
-                    src={`/api/new-images/${image.file_path}`}
+                    src={`${Routes.API.NEWS_IMAGES}/${image.file_path}`}
                     alt="Image"
                     loading="lazy"
                     className="rounded-md"
@@ -371,12 +387,13 @@ export default function NewsDetail({ id }: NewsDetailProps) {
                     key={index}
                     className="flex items-center gap-2 rounded-[20px] bg-secondary p-2 text-sm text-primary"
                     type="button"
-                    onClick={() =>
-                      window.open(
-                        `/api/new-images/` + image.file_path,
-                        "_blank"
-                      )
-                    }
+                    onClick={() => ExportFile(image.file_path, image.file_name)}
+                    // onClick={() =>
+                    //   window.open(
+                    //     `${Routes.API.NEWS_IMAGES}/${image.file_path}?name=${encodeURIComponent(image.file_name)}`,
+                    //     "_blank"
+                    //   )
+                    // }
                   >
                     <FontAwesomeIcon icon={faFile} className="h-3 w-3" />
                     {image.file_name}

@@ -143,6 +143,21 @@ function NewsManageComponent({ id, data }: NewsManageProps): JSX.Element {
     }
   }
 
+  async function ExportFile(id: string, name: string) {
+    const fileUrl = `${Routes.API.NEWS_IMAGES}/${id}?name=${encodeURIComponent(name)}`;
+    const printWindow = window.open(fileUrl);
+    if (printWindow) {
+      setTimeout(() => {
+        printWindow.document.title = `${name}`;
+      }, 1000);
+    } else {
+      swal.fire({
+        title: "พบข้อผิดพลาด",
+        icon: "error",
+      });
+    }
+  }
+
   return (
     <div>
       <div className="mb-6 flex items-center justify-start">
@@ -297,12 +312,13 @@ function NewsManageComponent({ id, data }: NewsManageProps): JSX.Element {
                     <button
                       type="button"
                       className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary"
-                      onClick={() =>
-                        window.open(
-                          `/api/new-images/` + file.file_path,
-                          "_blank"
-                        )
-                      }
+                      onClick={() => ExportFile(file.file_path, file.file_name)}
+                      // onClick={() =>
+                      //   window.open(
+                      //     `/api/new-images/` + file.file_path,
+                      //     "_blank"
+                      //   )
+                      // }
                     >
                       <FontAwesomeIcon
                         icon={faDownload}
