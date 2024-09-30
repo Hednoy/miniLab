@@ -469,7 +469,32 @@ export async function PDFlab2(id: number, case_no?: string): Promise<Buffer> {
           alignment: "right",
           absolutePosition: { x: 30, y: 0 },
           text: [
-            { text: "FM 02-001(C)", style: "tableKey", margin: [0, 0, 20, 0] },
+            { text: "FM 02-001(C) ", style: "tableKey", margin: [0, 0, 20, 0] },
+            {
+              text: "แก้ไขครั้งที่ ",
+              style: "tableKey",
+              margin: [0, 0, 20, 0],
+            },
+            {
+              text: lab?.count_update || "",
+              style: "tableKey",
+              margin: [0, 0, 20, 0],
+            },
+            {
+              text: " ",
+              style: "tableKey",
+              margin: [0, 0, 20, 0],
+            },
+            {
+              text:
+                "(" +
+                convertToThaiFormat(
+                  format(new Date(lab?.updated_at ?? ""), "dd/MM/yyyy")
+                ) +
+                ")",
+              style: "tableValue",
+            },
+            "\n",
           ],
         },
         [
