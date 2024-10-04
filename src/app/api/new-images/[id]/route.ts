@@ -36,7 +36,9 @@ const GET = async (
     const isPdf = path.extname(imagePath).toLowerCase() === ".pdf";
     const contentDisposition = encodedName
       ? `${isPdf ? "inline" : "attachment"}; filename*=UTF-8''${encodedName}`
-      : isPdf ? "inline" : "attachment";
+      : isPdf
+        ? "inline"
+        : "attachment";
 
     // Return the image buffer in the response
     return new Response(imageBuffer, {

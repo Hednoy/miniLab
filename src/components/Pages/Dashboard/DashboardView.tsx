@@ -226,7 +226,7 @@ const DashboardView: FC = () => {
       test_type_id: Number(filter.testTypeId),
       result: filter.result,
     };
-  
+
     try {
       // Show loading alert
       swal.fire({
@@ -239,10 +239,13 @@ const DashboardView: FC = () => {
           swal.showLoading();
         },
       });
-  
-      const response = await axiosInstance.get<any>(Routes.API.DASHBOARD_REPORT, { params });
+
+      const response = await axiosInstance.get<any>(
+        Routes.API.DASHBOARD_REPORT,
+        { params }
+      );
       const parsedData = Papa.parse(response.data, { header: true }).data;
-  
+
       if (parsedData.length > 100000) {
         swal.close();
         swal.fire({
@@ -253,29 +256,29 @@ const DashboardView: FC = () => {
         });
         return;
       }
-  
+
       const wb = XLSX.utils.book_new();
       const chunkSize = 20000;
       let sheetIndex = 0;
-  
+
       for (let i = 0; i < parsedData.length; i += chunkSize) {
         const chunk = parsedData.slice(i, i + chunkSize);
         const ws = XLSX.utils.json_to_sheet(chunk);
         XLSX.utils.book_append_sheet(wb, ws, `ข้อมูลชุดที่ ${++sheetIndex}`);
       }
-  
+
       const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
       const blob = new Blob([s2ab(wbout)], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
-  
+
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
       link.download = "Database LAB IUDC.xlsx";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-  
+
       // Close loading alert
       swal.close();
     } catch (error) {
@@ -288,7 +291,7 @@ const DashboardView: FC = () => {
       });
     }
   }
-  
+
   // Helper function to convert string to ArrayBuffer
   function s2ab(s: string) {
     const buf = new ArrayBuffer(s.length);
