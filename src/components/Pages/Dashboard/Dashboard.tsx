@@ -140,52 +140,86 @@ const Dashboard: FC = () => {
     );
   };
 
-  const handleExport = async () => {
+  async function handleExport() {
+    const params = {
+      page: 1,
+      dateStart: filter.dateStart,
+      dateEnd: filter.dateEnd,
+      test_type_id: Number(filter.testTypeId),
+      result: filter.result,
+    };
+  
     try {
-      const response = await axiosInstance.get<any>(
-        Routes.API.DASHBOARD_REPORT,
-        {
-          params: {
-            page: 1,
-            dateStart: filter.dateStart,
-            dateEnd: filter.dateEnd,
-            test_type_id: Number(filter.testTypeId),
-            result: filter.result,
-          },
-        }
-      );
-
-      const parsedData = Papa.parse(response.data, { header: true });
-      const ws = XLSX.utils.json_to_sheet(parsedData.data);
+      // Show loading alert
+      swal.fire({
+        title: "กำลังดาวน์โหลด...",
+        text: "กรุณารอสักครู่",
+        icon: "info",
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        willOpen: () => {
+          swal.showLoading();
+        },
+      });
+  
+      const response = await axiosInstance.get<any>(Routes.API.DASHBOARD_REPORT, { params });
+      const parsedData = Papa.parse(response.data, { header: true }).data;
+  
+      if (parsedData.length > 100000) {
+        swal.close();
+        swal.fire({
+          title: "ข้อจำกัดการดาวน์โหลด",
+          text: "กรุณาดาวน์โหลดข้อมูลที่มีน้อยกว่า 100,000 แถว",
+          icon: "warning",
+          iconHtml: customIcons.warning,
+        });
+        return;
+      }
+  
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Database LAB IUDC");
+      const chunkSize = 20000;
+      let sheetIndex = 0;
+  
+      for (let i = 0; i < parsedData.length; i += chunkSize) {
+        const chunk = parsedData.slice(i, i + chunkSize);
+        const ws = XLSX.utils.json_to_sheet(chunk);
+        XLSX.utils.book_append_sheet(wb, ws, `ข้อมูลชุดที่ ${++sheetIndex}`);
+      }
+  
       const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
-
       const blob = new Blob([s2ab(wbout)], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
-
+  
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
       link.download = "Database LAB IUDC.xlsx";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+  
+      // Close loading alert
+      swal.close();
     } catch (error) {
+      // Close loading alert and show error alert
+      swal.close();
       swal.fire({
         title: "พบข้อผิดพลาด",
         icon: "error",
         iconHtml: customIcons.error,
       });
     }
-  };
-
-  const s2ab = (s: string) => {
+  }
+  
+  // Helper function to convert string to ArrayBuffer
+  function s2ab(s: string) {
     const buf = new ArrayBuffer(s.length);
     const view = new Uint8Array(buf);
-    for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+    for (let i = 0; i < s.length; i++) {
+      view[i] = s.charCodeAt(i) & 0xff;
+    }
     return buf;
-  };
+  }
 
   const generateColor = (index: number, total: number) => {
     const hue = (index * (360 / total)) % 360;

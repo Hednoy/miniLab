@@ -8,10 +8,13 @@ import {
   LabTestForReport,
   LabTestsGetData,
 } from "@/types/models/LabTest";
-import { convertDateToString, filterSearchTerm } from "@/utils";
+import { convertDateToString, convertToThaiFormat, filterSearchTerm } from "@/utils";
 import { PaginatedResponse, SortDirection } from "@/types";
 import { tr } from "@faker-js/faker";
 import { LabChart, LabForReport } from "@/types/models/Lab";
+import fs from "fs";
+import path from "path";
+import { format } from "date-fns";
 
 export const getLabTest = async (id: number): Promise<LabTest> => {
   const labTest = await prisma.labTest.findUnique({ where: { id } });
@@ -287,7 +290,20 @@ export const getLabListForReport = async (
   // "ผลการทดสอบ",
 
   const labForReport: LabForReport[] = [];
-  labs.forEach((lab) => {
+  await Promise.all(labs.map(async (lab) => {
+    const reportBy = await prisma.officer.findFirst({
+      where: { member_id: lab?.report_by_id || 0 },
+    });
+    const approveBy = await prisma.officer.findFirst({
+      where: { member_id: lab?.approve_by_id || 0 },
+    });
+
+    const reportByName = reportBy
+      ? `${reportBy.title_name || ""} ${reportBy.first_name || ""} ${reportBy.last_name || ""}`
+      : "";
+    const approveByName = approveBy
+      ? `${approveBy.title_name || ""} ${approveBy.first_name || ""} ${approveBy.last_name || ""}`
+      : "";
     labForReport.push({
       title: lab?.Patient?.title || "",
       full_name:
@@ -300,8 +316,33 @@ export const getLabListForReport = async (
       id_card: lab?.Patient?.id_card || "",
       hospital_name: lab?.Hospital?.name || "",
       test_name: lab?.TestType?.prefix_name || "",
-      collected_date: convertDateToString(lab?.created_at || null),
-      received_date: convertDateToString(lab?.report_date || null),
+      collected_date: lab?.Patient?.collected_date?.toString() ===
+        "1900-01-01" ||
+        lab?.Patient?.collected_date?.toString() ===
+        "0001-01-01"
+        ? ""
+        : convertToThaiFormat(
+          format(
+            new Date(lab?.Patient?.collected_date ?? ""),
+            "dd/MM/yyyy"
+          )
+        ),
+      received_date: lab?.Patient?.received_date?.toString() ===
+        "1900-01-01 00:00:00.000"
+        ? ""
+        : convertToThaiFormat(
+          format(
+            new Date(lab?.Patient?.received_date ?? ""),
+            "dd/MM/yyyy"
+          )
+        ) +
+        " " +
+        (lab?.Patient?.received_time === "00:00:00" ||
+          lab?.Patient?.received_time === "00:00:00.000"
+          ? ""
+          : lab?.Patient?.received_time
+            ?.toString()
+            .split(".")[0]),
       lab_no: lab?.case_no || "",
       specimen: lab?.InspectionType?.code || "",
       result:
@@ -320,15 +361,35 @@ export const getLabListForReport = async (
                     : "",
       description: lab?.detail || "",
       comment: lab?.comment || "",
-      method: lab?.detection_method || "",
-      reporter: "",
-      date_of_report: convertDateToString(lab?.report_date || null),
-      approver: "",
-      date_of_approve: convertDateToString(lab?.approve_date || null),
+      method: lab?.TestType?.subfix_name || "",
+      reporter: reportByName,
+      date_of_report: lab?.report_date?.toString() ===
+        "1900-01-01" ||
+        lab?.report_date?.toString() ===
+        "0001-01-01"
+        ? ""
+        : convertToThaiFormat(
+          format(
+            new Date(lab?.report_date ?? ""),
+            "dd/MM/yyyy"
+          )
+        ),
+      approver: approveByName,
+      date_of_approve: lab?.approve_date?.toString() ===
+        "1900-01-01" ||
+        lab?.approve_date?.toString() ===
+        "0001-01-01"
+        ? ""
+        : convertToThaiFormat(
+          format(
+            new Date(lab?.approve_date ?? ""),
+            "dd/MM/yyyy"
+          )
+        ),
       updated_at: lab?.updated_at || null,
       count_update: lab?.count_update || 0,
     });
-  });
+  }));
 
   return labForReport;
 };
@@ -705,8 +766,8 @@ export const getLabChartPathogensData = async (
   if (test_type_id) {
     const filterPathogen = test_type_id
       ? labTest.filter((e) =>
-          e.PathogensTestType.some((pt) => pt.test_type_id == test_type_id)
-        )
+        e.PathogensTestType.some((pt) => pt.test_type_id == test_type_id)
+      )
       : labTest;
     for (const pathogen of filterPathogen) {
       const countLabtest = await prisma.labTest.count({

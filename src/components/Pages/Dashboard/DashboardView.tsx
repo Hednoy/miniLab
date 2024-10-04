@@ -217,6 +217,7 @@ const DashboardView: FC = () => {
     ],
     []
   );
+
   async function Export() {
     const params = {
       page: 1,
@@ -225,34 +226,69 @@ const DashboardView: FC = () => {
       test_type_id: Number(filter.testTypeId),
       result: filter.result,
     };
-    // console.log("Export params:", params); // Add this line to log the params
-    await axiosInstance
-      .get<any>(Routes.API.DASHBOARD_REPORT, { params })
-      .then((response) => {
-        const parsedData = Papa.parse(response.data, { header: true });
-        const ws = XLSX.utils.json_to_sheet(parsedData.data);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Database LAB IUDC");
-        const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
-        const blob = new Blob([s2ab(wbout)], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-        const link = document.createElement("a");
-        link.href = window.URL.createObjectURL(blob);
-        link.download = "Database LAB IUDC.xlsx";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      })
-      .catch((error) => {
-        swal.fire({
-          title: "พบข้อผิดพลาด",
-          icon: "error",
-          iconHtml: customIcons.error,
-        });
+  
+    try {
+      // Show loading alert
+      swal.fire({
+        title: "กำลังดาวน์โหลด...",
+        text: "กรุณารอสักครู่",
+        icon: "info",
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        willOpen: () => {
+          swal.showLoading();
+        },
       });
+  
+      const response = await axiosInstance.get<any>(Routes.API.DASHBOARD_REPORT, { params });
+      const parsedData = Papa.parse(response.data, { header: true }).data;
+  
+      if (parsedData.length > 100000) {
+        swal.close();
+        swal.fire({
+          title: "ข้อจำกัดการดาวน์โหลด",
+          text: "กรุณาดาวน์โหลดข้อมูลที่มีน้อยกว่า 100,000 แถว",
+          icon: "warning",
+          iconHtml: customIcons.warning,
+        });
+        return;
+      }
+  
+      const wb = XLSX.utils.book_new();
+      const chunkSize = 20000;
+      let sheetIndex = 0;
+  
+      for (let i = 0; i < parsedData.length; i += chunkSize) {
+        const chunk = parsedData.slice(i, i + chunkSize);
+        const ws = XLSX.utils.json_to_sheet(chunk);
+        XLSX.utils.book_append_sheet(wb, ws, `ข้อมูลชุดที่ ${++sheetIndex}`);
+      }
+  
+      const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
+      const blob = new Blob([s2ab(wbout)], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+  
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = "Database LAB IUDC.xlsx";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+  
+      // Close loading alert
+      swal.close();
+    } catch (error) {
+      // Close loading alert and show error alert
+      swal.close();
+      swal.fire({
+        title: "พบข้อผิดพลาด",
+        icon: "error",
+        iconHtml: customIcons.error,
+      });
+    }
   }
-
+  
   // Helper function to convert string to ArrayBuffer
   function s2ab(s: string) {
     const buf = new ArrayBuffer(s.length);

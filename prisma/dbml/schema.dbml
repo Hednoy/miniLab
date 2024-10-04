@@ -288,11 +288,11 @@ Table tb_lab {
   inspection_type_id Int [not null]
   test_type_id Int
   approve_by_id Int
-  approve_date DateTime [default: `now()`]
+  approve_date DateTime
   created_at DateTime [default: `now()`, not null]
   result Int [not null, default: 0]
   report_by_id Int
-  report_date DateTime [default: `now()`]
+  report_date DateTime
   report_time String [default: '00:00']
   approve_time String [default: '00:00']
   count_update Int [default: 1]
